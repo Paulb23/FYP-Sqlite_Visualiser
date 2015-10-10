@@ -29,9 +29,6 @@ import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeNode;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.List;
-import java.util.ArrayList;
-
 /**
  * JUnit tests for the BTree data structure
  *
