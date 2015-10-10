@@ -25,14 +25,18 @@
 package battyp.lancaster.sqlitevisualiser.model.databaseparser;
 
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
+import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
 import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
 
 import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.ByteBuffer;
 
 /**
  * DefaultDatabaseParser is a database parser for Sqlite databases
+ *
+ * @see <a href="https://www.sqlite.org/fileformat2.html">Sqllite file format</a>
  *
  * @author Paul Batty
  */
@@ -59,8 +63,44 @@ public class DefaultDatabaseParser implements DatabaseParser {
         }
 
         checkMagicNumber(in);
+        readSqliteHeader(in, database.getMetadata());
 
+        try {
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return database;
+    }
+
+    /**
+     * Reads the first 100 byte header in the database
+     * @param in The InputStream
+     * @param metadata the metadata object to store to
+     */
+    private void readSqliteHeader(InputStream in, Metadata metadata) throws InvalidFileException {
+        metadata.pageSize = readShort(in);
+        metadata.writeVersion = readByte(in);
+        metadata.readVersion = readByte(in);
+        metadata.unusedSpaceAtEndOfEachPage = readByte(in);
+        metadata.maxEmbeddedPayload = readByte(in);
+        metadata.minEmbeddedPayload = readByte(in);
+        metadata.leafPayloadFraction = readByte(in);
+        metadata.fileChageCounter = readInt(in);
+        metadata.sizeOfDatabaseInPages = readInt(in);
+        metadata.pageNumberOfFirstFreelistPage = readInt(in);
+        metadata.totalFreeListPages = readInt(in);
+        metadata.schemaCookie = readInt(in);
+        metadata.schemaFormat = readInt(in);
+        metadata.defualtPageCacheSize = readInt(in);
+        metadata.pageNumberToLargestBTreePage = readInt(in);
+        metadata.textEncoding = readInt(in);
+        metadata.userVersion = readInt(in);
+        metadata.vacuummMode = readInt(in);
+        metadata.appID = readInt(in);
+        skipBytes(in, 20);
+        metadata.versionValidNumber = readInt(in);
+        metadata.sqliteVersion = readInt(in);
     }
 
     /**
@@ -80,4 +120,64 @@ public class DefaultDatabaseParser implements DatabaseParser {
             throw new InvalidFileException();
         }
     }
+
+    /**
+     * Read a byte, 1 bytes from the input stream
+     *
+     * @param in the input stream to read from
+     */
+    private int readByte(InputStream in) throws InvalidFileException {
+        try {
+            byte[] bytes = new byte[1];
+            in.read(bytes, 0, 1);
+            return (bytes[0] & 0xFF);
+        } catch (IOException e) {
+            throw new InvalidFileException();
+        }
+    }
+
+    /**
+     * Read a short, 2 bytes from the input stream
+     *
+     * @param in the input stream to read from
+     */
+    private int readShort(InputStream in) throws InvalidFileException {
+        try {
+            byte[] bytes = new byte[2];
+            in.read(bytes, 0, 2);
+            return ByteBuffer.wrap(bytes).getShort();
+        } catch (IOException e) {
+            throw new InvalidFileException();
+        }
+    }
+
+    /**
+     * Read a int, 4 bytes from the input stream
+     *
+     * @param in the input stream to read from
+     */
+    private int readInt(InputStream in) throws InvalidFileException {
+        try {
+            byte[] bytes = new byte[4];
+            in.read(bytes, 0, 4);
+            return ByteBuffer.wrap(bytes).getInt();
+        } catch (IOException e) {
+            throw new InvalidFileException();
+        }
+    }
+
+    /**
+     * Skips the number of bytes passed int
+     *
+     * @param in the input stream to read from
+     * @param bytesTiSkip The number of bytes to skip
+     */
+    private void skipBytes(InputStream in, long bytesTiSkip) throws InvalidFileException {
+        try {
+            in.skip(bytesTiSkip);
+        } catch (IOException e) {
+            throw new InvalidFileException();
+        }
+    }
+
 }

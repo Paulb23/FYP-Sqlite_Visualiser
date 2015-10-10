@@ -29,6 +29,7 @@ import battyp.lancaster.sqlitevisualiser.model.databaseparser.DefaultDatabasePar
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTree;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
 import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
+import junit.framework.Assert;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
@@ -58,5 +59,36 @@ public class DefaultDatabaseParserTest {
     public void TestOpenValidDatabase() throws FileNotFoundException, InvalidFileException {
         DefaultDatabaseParser parser = new DefaultDatabaseParser();
         parser.parseDatabase("validDatabase", new Database(new BTree<String>(), new Metadata()));
+    }
+
+    @Test
+    public void TestParsingMetaData() throws FileNotFoundException, InvalidFileException {
+        DefaultDatabaseParser parser = new DefaultDatabaseParser();
+        Database database = new Database(new BTree<String>(), new Metadata());
+        parser.parseDatabase("validDatabase", database);
+
+        Metadata metadata = database.getMetadata();
+
+        Assert.assertEquals(1024, metadata.pageSize);
+        Assert.assertEquals(1, metadata.writeVersion);
+        Assert.assertEquals(1, metadata.readVersion);
+        Assert.assertEquals(0, metadata.unusedSpaceAtEndOfEachPage);
+        Assert.assertEquals(64, metadata.maxEmbeddedPayload);
+        Assert.assertEquals(32, metadata.minEmbeddedPayload);
+        Assert.assertEquals(32, metadata.leafPayloadFraction);
+        Assert.assertEquals(1, metadata.fileChageCounter);
+        Assert.assertEquals(3, metadata.sizeOfDatabaseInPages);
+        Assert.assertEquals(0, metadata.pageNumberOfFirstFreelistPage);
+        Assert.assertEquals(0, metadata.totalFreeListPages);
+        Assert.assertEquals(1, metadata.schemaCookie);
+        Assert.assertEquals(4, metadata.schemaFormat);
+        Assert.assertEquals(0, metadata.defualtPageCacheSize);
+        Assert.assertEquals(0, metadata.pageNumberToLargestBTreePage);
+        Assert.assertEquals(1, metadata.textEncoding);
+        Assert.assertEquals(0, metadata.userVersion);
+        Assert.assertEquals(0, metadata.vacuummMode);
+        Assert.assertEquals(0, metadata.appID);
+        Assert.assertEquals(1, metadata.versionValidNumber);
+        Assert.assertEquals(3008002, metadata.sqliteVersion);
     }
 }
