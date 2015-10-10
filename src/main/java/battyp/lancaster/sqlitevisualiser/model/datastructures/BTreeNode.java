@@ -32,7 +32,7 @@ import java.util.ArrayList;
  *
  * @author Paul Batty
  */
-public class BTreeNode<T extends Comparable> {
+public class BTreeNode<T> {
 
     private T data;
     private List<BTreeNode<T>> children;
