@@ -29,7 +29,7 @@ import battyp.lancaster.sqlitevisualiser.model.databaseparser.DefaultDatabasePar
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTree;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
 import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
