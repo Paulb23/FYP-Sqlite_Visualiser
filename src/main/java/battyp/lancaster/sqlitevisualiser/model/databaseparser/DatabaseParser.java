@@ -25,6 +25,9 @@
 package battyp.lancaster.sqlitevisualiser.model.databaseparser;
 
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
+import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
+
+import java.io.FileNotFoundException;
 
 /**
  * DatabaseParser is the interface that all database file parsers will
@@ -44,5 +47,5 @@ public interface DatabaseParser {
      * @param database The database class to fill with data
      * @return Database class filled with the format data
      */
-    public Database parseDatabase(final String pathToDatabase, Database database);
+    public Database parseDatabase(final String pathToDatabase, Database database) throws FileNotFoundException, InvalidFileException;
 }
