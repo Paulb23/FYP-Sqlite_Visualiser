@@ -63,6 +63,7 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
+                <MenuItem onAction="#openDatabase" mnemonicParsing="false" text="Open" />
               <MenuItem mnemonicParsing="false" text="Exit" />
             </items>
           </Menu>

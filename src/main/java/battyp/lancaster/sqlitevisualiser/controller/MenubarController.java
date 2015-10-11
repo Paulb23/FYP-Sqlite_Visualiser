@@ -25,11 +25,19 @@
 package battyp.lancaster.sqlitevisualiser.controller;
 
 import battyp.lancaster.sqlitevisualiser.model.Model;
+import battyp.lancaster.sqlitevisualiser.model.database.Database;
+import battyp.lancaster.sqlitevisualiser.model.datastructures.BTree;
+import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
+import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
 
@@ -94,6 +102,30 @@ public class MenubarController {
     @FXML
     private void switchToSqlEditor() {
         setCenterPane("view/fxml/sqleditor.fxml");
+    }
+
+    /**
+     * Opens a database
+     */
+    @FXML
+    private void openDatabase() {
+        try {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open Database");
+            String path = fileChooser.showOpenDialog(null).getCanonicalPath();
+
+            this.model.openDatabase(path, new Database(new BTree<String>(), new Metadata()));
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setContentText("Oooops, Could not read that file!");
+            alert.showAndWait();
+        } catch (InvalidFileException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setContentText("Oooops, That's not a valid database file");
+            alert.showAndWait();
+        }
     }
 
     /**

@@ -29,6 +29,9 @@ import battyp.lancaster.sqlitevisualiser.model.databaseinterface.DatabaseInterfa
 import battyp.lancaster.sqlitevisualiser.model.databaseinterface.DefaultDatabaseInterface;
 import battyp.lancaster.sqlitevisualiser.model.databaseparser.DatabaseParser;
 import battyp.lancaster.sqlitevisualiser.model.databaseparser.DefaultDatabaseParser;
+import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
+
+import java.io.FileNotFoundException;
 
 /**
  * DefaultModel is the default interface into the model
@@ -37,8 +40,20 @@ import battyp.lancaster.sqlitevisualiser.model.databaseparser.DefaultDatabasePar
  */
 public class DefaultModel implements Model {
 
+    private boolean isFileOpen;
     private DatabaseInterface databaseInterface;
     private DatabaseParser databaseParser;
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void openDatabase(final String path, Database database) throws FileNotFoundException, InvalidFileException {
+        database = this.databaseParser.parseDatabase(path, database);
+        this.databaseInterface.clear();
+        this.databaseInterface.addDatabase(database);
+        isFileOpen = true;
+    }
 
     /**
      * Creates a new instance of the default model with default mode
@@ -46,6 +61,7 @@ public class DefaultModel implements Model {
     public DefaultModel() {
         databaseInterface = new DefaultDatabaseInterface();
         databaseParser = new DefaultDatabaseParser();
+        isFileOpen = false;
     }
 
     /**
@@ -57,6 +73,7 @@ public class DefaultModel implements Model {
     public DefaultModel(DatabaseInterface databaseInterface, DatabaseParser databaseParser) {
         this.databaseInterface = databaseInterface;
         this.databaseParser = databaseParser;
+        this.isFileOpen = false;
     }
 
     /**
@@ -73,5 +90,13 @@ public class DefaultModel implements Model {
     @Override
     public DatabaseParser getDatabaseParser() {
         return this.databaseParser;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isFileOpen() {
+        return this.isFileOpen;
     }
 }
