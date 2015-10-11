@@ -25,6 +25,10 @@
 package battyp.lancaster.sqlitevisualiser.controller;
 
 import battyp.lancaster.sqlitevisualiser.model.Model;
+import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
+import javafx.fxml.FXML;
+
+import javafx.scene.control.TextArea;
 
 /**
  * Controller for header.fxml
@@ -33,6 +37,9 @@ import battyp.lancaster.sqlitevisualiser.model.Model;
  */
 public class HeaderController extends Controller {
 
+    @FXML
+    private TextArea headerTextArea;
+
     /**
      * Creates a new Controller with the model set
      *
@@ -40,5 +47,34 @@ public class HeaderController extends Controller {
      */
     public HeaderController(Model model) {
         super(model);
+    }
+
+    @FXML
+    private void initialise() {
+        if (model.isFileOpen()) {
+            Metadata metadata = this.model.getDatabase().getMetadata();
+            this.headerTextArea.setText(
+                            "Page Size: "        + metadata.pageSize                     + "\n" +
+                            "write Version:"     + metadata.writeVersion                 + "\n" +
+                            "read Version:"      + metadata.readVersion                  + "\n" +
+                            "Unused Space page:" + metadata.unusedSpaceAtEndOfEachPage   + "\n" +
+                            "Max Embed Payload:" + metadata.maxEmbeddedPayload           + "\n" +
+                            "Min Embed Payload:" + metadata.minEmbeddedPayload           + "\n" +
+                            "Leaf Payload:"      + metadata.leafPayloadFraction          + "\n" +
+                            "Change Counter:"    + metadata.fileChageCounter             + "\n" +
+                            "Size in pages:"     + metadata.sizeOfDatabaseInPages        + "\n" +
+                            "Freelist Pages:"    + metadata.totalFreeListPages           + "\n" +
+                            "Schema cookie:"     + metadata.schemaCookie                 + "\n" +
+                            "Schema Format:"     + metadata.schemaFormat                 + "\n" +
+                            "Cache Size:"        + metadata.defualtPageCacheSize         + "\n" +
+                            "Page Large Tree:"   + metadata.pageNumberToLargestBTreePage + "\n" +
+                            "text encoding:"     + metadata.textEncoding                 + "\n" +
+                            "User Version:"      + metadata.userVersion                  + "\n" +
+                            "Vacuum Mode:"       + metadata.vacuummMode                  + "\n" +
+                            "Application ID:"    + metadata.appID                        + "\n" +
+                            "Valid Number"       + metadata.versionValidNumber           + "\n" +
+                            "Sqlite version:"   + metadata.sqliteVersion                 + "\n"
+            );
+        }
     }
 }

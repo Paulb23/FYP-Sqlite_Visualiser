@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
  * The MIT License (MIT)
  *
@@ -22,17 +23,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
 -->
+
+<?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane fx:id="HeaderPage" prefHeight="480.0" prefWidth="640.0" xmlns:fx="http://javafx.com/fxml">
+<AnchorPane fx:id="HeaderPage" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <Label layoutX="251.0" layoutY="227.0" text="Header Page">
-            <font>
-                <Font size="18.0" />
-            </font>
-        </Label>
+      <TextArea editable="false" fx:id="headerTextArea" layoutX="10.0" layoutY="10.0" />
+      <Button layoutX="513.0" layoutY="228.0" onAction="#initialise" mnemonicParsing="false" text="Reload" />
     </children>
 </AnchorPane>
