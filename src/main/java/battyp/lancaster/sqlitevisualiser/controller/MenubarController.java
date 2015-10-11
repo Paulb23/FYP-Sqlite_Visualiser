@@ -132,8 +132,9 @@ public class MenubarController extends Controller {
      */
     private void setCenterPane(String fxmlPath, Controller controller) {
         try {
-            URL pane = getClass().getClassLoader().getResource(fxmlPath);
-            AnchorPane loadedPane = FXMLLoader.load(pane);
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(fxmlPath));
+            loader.setController(controller);
+            AnchorPane loadedPane = loader.load();
 
             root.setCenter(loadedPane);
 
