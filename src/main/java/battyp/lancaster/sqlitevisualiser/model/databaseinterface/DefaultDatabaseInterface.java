@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * DefaultDatabaseInterface is a database interface for the databases objects
+ * DefaultDatabaseInterface is a interface for the databases objects
  *
  * @see battyp.lancaster.sqlitevisualiser.model.database.Database
  *
