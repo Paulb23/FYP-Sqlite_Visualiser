@@ -7,7 +7,16 @@ sourceCompatibility = 1.7
 
 repositories {
     mavenCentral()
+    jcenter()
 }
+
+
+task copyTestResources(type: Copy) {
+    from "${projectDir}/src/main/resources"
+    into "${projectDir}/src/test/resources"
+}
+processTestResources.dependsOn copyTestResources
+
 
 jar {
     manifest {
@@ -17,4 +26,5 @@ jar {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile "org.loadui:testFx:3.1.2"
 }
