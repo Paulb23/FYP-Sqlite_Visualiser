@@ -73,6 +73,13 @@ public class DefaultDatabaseInterfaceTest {
     }
 
     @Test
+    public void TestClearChangesNothingOnCreation() {
+        DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
+        databaseInterface.clear();
+        Assert.assertEquals(null, databaseInterface.getCurrent());
+    }
+
+    @Test
     public void TestAddAndGetCurrentReturnsCorrectDatabase() {
         DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
         Database database = new Database(new BTree<String>(), new Metadata());
@@ -152,5 +159,23 @@ public class DefaultDatabaseInterfaceTest {
         databaseInterface.addDatabase(new Database(new BTree<String>(), new Metadata()));
         databaseInterface.nextStep();
         Assert.assertEquals(database, databaseInterface.getPrevious());
+    }
+
+    @Test
+    public void TestClearRemovesAllDatabases() {
+        DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
+        databaseInterface.addDatabase(new Database(new BTree<String>(), new Metadata()));
+        databaseInterface.clear();
+        Assert.assertEquals(null, databaseInterface.getCurrent());
+    }
+
+    @Test
+    public void TestClearResetsCurrent() {
+        DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
+        databaseInterface.addDatabase(new Database(new BTree<String>(), new Metadata()));
+        databaseInterface.addDatabase(new Database(new BTree<String>(), new Metadata()));
+        databaseInterface.nextStep();
+        databaseInterface.clear();
+        Assert.assertEquals(null, databaseInterface.getCurrent());
     }
 }

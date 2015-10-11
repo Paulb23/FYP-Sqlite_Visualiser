@@ -109,4 +109,13 @@ public class DefaultDatabaseInterface implements DatabaseInterface {
     public void addDatabase(Database database) {
         this.history.add(database);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void clear() {
+        this.current = 0;
+        this.history = new ArrayList<>();
+    }
 }

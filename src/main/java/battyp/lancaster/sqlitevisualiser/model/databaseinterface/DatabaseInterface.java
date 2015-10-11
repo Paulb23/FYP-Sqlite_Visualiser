@@ -73,4 +73,9 @@ public interface DatabaseInterface {
      * @param database
      */
     public void addDatabase(Database database);
+
+    /**
+     * Clears all the database history
+     */
+    public void clear();
 }

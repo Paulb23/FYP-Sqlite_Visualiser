@@ -65,4 +65,9 @@ public class MockDatabaseInterface implements DatabaseInterface {
     public void addDatabase(Database database) {
 
     }
+
+    @Override
+    public void clear() {
+
+    }
 }
