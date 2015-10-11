@@ -9,6 +9,12 @@ repositories {
     mavenCentral()
 }
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'battyp.lancaster.sqlitevisualiser.app.SqliteVisualisationApp'
+    }
+}
+
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
