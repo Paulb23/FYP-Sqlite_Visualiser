@@ -179,5 +179,4 @@ public class DefaultDatabaseParser implements DatabaseParser {
             throw new InvalidFileException();
         }
     }
-
 }
