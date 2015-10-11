@@ -29,6 +29,7 @@ import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
 import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.ByteBuffer;
@@ -50,9 +51,22 @@ public class DefaultDatabaseParser implements DatabaseParser {
      */
     @Override
     public Database parseDatabase(String pathToDatabase, Database database) throws FileNotFoundException, InvalidFileException {
+
+        /**
+         * Try to load from resources if fails then convert to
+         * URI --> URL
+         */
         URL file = getClass().getClassLoader().getResource(pathToDatabase);
         if (file == null) {
-            throw new FileNotFoundException();
+            try {
+                file = new File(pathToDatabase).toURI().toURL();
+
+                if (file == null) {
+                    throw new FileNotFoundException();
+                }
+            } catch (MalformedURLException e) {
+                throw new FileNotFoundException();
+            }
         }
 
         InputStream in;
