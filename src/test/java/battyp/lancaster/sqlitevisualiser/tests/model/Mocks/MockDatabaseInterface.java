@@ -22,91 +22,47 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.model.databaseinterface;
+package battyp.lancaster.sqlitevisualiser.tests.model.Mocks;
 
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
-
-import java.util.ArrayList;
-import java.util.List;
+import battyp.lancaster.sqlitevisualiser.model.databaseinterface.DatabaseInterface;
 
 /**
- * DefaultDatabaseInterface is a interface for the databases objects
+ * Mock implementation of the DatabaseInterface
  *
- * @see battyp.lancaster.sqlitevisualiser.model.database.Database
+ * @see DatabaseInterface
  *
  * @author Paul Batty
  */
-public class DefaultDatabaseInterface implements DatabaseInterface {
+public class MockDatabaseInterface implements DatabaseInterface {
 
-    private int current;
-    private List<Database> history;
-
-    /**
-     * Creates a new DatabaseInterface
-     */
-    public DefaultDatabaseInterface() {
-        this.current = 0;
-        this.history = new ArrayList<>();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Database getCurrent() {
-        if (this.current < this.history.size() && this.current >= 0) {
-            return this.history.get(this.current);
-        }
-        return null;
+        return new MockDatabase();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Database getPrevious() {
-        if (this.current - 1 < this.history.size() && this.current - 1 >= 0) {
-            return this.history.get(this.current - 1);
-        }
-        return null;
+        return new MockDatabase();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Database getNext() {
-        if (this.current + 1 < this.history.size() && this.current + 1 >= 0) {
-            return this.history.get(this.current + 1);
-        }
-        return null;
+        return new MockDatabase();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void nextStep() {
-        if (this.current < this.history.size() - 1) {
-            this.current++;
-        }
+
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void previousStep() {
-        if (this.current < this.history.size() + 1 && this.current != 0) {
-            this.current--;
-        }
+
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void addDatabase(Database database) {
-        this.history.add(database);
+
     }
 }

@@ -22,55 +22,29 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.model.databaseinterface;
+package battyp.lancaster.sqlitevisualiser.model;
 
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
+import battyp.lancaster.sqlitevisualiser.model.databaseparser.DatabaseParser;
 
 /**
- * Interface and all interaction with the inner storage will have to go through,
- * must implement, history, next, previous, adding of the Database object.
- * There should only be one of these and is controlled via the Model.
- *
- * @see battyp.lancaster.sqlitevisualiser.model.database.Database
+ * Model is a interface that all models will inherit from as a interface into the different model sections
  *
  * @author Paul Batty
  */
-public interface DatabaseInferface {
+public interface Model {
 
     /**
-     * Gets the current database the this time in history that is being viewed
+     * Gets the current Database
      *
-     * @return Current Database being viewed
+     * @return Current Database
      */
-    public Database getCurrent();
+    public Database getDatabase();
 
     /**
-     * Gets the previous database to the one being shown
+     * Gets the current database parser
      *
-     * @return Previous database to the one shown
+     * @return current database parser
      */
-    public Database getPrevious();
-
-    /**
-     * Gets the next database to the one being shown
-     *
-     * @return Next database to the one beign shown
-     */
-    public Database getNext();
-
-    /**
-     * Steps into the next database
-     */
-    public void nextStep();
-
-    /**
-     * Steps into the last database
-     */
-    public void previousStep();
-
-    /**
-     * Adds a database to the front of the history queue
-     * @param database
-     */
-    public void addDatabase(Database database);
+    public DatabaseParser getDatabaseParser();
 }
