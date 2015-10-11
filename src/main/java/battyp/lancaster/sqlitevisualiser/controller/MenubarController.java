@@ -35,9 +35,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
 
@@ -48,9 +46,8 @@ import java.net.URL;
  *
  * @author Paul Batty
  */
-public class MenubarController {
+public class MenubarController extends Controller {
 
-    private Model model;
     private BorderPane root;
 
     /**
@@ -60,7 +57,7 @@ public class MenubarController {
      * @param root The root pane to switch in and out of
      */
     public MenubarController(Model model, BorderPane root) {
-        this.model = model;
+        super(model);
         this.root = root;
     }
 
@@ -69,7 +66,7 @@ public class MenubarController {
      */
     @FXML
     private void switchToHeader() {
-        setCenterPane("view/fxml/header.fxml");
+        setCenterPane("view/fxml/header.fxml", new HeaderController(this.model));
     }
 
     /**
@@ -77,7 +74,7 @@ public class MenubarController {
      */
     @FXML
     private void switchToTableView() {
-        setCenterPane("view/fxml/tableview.fxml");
+        setCenterPane("view/fxml/tableview.fxml", new TableViewController(this.model));
     }
 
     /**
@@ -85,7 +82,7 @@ public class MenubarController {
      */
     @FXML
     private void switchToVisualisation() {
-        setCenterPane("view/fxml/visualisation.fxml");
+        setCenterPane("view/fxml/visualisation.fxml", new VisualisationController(this.model));
     }
 
     /**
@@ -93,7 +90,7 @@ public class MenubarController {
      */
     @FXML
     private void switchToLog() {
-        setCenterPane("view/fxml/log.fxml");
+        setCenterPane("view/fxml/log.fxml", new LogController(this.model));
     }
 
     /**
@@ -101,7 +98,7 @@ public class MenubarController {
      */
     @FXML
     private void switchToSqlEditor() {
-        setCenterPane("view/fxml/sqleditor.fxml");
+        setCenterPane("view/fxml/sqleditor.fxml", new SqlEditorController(this.model));
     }
 
     /**
@@ -133,7 +130,7 @@ public class MenubarController {
      *
      * @param fxmlPath path to the fxml file
      */
-    private void setCenterPane(String fxmlPath) {
+    private void setCenterPane(String fxmlPath, Controller controller) {
         try {
             URL pane = getClass().getClassLoader().getResource(fxmlPath);
             AnchorPane loadedPane = FXMLLoader.load(pane);
