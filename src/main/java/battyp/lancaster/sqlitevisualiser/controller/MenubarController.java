@@ -128,6 +128,7 @@ public class MenubarController extends Controller {
             String path = fileChooser.showOpenDialog(null).getCanonicalPath();
 
             this.model.openDatabase(path, new Database(new Metadata()));
+            notifyObserver();
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error Dialog");
