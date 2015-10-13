@@ -37,6 +37,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * JUnit tests for DefaultModel
@@ -68,20 +69,20 @@ public class DefaultModelTest {
     }
 
     @Test
-    public void TestIsFileOpenReturnsTrueWithOpenFile() throws FileNotFoundException, InvalidFileException {
+    public void TestIsFileOpenReturnsTrueWithOpenFile() throws IOException, InvalidFileException {
         DefaultModel model = new DefaultModel();
         model.openDatabase("validDatabase", new Database(new BTree<String>(), new Metadata()));
         Assert.assertEquals(true, model.isFileOpen());
     }
 
     @Test(expected = InvalidFileException.class)
-    public void TestOpenFileReturnInValidFileWhenOpeningInValidFile() throws FileNotFoundException, InvalidFileException {
+    public void TestOpenFileReturnInValidFileWhenOpeningInValidFile() throws IOException, InvalidFileException {
         DefaultModel model = new DefaultModel();
         model.openDatabase("invalidDatabase.db", new Database(new BTree<String>(), new Metadata()));
     }
 
     @Test(expected = FileNotFoundException.class)
-    public void TestOpenFileReturnFileNotFoundWhenOpeningInValidPath() throws FileNotFoundException, InvalidFileException {
+    public void TestOpenFileReturnFileNotFoundWhenOpeningInValidPath() throws IOException, InvalidFileException {
         DefaultModel model = new DefaultModel();
         model.openDatabase("sadasda.db", new Database(new BTree<String>(), new Metadata()));
     }

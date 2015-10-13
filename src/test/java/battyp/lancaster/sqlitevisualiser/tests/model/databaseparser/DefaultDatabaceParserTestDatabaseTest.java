@@ -34,6 +34,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * JUnit tests for DefaultDatabaseParser using a test database
@@ -47,7 +48,7 @@ public class DefaultDatabaceParserTestDatabaseTest {
     private static Database database;
 
     @BeforeClass
-    public static void setUp() throws FileNotFoundException, InvalidFileException {
+    public static void setUp() throws IOException, InvalidFileException {
         database = new Database(new BTree<String>(), new Metadata());
         new DefaultDatabaseParser().parseDatabase("testDatabase", database);
     }

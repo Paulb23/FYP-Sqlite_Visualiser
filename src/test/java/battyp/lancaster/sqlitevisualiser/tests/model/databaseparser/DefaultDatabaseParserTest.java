@@ -33,6 +33,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * JUnit tests for DefaultDatabaseParser
@@ -44,25 +45,25 @@ import java.io.FileNotFoundException;
 public class DefaultDatabaseParserTest {
 
     @Test(expected = java.io.FileNotFoundException.class)
-    public void TestFileNotFound() throws FileNotFoundException, InvalidFileException {
+    public void TestFileNotFound() throws IOException, InvalidFileException {
         DefaultDatabaseParser parser = new DefaultDatabaseParser();
         parser.parseDatabase("fake/file.txt", new Database(new BTree<String>(), new Metadata()));
     }
 
     @Test(expected = InvalidFileException.class)
-    public void TestOpenInvalidFile() throws FileNotFoundException, InvalidFileException {
+    public void TestOpenInvalidFile() throws IOException, InvalidFileException {
         DefaultDatabaseParser parser = new DefaultDatabaseParser();
         parser.parseDatabase("invalidDatabase.db", new Database(new BTree<String>(), new Metadata()));
     }
 
     @Test
-    public void TestOpenValidDatabase() throws FileNotFoundException, InvalidFileException {
+    public void TestOpenValidDatabase() throws IOException, InvalidFileException {
         DefaultDatabaseParser parser = new DefaultDatabaseParser();
         parser.parseDatabase("validDatabase", new Database(new BTree<String>(), new Metadata()));
     }
 
     @Test
-    public void TestParsingMetaData() throws FileNotFoundException, InvalidFileException {
+    public void TestParsingMetaData() throws IOException, InvalidFileException {
         DefaultDatabaseParser parser = new DefaultDatabaseParser();
         Database database = new Database(new BTree<String>(), new Metadata());
         parser.parseDatabase("validDatabase", database);

@@ -25,16 +25,13 @@
 package battyp.lancaster.sqlitevisualiser.model.databaseparser;
 
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
-import battyp.lancaster.sqlitevisualiser.model.datastructures.BTree;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
 import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
-import battyp.lancaster.sqlitevisualiser.util.ByteReader;
 
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.ByteBuffer;
 
 /**
  * DefaultDatabaseParser is a database parser for Sqlite databases
@@ -48,11 +45,16 @@ public class DefaultDatabaseParser implements DatabaseParser {
     private static final int MAGIC_NUMBER_LENGTH = 16;
     private static final int MAGIC_NUMBER[] = new int[] {0x53, 0x51, 0x4c, 0x69, 0x74, 0x65, 0x20, 0x66, 0x6f, 0x72, 0x6d, 0x61, 0x74, 0x20, 0x33, 0x00};
 
+    private static final int TABLE_BTREE_LEAF_CELL = 0x0d;
+    private static final int TABLE_BTREE_INTERIOR_CELL = 0x05;
+    private static final int INDEX_BTREE_LEAF_CELL = 0x0a;
+    private static final int INDEX_BTREE_INTERIOR_CELL = 0x02;
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public Database parseDatabase(String pathToDatabase, Database database) throws FileNotFoundException, InvalidFileException {
+    public Database parseDatabase(String pathToDatabase, Database database) throws IOException, FileNotFoundException, InvalidFileException {
 
         /**
          * Try to load from resources if fails then convert to
@@ -71,22 +73,22 @@ public class DefaultDatabaseParser implements DatabaseParser {
             }
         }
 
-        InputStream in;
+        // open the file
+        File f;
         try {
-            in = new BufferedInputStream(new FileInputStream(new File(file.toURI())));
+            f = new File(file.toURI());
         } catch (URISyntaxException e) {
-            throw new FileNotFoundException();
+            f = new File(file.getPath());
         }
+        RandomAccessFile in = new RandomAccessFile(f, "r");
 
+        // parse the database
         checkMagicNumber(in);
         readSqliteHeader(in, database.getMetadata());
-        readBTree(in, database.getBTree());
+        readBTree(in, database);
 
-        try {
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // close and return
+        in.close();
         return database;
     }
 
@@ -94,23 +96,58 @@ public class DefaultDatabaseParser implements DatabaseParser {
      * Reads the Btree sections of the file
      *
      * @param in The inputStream
-     * @param tree The tree to store in
+     * @param database The tree to store in
      * @throws InvalidFileException
      */
-    private void readBTree(InputStream in, BTree tree) throws  InvalidFileException {
-        int type = ByteReader.readByte(in);
-        int firstFreeBlockOffset = ByteReader.readShort(in);
-        int numberOfCells = ByteReader.readShort(in);
-        int startOfCell = ByteReader.readShort(in);
+    private void readBTree(RandomAccessFile in, Database database) throws  IOException, InvalidFileException {
+
+        // read b-tree header
+        int type = in.readByte();
+        int firstFreeBlockOffset = in.readShort();
+        int numberOfCells = in.readShort();
+        int startOfCell = in.readShort();
         if (startOfCell == 0) {
             startOfCell = 65536;
         }
-        int fagmentedFreeBytes = ByteReader.readByte(in);
-        int rightMostPointer = ByteReader.readInt(in);
+        int fagmentedFreeBytes = in.readByte();
+        int rightMostPointer = in.readInt();
+        // get pointer array
+        int[] cellPointers = new int[numberOfCells];
+        for (int i = 0; i < numberOfCells; i++) {
+            cellPointers[i] = in.readShort();
+        }
 
-        if (type == 5) {
-            int leftChildPointer = ByteReader.readInt(in);
+        // follow pointer and get b-tree
+        for (int i = 0; i < numberOfCells; i++) {
+            if (cellPointers[i] == 0) {
+                return;
+            }
 
+            in.seek(cellPointers[i]);
+
+            // parse that type of b-tree
+            switch (type) {
+                case TABLE_BTREE_LEAF_CELL: {
+
+                }
+                break;
+                case TABLE_BTREE_INTERIOR_CELL: {
+                    System.out.println(in.readInt());
+                    byte[] varint = new byte[1];
+                    in.read(varint);
+                    int a = (varint[0] >> 1) & 1;
+                    System.out.println(a);
+                }
+                break;
+                case INDEX_BTREE_LEAF_CELL: {
+
+                }
+                break;
+                case INDEX_BTREE_INTERIOR_CELL: {
+
+                }
+                break;
+            }
         }
     }
 
@@ -119,29 +156,29 @@ public class DefaultDatabaseParser implements DatabaseParser {
      * @param in The InputStream
      * @param metadata the metadata object to store to
      */
-    private void readSqliteHeader(InputStream in, Metadata metadata) throws InvalidFileException {
-        metadata.pageSize = ByteReader.readShort(in);
-        metadata.writeVersion = ByteReader.readByte(in);
-        metadata.readVersion = ByteReader.readByte(in);
-        metadata.unusedSpaceAtEndOfEachPage = ByteReader.readByte(in);
-        metadata.maxEmbeddedPayload = ByteReader.readByte(in);
-        metadata.minEmbeddedPayload = ByteReader.readByte(in);
-        metadata.leafPayloadFraction = ByteReader.readByte(in);
-        metadata.fileChageCounter = ByteReader.readInt(in);
-        metadata.sizeOfDatabaseInPages = ByteReader.readInt(in);
-        metadata.pageNumberOfFirstFreelistPage = ByteReader.readInt(in);
-        metadata.totalFreeListPages = ByteReader.readInt(in);
-        metadata.schemaCookie = ByteReader.readInt(in);
-        metadata.schemaFormat = ByteReader.readInt(in);
-        metadata.defualtPageCacheSize = ByteReader.readInt(in);
-        metadata.pageNumberToLargestBTreePage = ByteReader.readInt(in);
-        metadata.textEncoding = ByteReader.readInt(in);
-        metadata.userVersion = ByteReader.readInt(in);
-        metadata.vacuummMode = ByteReader.readInt(in);
-        metadata.appID = ByteReader.readInt(in);
-        ByteReader.skipBytes(in, 20);
-        metadata.versionValidNumber = ByteReader.readInt(in);
-        metadata.sqliteVersion = ByteReader.readInt(in);
+    private void readSqliteHeader(RandomAccessFile in, Metadata metadata) throws IOException, InvalidFileException {
+        metadata.pageSize = in.readShort();
+        metadata.writeVersion = in.readByte();
+        metadata.readVersion = in.readByte();
+        metadata.unusedSpaceAtEndOfEachPage = in.readByte();
+        metadata.maxEmbeddedPayload = in.readByte();
+        metadata.minEmbeddedPayload = in.readByte();
+        metadata.leafPayloadFraction = in.readByte();
+        metadata.fileChageCounter = in.readInt();
+        metadata.sizeOfDatabaseInPages = in.readInt();
+        metadata.pageNumberOfFirstFreelistPage = in.readInt();
+        metadata.totalFreeListPages = in.readInt();
+        metadata.schemaCookie = in.readInt();
+        metadata.schemaFormat = in.readInt();
+        metadata.defualtPageCacheSize = in.readInt();
+        metadata.pageNumberToLargestBTreePage = in.readInt();
+        metadata.textEncoding = in.readInt();
+        metadata.userVersion = in.readInt();
+        metadata.vacuummMode = in.readInt();
+        metadata.appID = in.readInt();
+        in.skipBytes(20);
+        metadata.versionValidNumber = in.readInt();
+        metadata.sqliteVersion = in.readInt();
     }
 
     /**
@@ -150,7 +187,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
      * @param in The InputStream
      * @throws InvalidFileException Invalid magic number
      */
-    private void checkMagicNumber(InputStream in) throws InvalidFileException {
+    private void checkMagicNumber(RandomAccessFile in) throws InvalidFileException {
         try {
             for (int i = 0; i < MAGIC_NUMBER_LENGTH; i++) {
                 if (in.read() != MAGIC_NUMBER[i]) {

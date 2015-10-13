@@ -32,6 +32,7 @@ import battyp.lancaster.sqlitevisualiser.model.databaseparser.DefaultDatabasePar
 import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * DefaultModel is the default interface into the model
@@ -48,7 +49,7 @@ public class DefaultModel implements Model {
      * {@inheritDoc}
      */
     @Override
-    public void openDatabase(final String path, Database database) throws FileNotFoundException, InvalidFileException {
+    public void openDatabase(final String path, Database database) throws IOException, FileNotFoundException, InvalidFileException {
         database = this.databaseParser.parseDatabase(path, database);
         this.databaseInterface.clear();
         this.databaseInterface.addDatabase(database);
