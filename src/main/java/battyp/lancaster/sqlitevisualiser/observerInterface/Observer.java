@@ -22,29 +22,19 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.controller;
-
-import battyp.lancaster.sqlitevisualiser.model.Model;
+package battyp.lancaster.sqlitevisualiser.observerInterface;
 
 /**
- * Controller for visualisation.fxml
+ * General Interface for all subject, used in the observer pattern.
+ *
+ * This is used to notify objects to reload as the database has been updated.
  *
  * @author Paul Batty
  */
-public class VisualisationController extends Controller {
+public interface Observer {
 
     /**
-     * Creates a new Controller with the model set
-     *
-     * @param model The model to use
+     * Called by the Subject to notify it's observers
      */
-    public VisualisationController(Model model) {
-        super(model);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void notifyObserver() {
-    }
+    public void notifyObserver();
 }

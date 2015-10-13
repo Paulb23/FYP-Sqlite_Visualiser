@@ -41,4 +41,10 @@ public class SqlEditorController extends Controller {
     public SqlEditorController(Model model) {
         super(model);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void notifyObserver() {
+    }
 }

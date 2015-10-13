@@ -32,6 +32,6 @@
 <AnchorPane fx:id="HeaderPage" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <children>
       <TextArea editable="false" fx:id="headerTextArea" layoutX="10.0" layoutY="10.0" />
-      <Button layoutX="513.0" layoutY="228.0" onAction="#initialise" mnemonicParsing="false" text="Reload" />
+      <Button layoutX="513.0" layoutY="228.0" onAction="#reload" mnemonicParsing="false" text="Reload" />
     </children>
 </AnchorPane>

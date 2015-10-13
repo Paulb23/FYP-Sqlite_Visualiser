@@ -41,4 +41,10 @@ public class TableViewController extends Controller {
     public TableViewController(Model model) {
         super(model);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void notifyObserver() {
+    }
 }

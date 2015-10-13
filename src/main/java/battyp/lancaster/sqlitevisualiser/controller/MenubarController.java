@@ -49,6 +49,7 @@ import java.net.URL;
 public class MenubarController extends Controller {
 
     private BorderPane root;
+    private Controller currentController;
 
     /**
      * Creates a new MenubarController
@@ -59,6 +60,13 @@ public class MenubarController extends Controller {
     public MenubarController(Model model, BorderPane root) {
         super(model);
         this.root = root;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void notifyObserver() {
+        currentController.notifyObserver();
     }
 
     /**
@@ -145,6 +153,9 @@ public class MenubarController extends Controller {
             AnchorPane loadedPane = loader.load();
 
             root.setCenter(loadedPane);
+
+            this.currentController = controller;
+            notifyObserver();
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -41,4 +41,10 @@ public class LogController extends Controller {
     public LogController(Model model) {
         super(model);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void notifyObserver() {
+    }
 }

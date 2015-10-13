@@ -49,8 +49,15 @@ public class HeaderController extends Controller {
         super(model);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public void notifyObserver() {
+        reload();
+    }
+
     @FXML
-    private void initialise() {
+    private void reload() {
         if (model.isFileOpen()) {
             Metadata metadata = this.model.getDatabase().getMetadata();
             this.headerTextArea.setText(

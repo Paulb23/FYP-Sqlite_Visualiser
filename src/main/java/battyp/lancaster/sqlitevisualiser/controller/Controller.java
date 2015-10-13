@@ -25,6 +25,7 @@
 package battyp.lancaster.sqlitevisualiser.controller;
 
 import battyp.lancaster.sqlitevisualiser.model.Model;
+import battyp.lancaster.sqlitevisualiser.observerInterface.Observer;
 
 /**
  * Abstract Controller that all controllers will inherit from, injected via MenubarContoller or main
@@ -34,7 +35,7 @@ import battyp.lancaster.sqlitevisualiser.model.Model;
  *
  * @author Paul Batty
  */
-public abstract class Controller {
+public abstract class Controller implements Observer {
 
     protected Model model;
 
