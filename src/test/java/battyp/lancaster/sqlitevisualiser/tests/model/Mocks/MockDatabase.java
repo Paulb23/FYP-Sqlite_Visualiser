@@ -25,7 +25,6 @@
 package battyp.lancaster.sqlitevisualiser.tests.model.Mocks;
 
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
-import battyp.lancaster.sqlitevisualiser.model.datastructures.BTree;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
 
 /**
@@ -38,6 +37,6 @@ import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
 public class MockDatabase extends Database {
 
     public MockDatabase() {
-        super(new BTree<String>(), new Metadata());
+        super(new Metadata());
     }
 }

@@ -26,7 +26,6 @@ package battyp.lancaster.sqlitevisualiser.tests.model.databaseinterface;
 
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
 import battyp.lancaster.sqlitevisualiser.model.databaseinterface.DefaultDatabaseInterface;
-import battyp.lancaster.sqlitevisualiser.model.datastructures.BTree;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
 import org.junit.Assert;
 import org.junit.Test;
@@ -82,7 +81,7 @@ public class DefaultDatabaseInterfaceTest {
     @Test
     public void TestAddAndGetCurrentReturnsCorrectDatabase() {
         DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
-        Database database = new Database(new BTree<String>(), new Metadata());
+        Database database = new Database(new Metadata());
         databaseInterface.addDatabase(database);
         Assert.assertEquals(database, databaseInterface.getCurrent());
     }
@@ -90,7 +89,7 @@ public class DefaultDatabaseInterfaceTest {
     @Test
     public void TestAddAndGetNextReturnsNull() {
         DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
-        Database database = new Database(new BTree<String>(), new Metadata());
+        Database database = new Database(new Metadata());
         databaseInterface.addDatabase(database);
         Assert.assertEquals(null, databaseInterface.getNext());
     }
@@ -98,7 +97,7 @@ public class DefaultDatabaseInterfaceTest {
     @Test
     public void TestAddAndGetPreviousReturnsNull() {
         DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
-        Database database = new Database(new BTree<String>(), new Metadata());
+        Database database = new Database(new Metadata());
         databaseInterface.addDatabase(database);
         Assert.assertEquals(null, databaseInterface.getPrevious());
     }
@@ -106,7 +105,7 @@ public class DefaultDatabaseInterfaceTest {
     @Test
     public void TestAddAndNextStepDoesNothing() {
         DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
-        Database database = new Database(new BTree<String>(), new Metadata());
+        Database database = new Database(new Metadata());
         databaseInterface.addDatabase(database);
         databaseInterface.nextStep();
         Assert.assertEquals(database, databaseInterface.getCurrent());
@@ -115,7 +114,7 @@ public class DefaultDatabaseInterfaceTest {
     @Test
     public void TestAddAndPreviousStepDoesNothing() {
         DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
-        Database database = new Database(new BTree<String>(), new Metadata());
+        Database database = new Database(new Metadata());
         databaseInterface.addDatabase(database);
         databaseInterface.previousStep();
         Assert.assertEquals(database, databaseInterface.getCurrent());
@@ -124,8 +123,8 @@ public class DefaultDatabaseInterfaceTest {
     @Test
     public void TestNextStep() {
         DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
-        Database database = new Database(new BTree<String>(), new Metadata());
-        databaseInterface.addDatabase(new Database(new BTree<String>(), new Metadata()));
+        Database database = new Database(new Metadata());
+        databaseInterface.addDatabase(new Database(new Metadata()));
         databaseInterface.addDatabase(database);
         databaseInterface.nextStep();
         Assert.assertEquals(database, databaseInterface.getCurrent());
@@ -134,9 +133,9 @@ public class DefaultDatabaseInterfaceTest {
     @Test
     public void TestPreviousStep() {
         DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
-        Database database = new Database(new BTree<String>(), new Metadata());
+        Database database = new Database(new Metadata());
         databaseInterface.addDatabase(database);
-        databaseInterface.addDatabase(new Database(new BTree<String>(), new Metadata()));
+        databaseInterface.addDatabase(new Database(new Metadata()));
         databaseInterface.nextStep();
         databaseInterface.previousStep();
         Assert.assertEquals(database, databaseInterface.getCurrent());
@@ -145,8 +144,8 @@ public class DefaultDatabaseInterfaceTest {
     @Test
     public void TestGetNext() {
         DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
-        Database database = new Database(new BTree<String>(), new Metadata());
-        databaseInterface.addDatabase(new Database(new BTree<String>(), new Metadata()));
+        Database database = new Database(new Metadata());
+        databaseInterface.addDatabase(new Database(new Metadata()));
         databaseInterface.addDatabase(database);
         Assert.assertEquals(database, databaseInterface.getNext());
     }
@@ -154,9 +153,9 @@ public class DefaultDatabaseInterfaceTest {
     @Test
     public void TestGetPrevious() {
         DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
-        Database database = new Database(new BTree<String>(), new Metadata());
+        Database database = new Database(new Metadata());
         databaseInterface.addDatabase(database);
-        databaseInterface.addDatabase(new Database(new BTree<String>(), new Metadata()));
+        databaseInterface.addDatabase(new Database(new Metadata()));
         databaseInterface.nextStep();
         Assert.assertEquals(database, databaseInterface.getPrevious());
     }
@@ -164,7 +163,7 @@ public class DefaultDatabaseInterfaceTest {
     @Test
     public void TestClearRemovesAllDatabases() {
         DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
-        databaseInterface.addDatabase(new Database(new BTree<String>(), new Metadata()));
+        databaseInterface.addDatabase(new Database(new Metadata()));
         databaseInterface.clear();
         Assert.assertEquals(null, databaseInterface.getCurrent());
     }
@@ -172,8 +171,8 @@ public class DefaultDatabaseInterfaceTest {
     @Test
     public void TestClearResetsCurrent() {
         DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
-        databaseInterface.addDatabase(new Database(new BTree<String>(), new Metadata()));
-        databaseInterface.addDatabase(new Database(new BTree<String>(), new Metadata()));
+        databaseInterface.addDatabase(new Database(new Metadata()));
+        databaseInterface.addDatabase(new Database(new Metadata()));
         databaseInterface.nextStep();
         databaseInterface.clear();
         Assert.assertEquals(null, databaseInterface.getCurrent());

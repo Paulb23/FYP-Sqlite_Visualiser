@@ -27,7 +27,6 @@ package battyp.lancaster.sqlitevisualiser.tests.model;
 import battyp.lancaster.sqlitevisualiser.model.DefaultModel;
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
 import battyp.lancaster.sqlitevisualiser.model.databaseparser.DefaultDatabaseParser;
-import battyp.lancaster.sqlitevisualiser.model.datastructures.BTree;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
 import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
 import battyp.lancaster.sqlitevisualiser.tests.model.Mocks.MockDatabase;
@@ -71,19 +70,19 @@ public class DefaultModelTest {
     @Test
     public void TestIsFileOpenReturnsTrueWithOpenFile() throws IOException, InvalidFileException {
         DefaultModel model = new DefaultModel();
-        model.openDatabase("validDatabase", new Database(new BTree<String>(), new Metadata()));
+        model.openDatabase("validDatabase", new Database(new Metadata()));
         Assert.assertEquals(true, model.isFileOpen());
     }
 
     @Test(expected = InvalidFileException.class)
     public void TestOpenFileReturnInValidFileWhenOpeningInValidFile() throws IOException, InvalidFileException {
         DefaultModel model = new DefaultModel();
-        model.openDatabase("invalidDatabase.db", new Database(new BTree<String>(), new Metadata()));
+        model.openDatabase("invalidDatabase.db", new Database(new Metadata()));
     }
 
     @Test(expected = FileNotFoundException.class)
     public void TestOpenFileReturnFileNotFoundWhenOpeningInValidPath() throws IOException, InvalidFileException {
         DefaultModel model = new DefaultModel();
-        model.openDatabase("sadasda.db", new Database(new BTree<String>(), new Metadata()));
+        model.openDatabase("sadasda.db", new Database(new Metadata()));
     }
 }

@@ -75,14 +75,14 @@ public class BTreeNodeTest {
     @Test
     public void TestAddChildAndGetChildCount() {
         BTreeNode<String> node = new BTreeNode<>(null);
-        node.addChild(new BTreeNode(null));
+        node.addChild(new BTreeNode<>(null));
         Assert.assertEquals(node.getNumberOfChildren(), 1);
     }
 
     @Test
     public void TestAddChildAndHasChildrenIsTrue() {
         BTreeNode<String> node = new BTreeNode<>(null);
-        node.addChild(new BTreeNode(null));
+        node.addChild(new BTreeNode<>(null));
         Assert.assertEquals(node.hasChildren(), true);
     }
 
@@ -112,7 +112,7 @@ public class BTreeNodeTest {
     @Test
     public void TestAddAndGetChildren() {
         BTreeNode<String> node = new BTreeNode<>(null);
-        BTreeNode child = new BTreeNode<String>(null);
+        BTreeNode<String> child = new BTreeNode<>(null);
         node.addChild(child);
         Assert.assertEquals(node.getChildren().size(), 1);
         Assert.assertEquals(node.getChildren().get(0), child);
@@ -121,7 +121,7 @@ public class BTreeNodeTest {
     @Test
     public void TestAddAndRemoveChildAt() {
         BTreeNode<String> node = new BTreeNode<>(null);
-        node.addChildAt(0, new BTreeNode(null));
+        node.addChildAt(0, new BTreeNode<>(null));
         node.removeChildAt(0);
         Assert.assertEquals(node.hasChildren(), false);
     }
@@ -129,7 +129,7 @@ public class BTreeNodeTest {
     @Test
     public void TestAddAndRemoveChildByObject() {
         BTreeNode<String> node = new BTreeNode<>(null);
-        BTreeNode child = new BTreeNode<String>(null);
+        BTreeNode<String> child = new BTreeNode<>(null);
         node.addChild(child);
         node.removeChild(child);
         Assert.assertEquals(node.hasChildren(), false);
@@ -150,7 +150,7 @@ public class BTreeNodeTest {
     @Test
     public void TestRemoveChildrenRemovesAllChildren() {
         BTreeNode<String> node = new BTreeNode<>(null);
-        node.addChild(new BTreeNode(null));
+        node.addChild(new BTreeNode<>(null));
         node.removeChildren();
         Assert.assertEquals(node.hasChildren(), false);
     }
@@ -158,7 +158,7 @@ public class BTreeNodeTest {
     @Test(expected = java.lang.IndexOutOfBoundsException.class)
     public void TestAddChildAtThrowsOutOfBoundsException() {
         BTreeNode<String> node = new BTreeNode<>(null);
-        node.addChildAt(10, new BTreeNode(null));
+        node.addChildAt(10, new BTreeNode<>(null));
     }
 
     @Test(expected = java.lang.IndexOutOfBoundsException.class)
@@ -170,7 +170,7 @@ public class BTreeNodeTest {
     @Test
     public void TestAddChildHasCorrectParent() {
         BTreeNode<String> node = new BTreeNode<>(null);
-        node.addChild(new BTreeNode(null));
+        node.addChild(new BTreeNode<>(null));
         BTreeNode<String> child = node.getChildren().get(0);
         Assert.assertEquals(child.getParent(), node);
     }
@@ -178,7 +178,7 @@ public class BTreeNodeTest {
     @Test
     public void TestAddChildAtHasCorrectParent() {
         BTreeNode<String> node = new BTreeNode<>(null);
-        node.addChildAt(0, new BTreeNode(null));
+        node.addChildAt(0, new BTreeNode<>(null));
         BTreeNode<String> child = node.getChildren().get(0);
         Assert.assertEquals(child.getParent(), node);
     }

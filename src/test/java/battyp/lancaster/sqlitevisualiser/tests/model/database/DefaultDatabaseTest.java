@@ -40,16 +40,23 @@ import org.junit.Test;
 public class DefaultDatabaseTest {
 
     @Test
-    public void TestGetBTree() {
+    public void TestGetBTreeIsEmptyListOnCreation() {
+        Database database = new Database(new Metadata());
+        Assert.assertEquals(0, database.getBTree().size());
+    }
+
+    @Test
+    public void TestAddAndGetBtree() {
         BTree<String> tree = new BTree<>();
-        Database database = new Database(tree, new Metadata());
-        Assert.assertEquals(tree, database.getBTree());
+        Database database = new Database(new Metadata());
+        database.addBTree(tree);
+        Assert.assertEquals(tree, database.getBTree().get(0));
     }
 
     @Test
     public void TestGetMetadata() {
         Metadata metadata = new Metadata();
-        Database database = new Database(new BTree<String>(), metadata);
+        Database database = new Database(metadata);
         Assert.assertEquals(metadata, database.getMetadata());
     }
 }
