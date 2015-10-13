@@ -62,6 +62,14 @@ public class MenubarController extends Controller {
     }
 
     /**
+     * Quits the program
+     */
+    @FXML
+    private void exit() {
+       System.exit(0);
+    }
+
+    /**
      * switches the center pane to the header view
      */
     @FXML
