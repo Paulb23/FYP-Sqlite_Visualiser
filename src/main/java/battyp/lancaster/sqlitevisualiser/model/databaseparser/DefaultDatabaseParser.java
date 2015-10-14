@@ -56,40 +56,96 @@ public class DefaultDatabaseParser implements DatabaseParser {
     @Override
     public Database parseDatabase(String pathToDatabase, Database database) throws IOException, FileNotFoundException, InvalidFileException {
 
+        File file = openDatabase(pathToDatabase);
+        RandomAccessFile in = new RandomAccessFile(file, "r");
+
+        checkMagicNumber(in);
+        readSqliteHeader(in, database.getMetadata());
+        readBTrees(in, database);
+
+        in.close();
+        return database;
+    }
+
+    /**
+     * Opens the database file
+     *
+     * @param pathToDatabase Path to the database including file name and extension
+     *
+     * @return The file
+     * @throws FileNotFoundException
+     */
+    private File openDatabase(String pathToDatabase) throws FileNotFoundException {
         /**
          * Try to load from resources if fails then convert to
          * URI --> URL
          */
-        URL file = getClass().getClassLoader().getResource(pathToDatabase);
-        if (file == null) {
+        URL fileURL = getClass().getClassLoader().getResource(pathToDatabase);
+        if (fileURL == null) {
             try {
-                file = new File(pathToDatabase).toURI().toURL();
+                fileURL = new File(pathToDatabase).toURI().toURL();
 
-                if (file == null) {
-                    throw new FileNotFoundException();
-                }
             } catch (MalformedURLException e) {
                 throw new FileNotFoundException();
             }
         }
 
-        // open the file
-        File f;
+        File file;
         try {
-            f = new File(file.toURI());
+            file = new File(fileURL.toURI());
         } catch (URISyntaxException e) {
-            f = new File(file.getPath());
+            file = new File(fileURL.getPath());
         }
-        RandomAccessFile in = new RandomAccessFile(f, "r");
+        return file;
+    }
 
-        // parse the database
-        checkMagicNumber(in);
-        readSqliteHeader(in, database.getMetadata());
-        readBTree(in, database);
+    /**
+     * Checks the input stream against the magic number
+     *
+     * @param in The InputStream
+     * @throws InvalidFileException Invalid magic number
+     */
+    private void checkMagicNumber(RandomAccessFile in) throws InvalidFileException {
+        try {
+            for (int i = 0; i < MAGIC_NUMBER_LENGTH; i++) {
+                if (in.read() != MAGIC_NUMBER[i]) {
+                    throw new InvalidFileException();
+                }
+            }
+        } catch (IOException e) {
+            throw new InvalidFileException();
+        }
+    }
 
-        // close and return
-        in.close();
-        return database;
+    /**
+     * Reads the first 100 byte header in the database
+     *
+     * @param in The InputStream
+     * @param metadata the metadata object to store to
+     */
+    private void readSqliteHeader(RandomAccessFile in, Metadata metadata) throws IOException, InvalidFileException {
+        metadata.pageSize = in.readShort();
+        metadata.writeVersion = in.readByte();
+        metadata.readVersion = in.readByte();
+        metadata.unusedSpaceAtEndOfEachPage = in.readByte();
+        metadata.maxEmbeddedPayload = in.readByte();
+        metadata.minEmbeddedPayload = in.readByte();
+        metadata.leafPayloadFraction = in.readByte();
+        metadata.fileChageCounter = in.readInt();
+        metadata.sizeOfDatabaseInPages = in.readInt();
+        metadata.pageNumberOfFirstFreelistPage = in.readInt();
+        metadata.totalFreeListPages = in.readInt();
+        metadata.schemaCookie = in.readInt();
+        metadata.schemaFormat = in.readInt();
+        metadata.defualtPageCacheSize = in.readInt();
+        metadata.pageNumberToLargestBTreePage = in.readInt();
+        metadata.textEncoding = in.readInt();
+        metadata.userVersion = in.readInt();
+        metadata.vacuummMode = in.readInt();
+        metadata.appID = in.readInt();
+        in.skipBytes(20);
+        metadata.versionValidNumber = in.readInt();
+        metadata.sqliteVersion = in.readInt();
     }
 
     /**
@@ -99,7 +155,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
      * @param database The tree to store in
      * @throws InvalidFileException
      */
-    private void readBTree(RandomAccessFile in, Database database) throws  IOException, InvalidFileException {
+    private void readBTrees(RandomAccessFile in, Database database) throws  IOException, InvalidFileException {
 
         // read b-tree header
         int type = in.readByte();
@@ -132,11 +188,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
                 }
                 break;
                 case TABLE_BTREE_INTERIOR_CELL: {
-                    System.out.println(in.readInt());
-                    byte[] varint = new byte[1];
-                    in.read(varint);
-                    int a = (varint[0] >> 1) & 1;
-                    System.out.println(a);
+
                 }
                 break;
                 case INDEX_BTREE_LEAF_CELL: {
@@ -148,54 +200,6 @@ public class DefaultDatabaseParser implements DatabaseParser {
                 }
                 break;
             }
-        }
-    }
-
-    /**
-     * Reads the first 100 byte header in the database
-     * @param in The InputStream
-     * @param metadata the metadata object to store to
-     */
-    private void readSqliteHeader(RandomAccessFile in, Metadata metadata) throws IOException, InvalidFileException {
-        metadata.pageSize = in.readShort();
-        metadata.writeVersion = in.readByte();
-        metadata.readVersion = in.readByte();
-        metadata.unusedSpaceAtEndOfEachPage = in.readByte();
-        metadata.maxEmbeddedPayload = in.readByte();
-        metadata.minEmbeddedPayload = in.readByte();
-        metadata.leafPayloadFraction = in.readByte();
-        metadata.fileChageCounter = in.readInt();
-        metadata.sizeOfDatabaseInPages = in.readInt();
-        metadata.pageNumberOfFirstFreelistPage = in.readInt();
-        metadata.totalFreeListPages = in.readInt();
-        metadata.schemaCookie = in.readInt();
-        metadata.schemaFormat = in.readInt();
-        metadata.defualtPageCacheSize = in.readInt();
-        metadata.pageNumberToLargestBTreePage = in.readInt();
-        metadata.textEncoding = in.readInt();
-        metadata.userVersion = in.readInt();
-        metadata.vacuummMode = in.readInt();
-        metadata.appID = in.readInt();
-        in.skipBytes(20);
-        metadata.versionValidNumber = in.readInt();
-        metadata.sqliteVersion = in.readInt();
-    }
-
-    /**
-     * Checks the input stream against the magic number
-     *
-     * @param in The InputStream
-     * @throws InvalidFileException Invalid magic number
-     */
-    private void checkMagicNumber(RandomAccessFile in) throws InvalidFileException {
-        try {
-            for (int i = 0; i < MAGIC_NUMBER_LENGTH; i++) {
-                if (in.read() != MAGIC_NUMBER[i]) {
-                    throw new InvalidFileException();
-                }
-            }
-        } catch (IOException e) {
-            throw new InvalidFileException();
         }
     }
 }
