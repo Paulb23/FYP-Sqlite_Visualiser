@@ -28,9 +28,6 @@ import battyp.lancaster.sqlitevisualiser.model.databaseparser.DatabaseParser;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTree;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Database is the interface that all database storage will extend.
  * This class is filled with data via the {@link DatabaseParser databaseparser}
@@ -40,7 +37,7 @@ import java.util.List;
  */
 public class Database {
 
-    private final ArrayList<BTree> btree;
+    private final BTree btree;
     private final Metadata metadata;
 
     /**
@@ -48,8 +45,8 @@ public class Database {
      *
      * @param metadata The metadata object
      */
-    public Database(Metadata metadata) {
-        this.btree = new ArrayList<>();
+    public Database(BTree btree,Metadata metadata) {
+        this.btree = btree;
         this.metadata = metadata;
     }
 
@@ -58,17 +55,8 @@ public class Database {
      *
      * @return The btree array of BTrees representing the database
      */
-    public List<BTree> getBTree() {
+    public BTree getBTree() {
         return this.btree;
-    }
-
-    /**
-     * Adds a btree to the array
-     *
-     * @param btree Btree to add
-     */
-    public void addBTree(BTree btree) {
-        this.btree.add(btree);
     }
 
     /**

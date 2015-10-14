@@ -26,6 +26,7 @@ package battyp.lancaster.sqlitevisualiser.tests.model.databaseparser;
 
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
 import battyp.lancaster.sqlitevisualiser.model.databaseparser.DefaultDatabaseParser;
+import battyp.lancaster.sqlitevisualiser.model.datastructures.BTree;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
 import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
 import org.junit.BeforeClass;
@@ -45,7 +46,7 @@ public class DefaultDatabaceParserTestDatabaseTest {
 
     @BeforeClass
     public static void setUp() throws IOException, InvalidFileException {
-        database = new Database(new Metadata());
+        database = new Database(new BTree(), new Metadata());
         new DefaultDatabaseParser().parseDatabase("testDatabase", database);
     }
 }

@@ -41,6 +41,12 @@ import java.util.ArrayList;
 public class BTreeNodeTest {
 
     @Test
+    public void TestDataisNullOnCreation() {
+        BTreeNode node = new BTreeNode();
+        Assert.assertEquals(null, node.getData());
+    }
+
+    @Test
     public void TestDataIsCorrectOnCreation() {
         BTreeNode node = new BTreeNode<>("Test data");
         Assert.assertEquals(node.getData(), "Test data");

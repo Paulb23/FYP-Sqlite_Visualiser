@@ -26,6 +26,7 @@ package battyp.lancaster.sqlitevisualiser.model.databaseparser;
 
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTree;
+import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeNode;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
 import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
 
@@ -159,22 +160,15 @@ public class DefaultDatabaseParser implements DatabaseParser {
      */
     private void readBTrees(RandomAccessFile in, Database database) throws  IOException, InvalidFileException {
 
-        // read the btree in the already existing page
-        database.addBTree(parseBtree(in));
+        BTreeNode root = parseBtree(in);
 
-        int pages = database.getMetadata().sizeOfDatabaseInPages;
-        int pageSize = database.getMetadata().pageSize;
-        /*
-         * Start at 1 to skip the header, and the b-tree already read above
-         */
-        for (int i = 1; i < pages; i ++) {
-            in.seek(pageSize * i);
-            database.addBTree(parseBtree(in));
-        }
+        
+
+        database.getBTree().setRoot(root);
     }
 
-    public BTree parseBtree(RandomAccessFile in) throws IOException, InvalidFileException {
-        BTree tree = new BTree();
+    public BTreeNode parseBtree(RandomAccessFile in) throws IOException, InvalidFileException {
+        BTreeNode<String> node = new BTreeNode();
 
         // read b-tree header
         int type = in.readByte();
@@ -199,7 +193,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
         // follow pointer and get b-tree
         for (int i = 0; i < numberOfCells; i++) {
             if (cellPointers[i] == 0) {
-                return tree;
+                return node;
             }
 
             in.seek(cellPointers[i]);
@@ -231,7 +225,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
             }
         }
 
-        return tree;
+        return node;
     }
 
     /**

@@ -50,6 +50,14 @@ public class BTreeNode<T> {
     }
 
     /**
+     * Creates a new BTreeNode with data as null
+     */
+    public BTreeNode() {
+        this.children = new ArrayList<>();
+        this.parent = this;
+    }
+
+    /**
      * Gets this nodes parent
      *
      * @return This nodes parent

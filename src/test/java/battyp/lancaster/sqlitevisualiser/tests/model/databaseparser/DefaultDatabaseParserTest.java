@@ -26,6 +26,7 @@ package battyp.lancaster.sqlitevisualiser.tests.model.databaseparser;
 
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
 import battyp.lancaster.sqlitevisualiser.model.databaseparser.DefaultDatabaseParser;
+import battyp.lancaster.sqlitevisualiser.model.datastructures.BTree;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
 import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
 import org.junit.Assert;
@@ -45,25 +46,25 @@ public class DefaultDatabaseParserTest {
     @Test(expected = java.io.FileNotFoundException.class)
     public void TestFileNotFound() throws IOException, InvalidFileException {
         DefaultDatabaseParser parser = new DefaultDatabaseParser();
-        parser.parseDatabase("fake/file.txt", new Database(new Metadata()));
+        parser.parseDatabase("fake/file.txt", new Database(new BTree(), new Metadata()));
     }
 
     @Test(expected = InvalidFileException.class)
     public void TestOpenInvalidFile() throws IOException, InvalidFileException {
         DefaultDatabaseParser parser = new DefaultDatabaseParser();
-        parser.parseDatabase("invalidDatabase.db", new Database(new Metadata()));
+        parser.parseDatabase("invalidDatabase.db", new Database(new BTree(), new Metadata()));
     }
 
     @Test
     public void TestOpenValidDatabase() throws IOException, InvalidFileException {
         DefaultDatabaseParser parser = new DefaultDatabaseParser();
-        parser.parseDatabase("validDatabase", new Database(new Metadata()));
+        parser.parseDatabase("validDatabase", new Database(new BTree(), new Metadata()));
     }
 
     @Test
     public void TestParsingMetaData() throws IOException, InvalidFileException {
         DefaultDatabaseParser parser = new DefaultDatabaseParser();
-        Database database = new Database(new Metadata());
+        Database database = new Database(new BTree(), new Metadata());
         parser.parseDatabase("validDatabase", database);
 
         Metadata metadata = database.getMetadata();
