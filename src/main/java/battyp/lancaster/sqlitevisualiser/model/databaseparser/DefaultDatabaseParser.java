@@ -25,9 +25,7 @@
 package battyp.lancaster.sqlitevisualiser.model.databaseparser;
 
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
-import battyp.lancaster.sqlitevisualiser.model.datastructures.BTree;
-import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeNode;
-import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
+import battyp.lancaster.sqlitevisualiser.model.datastructures.*;
 import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
 
 import java.io.*;
@@ -44,14 +42,6 @@ import java.nio.ByteBuffer;
  * @author Paul Batty
  */
 public class DefaultDatabaseParser implements DatabaseParser {
-
-    private static final int MAGIC_NUMBER_LENGTH = 16;
-    private static final int MAGIC_NUMBER[] = new int[] {0x53, 0x51, 0x4c, 0x69, 0x74, 0x65, 0x20, 0x66, 0x6f, 0x72, 0x6d, 0x61, 0x74, 0x20, 0x33, 0x00};
-
-    private static final int TABLE_BTREE_LEAF_CELL = 0x0d;
-    private static final int TABLE_BTREE_INTERIOR_CELL = 0x05;
-    private static final int INDEX_BTREE_LEAF_CELL = 0x0a;
-    private static final int INDEX_BTREE_INTERIOR_CELL = 0x02;
 
     /**
      * {@inheritDoc}
@@ -110,8 +100,8 @@ public class DefaultDatabaseParser implements DatabaseParser {
      */
     private void checkMagicNumber(RandomAccessFile in) throws InvalidFileException {
         try {
-            for (int i = 0; i < MAGIC_NUMBER_LENGTH; i++) {
-                if (in.read() != MAGIC_NUMBER[i]) {
+            for (int i = 0; i < SqliteConstants.MAGIC_NUMBER_LENGTH; i++) {
+                if (in.read() != SqliteConstants.MAGIC_NUMBER[i]) {
                     throw new InvalidFileException();
                 }
             }
@@ -162,13 +152,13 @@ public class DefaultDatabaseParser implements DatabaseParser {
 
         BTreeNode root = parseBtree(in);
 
-        
+
 
         database.getBTree().setRoot(root);
     }
 
     public BTreeNode parseBtree(RandomAccessFile in) throws IOException, InvalidFileException {
-        BTreeNode<String> node = new BTreeNode();
+        BTreeNode<BTreeCell> node = new BTreeNode();
 
         // read b-tree header
         int type = in.readByte();
@@ -180,11 +170,12 @@ public class DefaultDatabaseParser implements DatabaseParser {
         }
         int fagmentedFreeBytes = in.readByte();
 
-        if (type == INDEX_BTREE_INTERIOR_CELL || type == INDEX_BTREE_LEAF_CELL) {
+        if (type == SqliteConstants.INDEX_BTREE_INTERIOR_CELL || type == SqliteConstants.INDEX_BTREE_LEAF_CELL) {
             int rightMostPointer = in.readInt();
         }
 
-        // get pointer array
+        BTreeCell cell = new BTreeCell(type);
+
         int[] cellPointers = new int[numberOfCells];
         for (int i = 0; i < numberOfCells; i++) {
             cellPointers[i] = in.readShort();
@@ -200,31 +191,32 @@ public class DefaultDatabaseParser implements DatabaseParser {
 
             // parse that type of b-tree
             switch (type) {
-                case TABLE_BTREE_LEAF_CELL: {
+                case SqliteConstants.TABLE_BTREE_LEAF_CELL: {
                     // varint
                     // varint
                     // payload
                     // overflow pages
                 }
                 break;
-                case TABLE_BTREE_INTERIOR_CELL: {
+                case SqliteConstants.TABLE_BTREE_INTERIOR_CELL: {
                     int leftChildPointer = in.readInt();
                     byte[] varint = new byte[1];
                     in.read(varint);
                     long rowID = decodeVarint(in);
                 }
                 break;
-                case INDEX_BTREE_LEAF_CELL: {
+                case SqliteConstants.INDEX_BTREE_LEAF_CELL: {
 
                 }
                 break;
-                case INDEX_BTREE_INTERIOR_CELL: {
+                case SqliteConstants.INDEX_BTREE_INTERIOR_CELL: {
 
                 }
                 break;
             }
         }
 
+        node.setData(cell);
         return node;
     }
 
