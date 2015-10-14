@@ -25,6 +25,7 @@
 package battyp.lancaster.sqlitevisualiser.model.databaseparser;
 
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
+import battyp.lancaster.sqlitevisualiser.model.datastructures.BTree;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
 import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
 
@@ -32,6 +33,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.ByteBuffer;
 
 /**
  * DefaultDatabaseParser is a database parser for Sqlite databases
@@ -157,6 +159,23 @@ public class DefaultDatabaseParser implements DatabaseParser {
      */
     private void readBTrees(RandomAccessFile in, Database database) throws  IOException, InvalidFileException {
 
+        // read the btree in the already existing page
+        database.addBTree(parseBtree(in));
+
+        int pages = database.getMetadata().sizeOfDatabaseInPages;
+        int pageSize = database.getMetadata().pageSize;
+        /*
+         * Start at 1 to skip the header, and the b-tree already read above
+         */
+        for (int i = 1; i < pages; i ++) {
+            in.seek(pageSize * i);
+            database.addBTree(parseBtree(in));
+        }
+    }
+
+    public BTree parseBtree(RandomAccessFile in) throws IOException, InvalidFileException {
+        BTree tree = new BTree();
+
         // read b-tree header
         int type = in.readByte();
         int firstFreeBlockOffset = in.readShort();
@@ -166,7 +185,11 @@ public class DefaultDatabaseParser implements DatabaseParser {
             startOfCell = 65536;
         }
         int fagmentedFreeBytes = in.readByte();
-        int rightMostPointer = in.readInt();
+
+        if (type == INDEX_BTREE_INTERIOR_CELL || type == INDEX_BTREE_LEAF_CELL) {
+            int rightMostPointer = in.readInt();
+        }
+
         // get pointer array
         int[] cellPointers = new int[numberOfCells];
         for (int i = 0; i < numberOfCells; i++) {
@@ -176,7 +199,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
         // follow pointer and get b-tree
         for (int i = 0; i < numberOfCells; i++) {
             if (cellPointers[i] == 0) {
-                return;
+                return tree;
             }
 
             in.seek(cellPointers[i]);
@@ -184,11 +207,17 @@ public class DefaultDatabaseParser implements DatabaseParser {
             // parse that type of b-tree
             switch (type) {
                 case TABLE_BTREE_LEAF_CELL: {
-
+                    // varint
+                    // varint
+                    // payload
+                    // overflow pages
                 }
                 break;
                 case TABLE_BTREE_INTERIOR_CELL: {
-
+                    int leftChildPointer = in.readInt();
+                    byte[] varint = new byte[1];
+                    in.read(varint);
+                    long rowID = decodeVarint(in);
                 }
                 break;
                 case INDEX_BTREE_LEAF_CELL: {
@@ -201,5 +230,35 @@ public class DefaultDatabaseParser implements DatabaseParser {
                 break;
             }
         }
+
+        return tree;
+    }
+
+    /**
+     * Decodes the varint variable type
+     *
+     * @param in The input stream to read the varint from
+     * @return
+     */
+    private long decodeVarint(RandomAccessFile in) throws IOException {
+        long value = 0;
+        byte[] varint = new byte[9];
+        int i;
+        for (i = 0; i < 9; i++) {
+            varint[i] = in.readByte();
+            if (((varint[i] >> 7) & 1) == 0) {
+                break;
+            }
+        }
+
+        if (i == 0) {
+            value = varint[0];
+        } else {
+            for (int j = 0; j < i; j++) {
+                varint[j] = (byte)(varint[j] << 1);
+            }
+            value = ByteBuffer.wrap(varint).getLong();
+        }
+        return value;
     }
 }
