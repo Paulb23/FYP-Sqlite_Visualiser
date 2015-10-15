@@ -176,7 +176,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
         }
         int fagmentedFreeBytes = in.readByte();
 
-        if (type == SqliteConstants.INDEX_BTREE_INTERIOR_CELL || type == SqliteConstants.INDEX_BTREE_LEAF_CELL) {
+        if (type == SqliteConstants.INDEX_BTREE_INTERIOR_CELL || type == SqliteConstants.TABLE_BTREE_INTERIOR_CELL) {
             int rightMostPointer = in.readInt();
         }
 
