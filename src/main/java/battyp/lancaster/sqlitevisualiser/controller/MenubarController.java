@@ -27,6 +27,7 @@ package battyp.lancaster.sqlitevisualiser.controller;
 import battyp.lancaster.sqlitevisualiser.model.Model;
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTree;
+import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
 import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
 import javafx.fxml.FXML;
@@ -37,7 +38,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 
 import java.io.IOException;
-import java.net.URL;
 
 /**
  * Controller for menubar.fxml view, injected via start
@@ -127,7 +127,7 @@ public class MenubarController extends Controller {
             fileChooser.setTitle("Open Database");
             String path = fileChooser.showOpenDialog(null).getCanonicalPath();
 
-            this.model.openDatabase(path, new Database(new BTree<String>(), new Metadata()));
+            this.model.openDatabase(path, new Database(new BTree<BTreeCell>(), new Metadata()));
             notifyObserver();
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);

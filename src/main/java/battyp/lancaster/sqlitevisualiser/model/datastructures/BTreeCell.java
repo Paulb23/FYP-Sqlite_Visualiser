@@ -39,11 +39,47 @@ public class BTreeCell {
     public final int CellType;
 
     /**
+     *
+     */
+    public final int cellCount;
+
+    /**
+     * The page numbers
+     */
+    public int[] leftChildPointers;
+
+    /**
+     * Payload size
+     */
+    public long[] payLoadSize;
+
+    /**
+     * The row ids
+     */
+    public long[] rowId;
+
+    /**
+     * Preview data
+     */
+    public String[] previewData;
+
+    /**
+     * Overflow page numbers
+     */
+    public int[] overflowPageNumbers;
+
+    /**
      * Creates a new Btree Cell
      *
      * @param cellType type of cell
      */
-    public BTreeCell(int cellType) {
-        CellType = cellType;
+    public BTreeCell(int cellType, int cellCount) {
+        this.CellType = cellType;
+        this.cellCount = cellCount;
+        this.leftChildPointers = new int[cellCount];
+        this.rowId = new long[cellCount];
+        this.payLoadSize = new long[cellCount];
+        this.previewData = new String[cellCount];
+        this.overflowPageNumbers = new int[cellCount];
     }
 }

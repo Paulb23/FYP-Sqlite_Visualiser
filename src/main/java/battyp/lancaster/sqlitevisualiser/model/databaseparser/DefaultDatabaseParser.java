@@ -150,14 +150,20 @@ public class DefaultDatabaseParser implements DatabaseParser {
      */
     private void readBTrees(RandomAccessFile in, Database database) throws  IOException, InvalidFileException {
 
-        BTreeNode root = parseBtree(in);
-
-
+        BTreeNode<BTreeCell> root = parseBtree(in);
 
         database.getBTree().setRoot(root);
     }
 
-    public BTreeNode parseBtree(RandomAccessFile in) throws IOException, InvalidFileException {
+    /**
+     * Parses the btree page
+     *
+     * @param in The input stream
+     * @return  BtreeNode with the cell data
+     * @throws IOException
+     * @throws InvalidFileException
+     */
+    public BTreeNode<BTreeCell> parseBtree(RandomAccessFile in) throws IOException, InvalidFileException {
         BTreeNode<BTreeCell> node = new BTreeNode();
 
         // read b-tree header
@@ -174,7 +180,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
             int rightMostPointer = in.readInt();
         }
 
-        BTreeCell cell = new BTreeCell(type);
+        BTreeCell cell = new BTreeCell(type, numberOfCells);
 
         int[] cellPointers = new int[numberOfCells];
         for (int i = 0; i < numberOfCells; i++) {
@@ -183,34 +189,33 @@ public class DefaultDatabaseParser implements DatabaseParser {
 
         // follow pointer and get b-tree
         for (int i = 0; i < numberOfCells; i++) {
-            if (cellPointers[i] == 0) {
-                return node;
-            }
-
             in.seek(cellPointers[i]);
 
             // parse that type of b-tree
             switch (type) {
                 case SqliteConstants.TABLE_BTREE_LEAF_CELL: {
-                    // varint
-                    // varint
-                    // payload
-                    // overflow pages
+                    cell.payLoadSize[i] = decodeVarint(in);
+                    cell.rowId[i] = decodeVarint(in);
+                   // cell.previewData[i] = in.readUTF();
+                   // cell.overflowPageNumbers[i] = in.readInt();
                 }
                 break;
                 case SqliteConstants.TABLE_BTREE_INTERIOR_CELL: {
-                    int leftChildPointer = in.readInt();
-                    byte[] varint = new byte[1];
-                    in.read(varint);
-                    long rowID = decodeVarint(in);
+                    cell.leftChildPointers[i] = in.readInt();
+                    cell.rowId[i] = decodeVarint(in);
                 }
                 break;
                 case SqliteConstants.INDEX_BTREE_LEAF_CELL: {
-
+                    cell.payLoadSize[i] = decodeVarint(in);
+                  //  cell.previewData[i] = in.readUTF();
+                  //  cell.overflowPageNumbers[i] = in.readInt();
                 }
                 break;
                 case SqliteConstants.INDEX_BTREE_INTERIOR_CELL: {
-
+                    cell.leftChildPointers[i] = in.readInt();
+                    cell.payLoadSize[i] = decodeVarint(in);
+                    //cell.previewData[i] = in.readUTF();
+                    //cell.overflowPageNumbers[i] = in.readInt();
                 }
                 break;
             }
@@ -224,7 +229,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
      * Decodes the varint variable type
      *
      * @param in The input stream to read the varint from
-     * @return
+     * @return long value of the varint
      */
     private long decodeVarint(RandomAccessFile in) throws IOException {
         long value = 0;
