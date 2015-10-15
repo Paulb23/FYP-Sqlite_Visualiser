@@ -203,6 +203,8 @@ public class DefaultDatabaseParser implements DatabaseParser {
                 case SqliteConstants.TABLE_BTREE_INTERIOR_CELL: {
                     cell.leftChildPointers[i] = in.readInt();
                     cell.rowId[i] = decodeVarint(in);
+                    in.seek(cell.rowId[i] * 1024);
+                    node.addChild(parseBtree(in));
                 }
                 break;
                 case SqliteConstants.INDEX_BTREE_LEAF_CELL: {
