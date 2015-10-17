@@ -150,7 +150,8 @@ public class DefaultDatabaseParser implements DatabaseParser {
      */
     private void readBTrees(RandomAccessFile in, Database database) throws  IOException, InvalidFileException {
 
-        BTreeNode<BTreeCell> root = parseBtree(in);
+        int pageSize = database.getMetadata().pageSize;
+        BTreeNode<BTreeCell> root = parseBtree(in, 0, pageSize);
 
         database.getBTree().setRoot(root);
     }
@@ -159,12 +160,15 @@ public class DefaultDatabaseParser implements DatabaseParser {
      * Parses the btree page
      *
      * @param in The input stream
+     * @param pageNumber The page number we are on
+     * @param pageSize The page size
      * @return  BtreeNode with the cell data
      * @throws IOException
      * @throws InvalidFileException
      */
-    public BTreeNode<BTreeCell> parseBtree(RandomAccessFile in) throws IOException, InvalidFileException {
+    public BTreeNode<BTreeCell> parseBtree(RandomAccessFile in, long pageNumber, long pageSize) throws IOException, InvalidFileException {
         BTreeNode<BTreeCell> node = new BTreeNode();
+        long pageOffset = pageNumber * pageSize;
 
         // read b-tree header
         int type = in.readByte();
@@ -182,9 +186,10 @@ public class DefaultDatabaseParser implements DatabaseParser {
 
         BTreeCell cell = new BTreeCell(type, numberOfCells);
 
-        int[] cellPointers = new int[numberOfCells];
+        long[] cellPointers = new long[numberOfCells];
         for (int i = 0; i < numberOfCells; i++) {
-            cellPointers[i] = in.readShort();
+            cellPointers[i] = in.readShort() + pageOffset;
+            System.out.println(cellPointers[i]);
         }
 
         // follow pointer and get b-tree
@@ -204,7 +209,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
                     cell.leftChildPointers[i] = in.readInt();
                     cell.rowId[i] = decodeVarint(in);
                     in.seek(cell.rowId[i] * 1024);
-                    node.addChild(parseBtree(in));
+                    node.addChild(parseBtree(in, cell.rowId[i] - 1, pageSize));
                 }
                 break;
                 case SqliteConstants.INDEX_BTREE_LEAF_CELL: {
