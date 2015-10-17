@@ -151,7 +151,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
     private void readBTrees(RandomAccessFile in, Database database) throws  IOException, InvalidFileException {
 
         int pageSize = database.getMetadata().pageSize;
-        BTreeNode<BTreeCell> root = parseBtree(in, 0, pageSize);
+        BTreeNode<BTreeCell> root = parseBtree(in, 1, pageSize);
 
         database.getBTree().setRoot(root);
     }
@@ -168,7 +168,13 @@ public class DefaultDatabaseParser implements DatabaseParser {
      */
     public BTreeNode<BTreeCell> parseBtree(RandomAccessFile in, long pageNumber, long pageSize) throws IOException, InvalidFileException {
         BTreeNode<BTreeCell> node = new BTreeNode();
-        long pageOffset = pageNumber * pageSize;
+        long realPageNumber = pageNumber - 1;
+        long pageOffset = realPageNumber * pageSize;
+        if (realPageNumber == 0) {
+         //   in.seek(SqliteConstants.HEADER_SIZE);
+        } else {
+            in.seek(realPageNumber);
+        }
 
         // read b-tree header
         int type = in.readByte();
@@ -189,7 +195,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
         long[] cellPointers = new long[numberOfCells];
         for (int i = 0; i < numberOfCells; i++) {
             cellPointers[i] = in.readShort() + pageOffset;
-            System.out.println(cellPointers[i]);
+         //   System.out.println(cellPointers[i]);
         }
 
         // follow pointer and get b-tree
@@ -208,8 +214,8 @@ public class DefaultDatabaseParser implements DatabaseParser {
                 case SqliteConstants.TABLE_BTREE_INTERIOR_CELL: {
                     cell.leftChildPointers[i] = in.readInt();
                     cell.rowId[i] = decodeVarint(in);
-                    in.seek(cell.rowId[i] * 1024);
-                    node.addChild(parseBtree(in, cell.rowId[i] - 1, pageSize));
+                    System.out.println(cell.rowId[i]);
+                    node.addChild(parseBtree(in, cell.leftChildPointers[i], pageSize));
                 }
                 break;
                 case SqliteConstants.INDEX_BTREE_LEAF_CELL: {

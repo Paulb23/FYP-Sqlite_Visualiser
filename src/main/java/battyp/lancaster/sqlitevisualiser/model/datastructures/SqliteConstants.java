@@ -32,6 +32,11 @@ package battyp.lancaster.sqlitevisualiser.model.datastructures;
 public class SqliteConstants {
 
     /**
+     *  Size of the header
+     */
+    public static final int HEADER_SIZE = 100;
+
+    /**
      * Length of the magic number
      */
     public static final int MAGIC_NUMBER_LENGTH = 16;
