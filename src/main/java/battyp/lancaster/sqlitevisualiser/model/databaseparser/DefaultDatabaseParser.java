@@ -173,7 +173,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
         if (realPageNumber == 0) {
          //   in.seek(SqliteConstants.HEADER_SIZE);
         } else {
-            in.seek(realPageNumber);
+            in.seek(pageOffset);
         }
 
         // read b-tree header
@@ -195,7 +195,6 @@ public class DefaultDatabaseParser implements DatabaseParser {
         long[] cellPointers = new long[numberOfCells];
         for (int i = 0; i < numberOfCells; i++) {
             cellPointers[i] = in.readShort() + pageOffset;
-         //   System.out.println(cellPointers[i]);
         }
 
         // follow pointer and get b-tree
@@ -214,7 +213,6 @@ public class DefaultDatabaseParser implements DatabaseParser {
                 case SqliteConstants.TABLE_BTREE_INTERIOR_CELL: {
                     cell.leftChildPointers[i] = in.readInt();
                     cell.rowId[i] = decodeVarint(in);
-                    System.out.println(cell.rowId[i]);
                     node.addChild(parseBtree(in, cell.leftChildPointers[i], pageSize));
                 }
                 break;
