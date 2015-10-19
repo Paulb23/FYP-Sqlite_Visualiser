@@ -204,9 +204,50 @@ public class DefaultDatabaseParser implements DatabaseParser {
             // parse that type of b-tree
             switch (type) {
                 case SqliteConstants.TABLE_BTREE_LEAF_CELL: {
-                    cell.payLoadSize[i] = decodeVarint(in);
+                    cell.payLoadSize[i] = decodeVarint(in);     //read cell header
                     cell.rowId[i] = decodeVarint(in);
-                   // cell.previewData[i] = in.readUTF();
+                    long headerSize = decodeVarint(in) - 1;     // read payload header
+                    int[] types = new int[(int)headerSize];
+                    for (int j = 0; j < headerSize; j++) {
+                        types[j] = (int)decodeVarint(in);
+                    }
+                    in.getChannel().position(in.getFilePointer() - 1); // back one for header size
+                    for (int j = 0; j < headerSize; j++) {      // read payload
+                        if (types[j] == 0) {
+                           cell.previewData[i] += " null ";
+                           in.readByte();
+                        } else if (types[j] == 1) {
+                           cell.previewData[i] += " " + new Short(in.readByte()) + " ";
+                        } else if (types[j] == 2) {
+                            cell.previewData[i] += " " + new Short(in.readShort()) + " ";
+                        } else if (types[j] == 3) {
+                            cell.previewData[i] += " " + in.readShort() + in.readByte() + " "; // fix
+                        } else if (types[j] == 4) {
+                            cell.previewData[i] += " " + new Integer(in.readInt()) + " ";
+                        } else if (types[j] == 5) {
+                            cell.previewData[i] += " " + in.readInt() + in.readShort() + " "; // fix
+                        } else if (types[j] == 6) {
+                            cell.previewData[i] += " " + new Long(in.readLong()) + " ";
+                        } else if (types[j] == 7) {
+                            cell.previewData[i] += " " + new Double(in.readDouble()) + " ";
+                        } else if (types[j] == 8) {
+                            cell.previewData[i] += " 0 ";
+                            in.readByte();
+                        } else if (types[j] == 9) {
+                            cell.previewData[i] += " 0 ";
+                            in.readByte();
+                        } else if (types[j] >= 12 && types[j] % 2 == 0) {
+                            byte[] bytes = new byte[(types[j]-12)/2];
+                            in.read(bytes);
+                            cell.previewData[i] += " " + new String(bytes) + " ";
+                        } else if (types[j] >= 12 && types[j] % 2 != 0) {
+                            byte[] bytes = new byte[(types[j]-13)/2];
+                            in.read(bytes);
+                            cell.previewData[i] += " " +new String(bytes) + " ";
+                        }
+                    }
+                    System.out.println(cell.previewData[i]);
+                    // read overflow
                    // cell.overflowPageNumbers[i] = in.readInt();
                 }
                 break;
