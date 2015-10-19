@@ -204,20 +204,31 @@ public class DefaultDatabaseParser implements DatabaseParser {
             // parse that type of b-tree
             switch (type) {
                 case SqliteConstants.TABLE_BTREE_LEAF_CELL: {
-                    cell.payLoadSize[i] = decodeVarint(in);     //read cell header
-                    cell.rowId[i] = decodeVarint(in);
-                    long headerSize = decodeVarint(in) - 1;     // read payload header
-                    int[] types = new int[(int)headerSize];
-                    for (int j = 0; j < headerSize; j++) {
-                        types[j] = (int)decodeVarint(in);
+                    cell.payLoadSize[i] = decodeVarint(in)[0];     //read cell header
+                    cell.rowId[i] = decodeVarint(in)[0];
+                    long bytesInHeader = decodeVarint(in)[0] - 1;
+                    int[] types = new int[(int)bytesInHeader];
+                    int headerSize = 0;
+                    int bytesCounted = 0;
+                    int k = 0;
+                    while (bytesCounted < bytesInHeader) {
+                        long[] varint = decodeVarint(in);
+                        types[k] = (int)varint[0];
+                        bytesCounted += varint[1];
+                        k++;
                     }
-                    in.getChannel().position(in.getFilePointer() - 1); // back one for header size
-                    for (int j = 0; j < headerSize; j++) {      // read payload
+
+                    int table = 0;
+                    int tablePage = 0;
+                    for (int j = 0; j < k; j++) {      // read payload
                         if (types[j] == 0) {
                            cell.previewData[i] += " null ";
-                           in.readByte();
                         } else if (types[j] == 1) {
-                           cell.previewData[i] += " " + new Short(in.readByte()) + " ";
+                            short bytes = in.readByte();
+                            if (table == 1 && tablePage == 0) {
+                                tablePage = bytes;
+                            }
+                           cell.previewData[i] += " " + bytes + " ";
                         } else if (types[j] == 2) {
                             cell.previewData[i] += " " + new Short(in.readShort()) + " ";
                         } else if (types[j] == 3) {
@@ -232,40 +243,45 @@ public class DefaultDatabaseParser implements DatabaseParser {
                             cell.previewData[i] += " " + new Double(in.readDouble()) + " ";
                         } else if (types[j] == 8) {
                             cell.previewData[i] += " 0 ";
-                            in.readByte();
                         } else if (types[j] == 9) {
                             cell.previewData[i] += " 0 ";
-                            in.readByte();
                         } else if (types[j] >= 12 && types[j] % 2 == 0) {
                             byte[] bytes = new byte[(types[j]-12)/2];
                             in.read(bytes);
                             cell.previewData[i] += " " + new String(bytes) + " ";
-                        } else if (types[j] >= 12 && types[j] % 2 != 0) {
+                        } else if (types[j] >= 13 && types[j] % 2 != 0) {
                             byte[] bytes = new byte[(types[j]-13)/2];
                             in.read(bytes);
-                            cell.previewData[i] += " " +new String(bytes) + " ";
+                            String str = new String(bytes);
+                            cell.previewData[i] += " " + str + " ";
+                            if (str.equals("table")) {
+                                table = 1;
+                            }
                         }
                     }
-                    System.out.println(cell.previewData[i]);
+                    if (table == 1) {
+                        node.addChild(parseBtree(in, tablePage, pageSize));
+                    }
+                    //System.out.println(cell.previewData[i]);
                     // read overflow
                    // cell.overflowPageNumbers[i] = in.readInt();
                 }
                 break;
                 case SqliteConstants.TABLE_BTREE_INTERIOR_CELL: {
                     cell.leftChildPointers[i] = in.readInt();
-                    cell.rowId[i] = decodeVarint(in);
+                    cell.rowId[i] = decodeVarint(in)[0];
                     node.addChild(parseBtree(in, cell.leftChildPointers[i], pageSize));
                 }
                 break;
                 case SqliteConstants.INDEX_BTREE_LEAF_CELL: {
-                    cell.payLoadSize[i] = decodeVarint(in);
+                    cell.payLoadSize[i] = decodeVarint(in)[0];
                   //  cell.previewData[i] = in.readUTF();
                   //  cell.overflowPageNumbers[i] = in.readInt();
                 }
                 break;
                 case SqliteConstants.INDEX_BTREE_INTERIOR_CELL: {
                     cell.leftChildPointers[i] = in.readInt();
-                    cell.payLoadSize[i] = decodeVarint(in);
+                    cell.payLoadSize[i] = decodeVarint(in)[0];
                     //cell.previewData[i] = in.readUTF();
                     //cell.overflowPageNumbers[i] = in.readInt();
                 }
@@ -278,13 +294,13 @@ public class DefaultDatabaseParser implements DatabaseParser {
     }
 
     /**
-     * Decodes the varint variable type
+     * Decodes the varint variable type and the number of bytes of the varint
      *
      * @param in The input stream to read the varint from
-     * @return long value of the varint
+     * @return long array with the first element the value, the second the number of bytes else null if invalid
      */
-    private long decodeVarint(RandomAccessFile in) throws IOException {
-        long value = 0;
+    private long[] decodeVarint(RandomAccessFile in) throws IOException {
+        long[] value = new long[2];
         byte[] varint = new byte[9];
         int i;
         for (i = 0; i < 9; i++) {
@@ -295,12 +311,14 @@ public class DefaultDatabaseParser implements DatabaseParser {
         }
 
         if (i == 0) {
-            value = varint[0];
+            value[0] = varint[0];
+            value[1]= 1;
         } else {
             for (int j = 0; j < i; j++) {
                 varint[j] = (byte)(varint[j] << 1);
             }
-            value = ByteBuffer.wrap(varint).getLong();
+            value[0] = ByteBuffer.wrap(varint).getLong();
+            value[1] = i + 1;
         }
         return value;
     }
