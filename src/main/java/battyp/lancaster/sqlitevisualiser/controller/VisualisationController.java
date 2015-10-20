@@ -26,6 +26,9 @@ package battyp.lancaster.sqlitevisualiser.controller;
 
 import battyp.lancaster.sqlitevisualiser.model.Model;
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
+import battyp.lancaster.sqlitevisualiser.model.datastructures.BTree;
+import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
+import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeNode;
 import battyp.lancaster.sqlitevisualiser.view.Cell;
 import battyp.lancaster.sqlitevisualiser.view.CellType;
 import battyp.lancaster.sqlitevisualiser.view.Edge;
@@ -33,6 +36,9 @@ import battyp.lancaster.sqlitevisualiser.view.ZoomableScrollPane;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Controller for visualisation.fxml
@@ -60,7 +66,41 @@ public class VisualisationController extends Controller {
         if (model.isFileOpen()) {
             Database database = model.getDatabase();
 
-          //   show graph
+            Pane pane = new Pane();
+
+            BTreeNode<BTreeCell> tree = database.getBTree().getRoot();
+            addCell(tree, null, 50, 50, pane);
+
+            zoomablepane.setNodeContent(pane);
+        }
+    }
+
+    /**
+     * Creates cells from a node, and add them to the panel with lines
+     *
+     * @param node Node to represent
+     * @param parent Parent to the node or null for self
+     * @param x X pos to draw the node
+     * @param y Y pos to draw the node
+     * @param pane Pane to attach the node to
+     */
+    private void addCell(BTreeNode<BTreeCell> node, Cell parent, int x, int y, Pane pane) {
+        Cell cell = new Cell(CellType.Default);
+        cell.setLayoutX(x);
+        cell.setLayoutY(y);
+        pane.getChildren().add(cell);
+
+        if (parent != null) {
+            Edge edge = new Edge(parent, cell);
+            pane.getChildren().add(edge);
+        }
+
+        List<BTreeNode<BTreeCell>> children = node.getChildren();
+
+        y += 100;
+        for (BTreeNode<BTreeCell> child : children) {
+            addCell(child, cell, x, y, pane);
+            x+= 100;
         }
     }
 }
