@@ -22,45 +22,35 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.controller;
+package battyp.lancaster.sqlitevisualiser.view;
 
-import battyp.lancaster.sqlitevisualiser.model.Model;
-import battyp.lancaster.sqlitevisualiser.model.database.Database;
-import battyp.lancaster.sqlitevisualiser.view.Cell;
-import battyp.lancaster.sqlitevisualiser.view.CellType;
-import battyp.lancaster.sqlitevisualiser.view.Edge;
-import battyp.lancaster.sqlitevisualiser.view.ZoomableScrollPane;
-import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.layout.Pane;
+import javafx.scene.Group;
+import javafx.scene.shape.Line;
 
 /**
- * Controller for visualisation.fxml
+ * Edges between the cells / nodes
  *
  * @author Paul Batty
  */
-public class VisualisationController extends Controller {
+public class Edge extends Group {
 
-    @FXML
-    private ZoomableScrollPane zoomablepane;
+    private Cell source;
+    private Cell target;
 
-    /**
-     * Creates a new Controller with the model set
-     *
-     * @param model The model to use
-     */
-    public VisualisationController(Model model) {
-        super(model);
-    }
+    private Line line;
 
-    /**
-     * {@inheritDoc}
-     */
-    public void notifyObserver() {
-        if (model.isFileOpen()) {
-            Database database = model.getDatabase();
+    public Edge(Cell source, Cell target) {
+        this.source = source;
+        this.target = target;
 
-          //   show graph
-        }
+        this.line = new Line();
+
+        line.setStartX(source.getLayoutX() + (source.getBoundsInParent().getWidth() / 2));
+        line.setStartY(source.getLayoutY() + (source.getBoundsInParent().getHeight() / 2));
+
+        line.setEndX(target.getLayoutX() + (target.getBoundsInParent().getWidth() / 2));
+        line.setEndY(target.getLayoutY() + (target.getBoundsInParent().getHeight() / 2));
+
+        getChildren().add(line);
     }
 }

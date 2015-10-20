@@ -76,7 +76,7 @@ public class ZoomableScrollPane extends ScrollPane {
     }
 
     /**
-     * Sets the content
+     * Sets the content pane
      */
     public void setNodeContent(Node content) {
         this.zoomGroup.getChildren().add(content);

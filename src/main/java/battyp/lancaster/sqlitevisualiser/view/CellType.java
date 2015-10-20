@@ -22,45 +22,13 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.controller;
-
-import battyp.lancaster.sqlitevisualiser.model.Model;
-import battyp.lancaster.sqlitevisualiser.model.database.Database;
-import battyp.lancaster.sqlitevisualiser.view.Cell;
-import battyp.lancaster.sqlitevisualiser.view.CellType;
-import battyp.lancaster.sqlitevisualiser.view.Edge;
-import battyp.lancaster.sqlitevisualiser.view.ZoomableScrollPane;
-import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.layout.Pane;
+package battyp.lancaster.sqlitevisualiser.view;
 
 /**
- * Controller for visualisation.fxml
+ * Different types of cells
  *
  * @author Paul Batty
  */
-public class VisualisationController extends Controller {
-
-    @FXML
-    private ZoomableScrollPane zoomablepane;
-
-    /**
-     * Creates a new Controller with the model set
-     *
-     * @param model The model to use
-     */
-    public VisualisationController(Model model) {
-        super(model);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void notifyObserver() {
-        if (model.isFileOpen()) {
-            Database database = model.getDatabase();
-
-          //   show graph
-        }
-    }
+public enum CellType {
+    Default
 }

@@ -22,45 +22,37 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.controller;
+package battyp.lancaster.sqlitevisualiser.view;
 
-import battyp.lancaster.sqlitevisualiser.model.Model;
-import battyp.lancaster.sqlitevisualiser.model.database.Database;
-import battyp.lancaster.sqlitevisualiser.view.Cell;
-import battyp.lancaster.sqlitevisualiser.view.CellType;
-import battyp.lancaster.sqlitevisualiser.view.Edge;
-import battyp.lancaster.sqlitevisualiser.view.ZoomableScrollPane;
-import javafx.fxml.FXML;
-import javafx.scene.control.Label;
+
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 /**
- * Controller for visualisation.fxml
+ * Cell AKA node in the the b-tree
  *
  * @author Paul Batty
  */
-public class VisualisationController extends Controller {
+public class Cell extends Pane {
 
-    @FXML
-    private ZoomableScrollPane zoomablepane;
+    private CellType type;
 
-    /**
-     * Creates a new Controller with the model set
-     *
-     * @param model The model to use
-     */
-    public VisualisationController(Model model) {
-        super(model);
+    public Cell(CellType type) {
+        this.type= type;
+        setView();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void notifyObserver() {
-        if (model.isFileOpen()) {
-            Database database = model.getDatabase();
+    public void setView() {
+        switch(this.type) {
+            case Default: {
+                Rectangle view = new Rectangle( 50,50);
+                view.setStroke(Color.DODGERBLUE);
+                view.setFill(Color.DODGERBLUE);
 
-          //   show graph
+                getChildren().add(view);
+            }
+            break;
         }
     }
 }
