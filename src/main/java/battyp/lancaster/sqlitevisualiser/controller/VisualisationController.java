@@ -25,6 +25,10 @@
 package battyp.lancaster.sqlitevisualiser.controller;
 
 import battyp.lancaster.sqlitevisualiser.model.Model;
+import battyp.lancaster.sqlitevisualiser.model.database.Database;
+import battyp.lancaster.sqlitevisualiser.view.ZoomableScrollPane;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 
 /**
  * Controller for visualisation.fxml
@@ -32,6 +36,9 @@ import battyp.lancaster.sqlitevisualiser.model.Model;
  * @author Paul Batty
  */
 public class VisualisationController extends Controller {
+
+    @FXML
+    private ZoomableScrollPane zoomablepane;
 
     /**
      * Creates a new Controller with the model set
@@ -46,5 +53,10 @@ public class VisualisationController extends Controller {
      * {@inheritDoc}
      */
     public void notifyObserver() {
+        if (model.isFileOpen()) {
+            Database database = model.getDatabase();
+
+          //   show graph
+        }
     }
 }
