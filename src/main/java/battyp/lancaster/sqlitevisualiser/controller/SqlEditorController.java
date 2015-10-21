@@ -24,7 +24,13 @@
 
 package battyp.lancaster.sqlitevisualiser.controller;
 
+import battyp.lancaster.sqlitevisualiser.Util.UiUtil;
 import battyp.lancaster.sqlitevisualiser.model.Model;
+import javafx.fxml.FXML;
+import javafx.scene.control.TextArea;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * Controller for sqleditor.fxml
@@ -32,6 +38,22 @@ import battyp.lancaster.sqlitevisualiser.model.Model;
  * @author Paul Batty
  */
 public class SqlEditorController extends Controller {
+
+    /**
+     * To keep statement when tab switching
+     */
+    private static String saved_statment;
+
+    /**
+     * To keep result when tab switching
+     */
+    private static String saved_result;
+
+    @FXML
+    private TextArea sqleditor;
+
+    @FXML
+    private TextArea sqleditorreturn;
 
     /**
      * Creates a new Controller with the model set
@@ -46,5 +68,39 @@ public class SqlEditorController extends Controller {
      * {@inheritDoc}
      */
     public void notifyObserver() {
+        if (sqleditor.getText().equals("")) {
+            if (saved_statment != null) {
+                sqleditor.appendText(saved_statment);
+            }
+        }
+
+        if (sqleditorreturn.getText().equals("")) {
+            if (saved_result != null) {
+                sqleditorreturn.appendText(saved_result);
+            }
+        }
+    }
+
+    @FXML
+    private void save() {
+        saved_statment = sqleditor.getText();
+    }
+
+    @FXML
+    private void executeSql() {
+        sqleditorreturn.clear();
+        try {
+            ResultSet result = model.getSqlExecutor().executeSql(sqleditor.getText());
+            int cols = result.getMetaData().getColumnCount();
+            while (result.next()) {
+                for (int i = 1; i < cols; i++) {
+                    sqleditorreturn.appendText(result.getString(i));
+                }
+                sqleditorreturn.appendText("\r\n");
+            }
+            saved_result = sqleditorreturn.getText();
+        } catch (SQLException e) {
+            UiUtil.showExceptionError("Error Dialog",  "Oooops, Something went wring with that statement", e);
+        }
     }
 }

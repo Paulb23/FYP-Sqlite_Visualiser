@@ -24,6 +24,7 @@
 
 package battyp.lancaster.sqlitevisualiser.controller;
 
+import battyp.lancaster.sqlitevisualiser.Util.UiUtil;
 import battyp.lancaster.sqlitevisualiser.model.Model;
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTree;
@@ -32,18 +33,11 @@ import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
 import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
 import javafx.stage.FileChooser;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.sql.SQLException;
 
 /**
@@ -137,13 +131,13 @@ public class MenubarController extends Controller {
             this.model.openDatabase(path, new Database(new BTree<BTreeCell>(), new Metadata()));
             notifyObserver();
         } catch (IOException e) {
-            showExceptionError("Error Dialog", "Oooops, Could not read that file!", e);
+            UiUtil.showExceptionError("Error Dialog", "Oooops, Could not read that file!", e);
         } catch (InvalidFileException e) {
-            showExceptionError("Error Dialog", "Oooops, That's not a valid database file", e);
+            UiUtil.showExceptionError("Error Dialog", "Oooops, That's not a valid database file", e);
         } catch (ClassNotFoundException e) {
-            showExceptionError("Error Dialog", "Oooops, Error in Classpath", e);
+            UiUtil.showExceptionError("Error Dialog", "Oooops, Error in Classpath", e);
         } catch (SQLException e) {
-            showExceptionError("Error Dialog", "Oooops, Could not connect to the database", e);
+            UiUtil.showExceptionError("Error Dialog", "Oooops, Could not connect to the database", e);
         }
     }
 
@@ -166,33 +160,5 @@ public class MenubarController extends Controller {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Shows an exception error Alert, with stacktrace
-     *
-     * @param title Title of the alert box
-     * @param content Content message of the alert
-     * @param e The exception for the stacktrace
-     */
-    private void showExceptionError(String title, String content, Exception e) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setContentText(content + "\n\n More Details:\n");
-        alert.setResizable(true);
-
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        e.printStackTrace(pw);
-        String exceptionText = sw.toString();
-
-        TextArea textArea = new TextArea(exceptionText);
-        textArea.setEditable(false);
-        textArea.setWrapText(true);
-        textArea.setMaxWidth(Double.MAX_VALUE);
-        textArea.setMaxHeight(Double.MAX_VALUE);
-
-        alert.getDialogPane().setExpandableContent(textArea);
-        alert.showAndWait();
     }
 }

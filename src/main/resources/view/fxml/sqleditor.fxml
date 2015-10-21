@@ -22,16 +22,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
 -->
-<?import javafx.scene.text.*?>
-<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.Button?>
 
 <AnchorPane fx:id="SqlEditorPage" prefHeight="480.0" prefWidth="640.0" xmlns:fx="http://javafx.com/fxml">
     <children>
-        <Label layoutX="251.0" layoutY="227.0" text="Sql Editor">
-            <font>
-                <Font size="18.0" />
-            </font>
-        </Label>
+        <TextArea layoutY="0" prefHeight="100" onKeyTyped="#save" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" fx:id="sqleditor" ></TextArea>
+        <Button layoutX="640.0" layoutY="110.0" onAction="#executeSql" mnemonicParsing="false" text="ExecuteSql" />
+        <TextArea layoutY="150" prefHeight="390" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" editable="false" fx:id="sqleditorreturn"> </TextArea>
     </children>
 </AnchorPane>
