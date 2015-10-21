@@ -22,48 +22,40 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.view;
+package battyp.lancaster.sqlitevisualiser.tests.view;
 
-
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import battyp.lancaster.sqlitevisualiser.view.Cell;
+import battyp.lancaster.sqlitevisualiser.view.CellType;
+import battyp.lancaster.sqlitevisualiser.view.Edge;
+import org.junit.Test;
 
 /**
- * Cell AKA node in the the b-tree
+ * JUnit tests for the Edge class
+ *
+ * @see battyp.lancaster.sqlitevisualiser.view.Edge
  *
  * @author Paul Batty
  */
-public class Cell extends Pane {
+public class EdgeTest {
 
-    private CellType type;
-
-    /**
-     * Creates a new cell
-     *
-     * @param type Type of the cell
-     */
-    public Cell(CellType type) {
-        if (type == null) {
-          type = CellType.Default;
-        }
-        this.type= type;
-        setView();
+    @Test
+    public void TestCreationWithValidCells() {
+        new Edge(new Cell(CellType.Default), new Cell(CellType.Default));
     }
 
-    /**
-     * Set the view based on the type
-     */
-    private void setView() {
-        switch(this.type) {
-            case Default: {
-                Rectangle view = new Rectangle( 50,50);
-                view.setStroke(Color.DODGERBLUE);
-                view.setFill(Color.DODGERBLUE);
+    @Test
+    public void TestCreationWithSameCell() {
+        Cell cell = new Cell(CellType.Default);
+        new Edge(cell, cell);
+    }
 
-                getChildren().add(view);
-            }
-            break;
-        }
+    @Test(expected = NullPointerException.class)
+    public void TestCreationWithSingleNull() {
+        new Edge(new Cell(CellType.Default), null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void TestCreationWithNull() {
+        new Edge(null, null);
     }
 }

@@ -39,6 +39,12 @@ public class Edge extends Group {
 
     private Line line;
 
+    /**
+     * Creates a line between two cells
+     *
+     * @param source Starting cell
+     * @param target Ending cell
+     */
     public Edge(Cell source, Cell target) {
         this.source = source;
         this.target = target;
