@@ -32,7 +32,6 @@ import battyp.lancaster.sqlitevisualiser.view.Cell;
 import battyp.lancaster.sqlitevisualiser.view.Edge;
 import battyp.lancaster.sqlitevisualiser.view.ZoomableScrollPane;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 
 import java.util.List;

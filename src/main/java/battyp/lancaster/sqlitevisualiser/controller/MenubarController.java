@@ -44,6 +44,7 @@ import javafx.stage.FileChooser;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.sql.SQLException;
 
 /**
  * Controller for menubar.fxml view, injected via start
@@ -139,6 +140,10 @@ public class MenubarController extends Controller {
             showExceptionError("Error Dialog", "Oooops, Could not read that file!", e);
         } catch (InvalidFileException e) {
             showExceptionError("Error Dialog", "Oooops, That's not a valid database file", e);
+        } catch (ClassNotFoundException e) {
+            showExceptionError("Error Dialog", "Oooops, Error in Classpath", e);
+        } catch (SQLException e) {
+            showExceptionError("Error Dialog", "Oooops, Could not connect to the database", e);
         }
     }
 

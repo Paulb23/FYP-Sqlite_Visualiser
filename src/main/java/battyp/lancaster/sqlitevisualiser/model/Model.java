@@ -24,12 +24,14 @@
 
 package battyp.lancaster.sqlitevisualiser.model;
 
+import battyp.lancaster.sqlitevisualiser.model.SqlExecutor.SqlExecutor;
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
 import battyp.lancaster.sqlitevisualiser.model.databaseparser.DatabaseParser;
 import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * Model is a interface that all models will inherit from as a interface into the different model sections
@@ -44,7 +46,7 @@ public interface Model {
      * @param path path to the database
      * @param database The database to use
      */
-    public void openDatabase(final String path, Database database) throws IOException, FileNotFoundException, InvalidFileException;
+    public void openDatabase(final String path, Database database) throws IOException, FileNotFoundException, InvalidFileException, SQLException, ClassNotFoundException;
 
     /**
      * Gets the current Database
@@ -59,6 +61,13 @@ public interface Model {
      * @return current database parser
      */
     public DatabaseParser getDatabaseParser();
+
+    /**
+     * Gets the current Sql Executor
+     *
+     * @return current Sql Executor
+     */
+    public SqlExecutor getSqlExecutor();
 
     /**
      * Gets whether we currently have a file open

@@ -33,11 +33,13 @@ import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
 import battyp.lancaster.sqlitevisualiser.tests.model.Mocks.MockDatabase;
 import battyp.lancaster.sqlitevisualiser.tests.model.Mocks.MockDatabaseInterface;
 import battyp.lancaster.sqlitevisualiser.tests.model.Mocks.MockDatabaseParser;
+import battyp.lancaster.sqlitevisualiser.tests.model.Mocks.MockSqlExecutor;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * JUnit tests for DefaultModel
@@ -57,9 +59,10 @@ public class DefaultModelTest {
 
     @Test
     public void TestCustomModesAreLoadedOnCreation() {
-        DefaultModel model = new DefaultModel(new MockDatabaseInterface(), new MockDatabaseParser());
+        DefaultModel model = new DefaultModel(new MockDatabaseInterface(), new MockDatabaseParser(), new MockSqlExecutor());
         Assert.assertTrue(model.getDatabase() instanceof MockDatabase);
         Assert.assertTrue(model.getDatabaseParser() instanceof MockDatabaseParser);
+        Assert.assertTrue(model.getSqlExecutor() instanceof MockSqlExecutor);
     }
 
     @Test
@@ -69,20 +72,20 @@ public class DefaultModelTest {
     }
 
     @Test
-    public void TestIsFileOpenReturnsTrueWithOpenFile() throws IOException, InvalidFileException {
+    public void TestIsFileOpenReturnsTrueWithOpenFile() throws IOException, InvalidFileException, SQLException, ClassNotFoundException {
         DefaultModel model = new DefaultModel();
         model.openDatabase("validDatabase", new Database(new BTree(), new Metadata()));
         Assert.assertEquals(true, model.isFileOpen());
     }
 
     @Test(expected = InvalidFileException.class)
-    public void TestOpenFileReturnInValidFileWhenOpeningInValidFile() throws IOException, InvalidFileException {
+    public void TestOpenFileReturnInValidFileWhenOpeningInValidFile() throws IOException, InvalidFileException, SQLException, ClassNotFoundException {
         DefaultModel model = new DefaultModel();
         model.openDatabase("invalidDatabase.db", new Database(new BTree(), new Metadata()));
     }
 
     @Test(expected = FileNotFoundException.class)
-    public void TestOpenFileReturnFileNotFoundWhenOpeningInValidPath() throws IOException, InvalidFileException {
+    public void TestOpenFileReturnFileNotFoundWhenOpeningInValidPath() throws IOException, InvalidFileException, SQLException, ClassNotFoundException {
         DefaultModel model = new DefaultModel();
         model.openDatabase("sadasda.db", new Database(new BTree(), new Metadata()));
     }

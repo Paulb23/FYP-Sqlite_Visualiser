@@ -22,45 +22,40 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.view;
+package battyp.lancaster.sqlitevisualiser.tests.model.Mocks;
 
-import javafx.scene.Group;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Line;
+
+import battyp.lancaster.sqlitevisualiser.model.SqlExecutor.SqlExecutor;
+
+import java.sql.ResultSet;
 
 /**
- * Edges between the cells / nodes
+ * Mock implementation of the SqlExecutor
+ *
+ * @see battyp.lancaster.sqlitevisualiser.model.SqlExecutor.SqlExecutor
  *
  * @author Paul Batty
  */
-public class Edge extends Group {
+public class MockSqlExecutor implements SqlExecutor {
 
-    private Cell source;
-    private Cell target;
+    @Override
+    public void setDatabaseFile(String path) {
+    }
 
-    private Line line;
+    @Override
+    public void connect() {
+    }
 
-    /**
-     * Creates a line between two cells
-     *
-     * @param source Starting cell
-     * @param target Ending cell
-     */
-    public Edge(Cell source, Cell target) {
-        this.source = source;
-        this.target = target;
+    @Override
+    public void disconnect() {
+    }
 
-        this.line = new Line();
+    @Override
+    public ResultSet executeSql(String sql) {
+        return null;
+    }
 
-        line.setStartX(source.getLayoutX() + (source.getBoundsInParent().getWidth() / 2));
-        line.setStartY(source.getLayoutY() + (source.getBoundsInParent().getHeight() / 2));
-
-        line.setEndX(target.getLayoutX() + (target.getBoundsInParent().getWidth() / 2));
-        line.setEndY(target.getLayoutY() + (target.getBoundsInParent().getHeight() / 2));
-
-        line.setStrokeWidth(2);
-        line.setStroke(new Color(Math.random(), Math.random(), Math.random(), 1));
-        getChildren().add(line);
+    @Override
+    public void performUpdate(String sql) {
     }
 }

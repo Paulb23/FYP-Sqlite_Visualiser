@@ -22,45 +22,51 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.view;
+package battyp.lancaster.sqlitevisualiser.model.SqlExecutor;
 
-import javafx.scene.Group;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Line;
+import java.io.FileNotFoundException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
- * Edges between the cells / nodes
+ * SqlExecutor is a interface that all outgoing sql commands and executions will be ran through
  *
  * @author Paul Batty
  */
-public class Edge extends Group {
-
-    private Cell source;
-    private Cell target;
-
-    private Line line;
+public interface SqlExecutor {
 
     /**
-     * Creates a line between two cells
+     * Sets the current database file
      *
-     * @param source Starting cell
-     * @param target Ending cell
+     * @param path path to the database
      */
-    public Edge(Cell source, Cell target) {
-        this.source = source;
-        this.target = target;
+    public void setDatabaseFile(String path);
 
-        this.line = new Line();
+    /**
+     * Connects to the database
+     */
+    public void connect() throws FileNotFoundException, SQLException, ClassNotFoundException;
 
-        line.setStartX(source.getLayoutX() + (source.getBoundsInParent().getWidth() / 2));
-        line.setStartY(source.getLayoutY() + (source.getBoundsInParent().getHeight() / 2));
+    /**
+     * Disconnects the database
+     */
+    public void disconnect();
 
-        line.setEndX(target.getLayoutX() + (target.getBoundsInParent().getWidth() / 2));
-        line.setEndY(target.getLayoutY() + (target.getBoundsInParent().getHeight() / 2));
+    /**
+     * Executes Sql on the database such as Selects
+     *
+     * @param sql Sql to execute
+     *
+     * @return Result Set containing the result
+     */
+    public ResultSet executeSql(String sql) throws SQLException;
 
-        line.setStrokeWidth(2);
-        line.setStroke(new Color(Math.random(), Math.random(), Math.random(), 1));
-        getChildren().add(line);
-    }
+    /**
+     * Executes Sql on the database such as Update, Delete
+     *
+     * @param sql Sql to execute
+     *
+     * @return Result Set containing the result
+     */
+    public void performUpdate(String sql) throws SQLException;
 }

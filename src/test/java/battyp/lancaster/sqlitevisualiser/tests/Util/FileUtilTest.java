@@ -22,45 +22,32 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.view;
+package battyp.lancaster.sqlitevisualiser.tests.Util;
 
-import javafx.scene.Group;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Line;
+import battyp.lancaster.sqlitevisualiser.Util.FileUtil;
+import org.junit.Assert;
+import org.junit.Test;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 
 /**
- * Edges between the cells / nodes
+ * JUnit tests for the FileUtil
+ *
+ * @see battyp.lancaster.sqlitevisualiser.Util.FileUtil
  *
  * @author Paul Batty
  */
-public class Edge extends Group {
+public class FileUtilTest {
 
-    private Cell source;
-    private Cell target;
+    @Test
+    public void TestReturnsValidFile() throws FileNotFoundException {
+        File file = FileUtil.openFile("validDatabase");
+        Assert.assertTrue(file != null);
+    }
 
-    private Line line;
-
-    /**
-     * Creates a line between two cells
-     *
-     * @param source Starting cell
-     * @param target Ending cell
-     */
-    public Edge(Cell source, Cell target) {
-        this.source = source;
-        this.target = target;
-
-        this.line = new Line();
-
-        line.setStartX(source.getLayoutX() + (source.getBoundsInParent().getWidth() / 2));
-        line.setStartY(source.getLayoutY() + (source.getBoundsInParent().getHeight() / 2));
-
-        line.setEndX(target.getLayoutX() + (target.getBoundsInParent().getWidth() / 2));
-        line.setEndY(target.getLayoutY() + (target.getBoundsInParent().getHeight() / 2));
-
-        line.setStrokeWidth(2);
-        line.setStroke(new Color(Math.random(), Math.random(), Math.random(), 1));
-        getChildren().add(line);
+    @Test(expected = FileNotFoundException.class)
+    public void TestThrowsExceptionOnInvalidFile() throws FileNotFoundException {
+        File file = FileUtil.openFile("thereisnowaythisisavalidfile");
     }
 }

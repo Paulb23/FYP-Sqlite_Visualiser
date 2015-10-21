@@ -24,15 +24,13 @@
 
 package battyp.lancaster.sqlitevisualiser.model.databaseparser;
 
+import battyp.lancaster.sqlitevisualiser.Util.FileUtil;
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.*;
 import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
 import battyp.lancaster.sqlitevisualiser.view.CellType;
 
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.ByteBuffer;
 
 /**
@@ -50,7 +48,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
     @Override
     public Database parseDatabase(String pathToDatabase, Database database) throws IOException, FileNotFoundException, InvalidFileException {
 
-        File file = openDatabase(pathToDatabase);
+        File file = FileUtil.openFile(pathToDatabase);
         RandomAccessFile in = new RandomAccessFile(file, "r");
 
         checkMagicNumber(in);
@@ -59,38 +57,6 @@ public class DefaultDatabaseParser implements DatabaseParser {
 
         in.close();
         return database;
-    }
-
-    /**
-     * Opens the database file
-     *
-     * @param pathToDatabase Path to the database including file name and extension
-     *
-     * @return The file
-     * @throws FileNotFoundException
-     */
-    private File openDatabase(String pathToDatabase) throws FileNotFoundException {
-        /**
-         * Try to load from resources if fails then convert to
-         * URI --> URL
-         */
-        URL fileURL = getClass().getClassLoader().getResource(pathToDatabase);
-        if (fileURL == null) {
-            try {
-                fileURL = new File(pathToDatabase).toURI().toURL();
-
-            } catch (MalformedURLException e) {
-                throw new FileNotFoundException();
-            }
-        }
-
-        File file;
-        try {
-            file = new File(fileURL.toURI());
-        } catch (URISyntaxException e) {
-            file = new File(fileURL.getPath());
-        }
-        return file;
     }
 
     /**

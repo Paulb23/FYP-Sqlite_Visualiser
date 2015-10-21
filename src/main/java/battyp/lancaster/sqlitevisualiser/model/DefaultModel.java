@@ -24,6 +24,8 @@
 
 package battyp.lancaster.sqlitevisualiser.model;
 
+import battyp.lancaster.sqlitevisualiser.model.SqlExecutor.DefaultSqlExecutor;
+import battyp.lancaster.sqlitevisualiser.model.SqlExecutor.SqlExecutor;
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
 import battyp.lancaster.sqlitevisualiser.model.databaseinterface.DatabaseInterface;
 import battyp.lancaster.sqlitevisualiser.model.databaseinterface.DefaultDatabaseInterface;
@@ -33,6 +35,7 @@ import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * DefaultModel is the default interface into the model
@@ -44,15 +47,18 @@ public class DefaultModel implements Model {
     private boolean isFileOpen;
     private DatabaseInterface databaseInterface;
     private DatabaseParser databaseParser;
+    private SqlExecutor sqlExecutor;
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void openDatabase(final String path, Database database) throws IOException, FileNotFoundException, InvalidFileException {
+    public void openDatabase(final String path, Database database) throws IOException, FileNotFoundException, InvalidFileException, SQLException, ClassNotFoundException {
         database = this.databaseParser.parseDatabase(path, database);
         this.databaseInterface.clear();
         this.databaseInterface.addDatabase(database);
+        this.sqlExecutor.setDatabaseFile(path);
+        this.sqlExecutor.connect();
         isFileOpen = true;
     }
 
@@ -62,6 +68,7 @@ public class DefaultModel implements Model {
     public DefaultModel() {
         databaseInterface = new DefaultDatabaseInterface();
         databaseParser = new DefaultDatabaseParser();
+        sqlExecutor = new DefaultSqlExecutor();
         isFileOpen = false;
     }
 
@@ -71,9 +78,10 @@ public class DefaultModel implements Model {
      * @param databaseInterface DatabaseInterface to use
      * @param databaseParser DatabaseParser to use
      */
-    public DefaultModel(DatabaseInterface databaseInterface, DatabaseParser databaseParser) {
+    public DefaultModel(DatabaseInterface databaseInterface, DatabaseParser databaseParser, SqlExecutor sqlExecutor) {
         this.databaseInterface = databaseInterface;
         this.databaseParser = databaseParser;
+        this.sqlExecutor = sqlExecutor;
         this.isFileOpen = false;
     }
 
@@ -91,6 +99,14 @@ public class DefaultModel implements Model {
     @Override
     public DatabaseParser getDatabaseParser() {
         return this.databaseParser;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SqlExecutor getSqlExecutor() {
+        return this.sqlExecutor;
     }
 
     /**
