@@ -85,7 +85,7 @@ public class VisualisationController extends Controller {
      * @param pane Pane to attach the node to
      */
     private void addCell(BTreeNode<BTreeCell> node, Cell parent, int x, int y, Pane pane) {
-        Cell cell = new Cell(CellType.Default);
+        Cell cell = new Cell(node.getData().type);
         cell.setLayoutX(x);
         cell.setLayoutY(y);
         pane.getChildren().add(cell);

@@ -64,6 +64,46 @@ public class Cell extends Pane {
                 getChildren().add(view);
             }
             break;
+            case Table: {
+                Rectangle view = new Rectangle( 50,50);
+                view.setStroke(Color.INDIANRED);
+                view.setFill(Color.INDIANRED);
+
+                getChildren().add(view);
+            }
+            break;
+            case Data: {
+                Rectangle view = new Rectangle( 50,50);
+                view.setStroke(Color.CHARTREUSE);
+                view.setFill(Color.CHARTREUSE);
+
+                getChildren().add(view);
+            }
+            break;
+            case Table_Pointer_Internal: {
+                Rectangle view = new Rectangle( 50,50);
+                view.setStroke(Color.DARKORANGE);
+                view.setFill(Color.DARKORANGE);
+
+                getChildren().add(view);
+            }
+            break;
+            case Index_Leaf: {
+                Rectangle view = new Rectangle( 50,50);
+                view.setStroke(Color.DARKGOLDENROD);
+                view.setFill(Color.DARKGOLDENROD);
+
+                getChildren().add(view);
+            }
+            break;
+            case Index_Pointer_Internal: {
+                Rectangle view = new Rectangle( 50,50);
+                view.setStroke(Color.DARKSLATEBLUE);
+                view.setFill(Color.DARKSLATEBLUE);
+
+                getChildren().add(view);
+            }
+            break;
         }
     }
 }

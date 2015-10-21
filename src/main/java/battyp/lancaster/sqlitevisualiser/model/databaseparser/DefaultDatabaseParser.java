@@ -27,6 +27,7 @@ package battyp.lancaster.sqlitevisualiser.model.databaseparser;
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.*;
 import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
+import battyp.lancaster.sqlitevisualiser.view.CellType;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -260,7 +261,10 @@ public class DefaultDatabaseParser implements DatabaseParser {
                         }
                     }
                     if (table == 1) {
+                        cell.type = CellType.Table;
                         node.addChild(parseBtree(in, tablePage, pageSize));
+                    } else {
+                        cell.type = CellType.Data;
                     }
                     //System.out.println(cell.previewData[i]);
                     // read overflow
@@ -268,18 +272,21 @@ public class DefaultDatabaseParser implements DatabaseParser {
                 }
                 break;
                 case SqliteConstants.TABLE_BTREE_INTERIOR_CELL: {
+                    cell.type = CellType.Table_Pointer_Internal;
                     cell.leftChildPointers[i] = in.readInt();
                     cell.rowId[i] = decodeVarint(in)[0];
                     node.addChild(parseBtree(in, cell.leftChildPointers[i], pageSize));
                 }
                 break;
                 case SqliteConstants.INDEX_BTREE_LEAF_CELL: {
+                    cell.type = CellType.Index_Leaf;
                     cell.payLoadSize[i] = decodeVarint(in)[0];
                   //  cell.previewData[i] = in.readUTF();
                   //  cell.overflowPageNumbers[i] = in.readInt();
                 }
                 break;
                 case SqliteConstants.INDEX_BTREE_INTERIOR_CELL: {
+                    cell.type = CellType.Index_Pointer_Internal;
                     cell.leftChildPointers[i] = in.readInt();
                     cell.payLoadSize[i] = decodeVarint(in)[0];
                     //cell.previewData[i] = in.readUTF();

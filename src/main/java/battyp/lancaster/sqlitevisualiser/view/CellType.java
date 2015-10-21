@@ -30,5 +30,10 @@ package battyp.lancaster.sqlitevisualiser.view;
  * @author Paul Batty
  */
 public enum CellType {
-    Default
+    Default,
+    Table,
+    Data,
+    Table_Pointer_Internal,
+    Index_Leaf,
+    Index_Pointer_Internal
 }

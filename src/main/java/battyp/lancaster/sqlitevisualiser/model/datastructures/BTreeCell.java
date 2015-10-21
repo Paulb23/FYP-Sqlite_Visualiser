@@ -24,6 +24,8 @@
 
 package battyp.lancaster.sqlitevisualiser.model.datastructures;
 
+import battyp.lancaster.sqlitevisualiser.view.CellType;
+
 /**
  * A data structure for holding the data located in the cells
  *
@@ -36,7 +38,12 @@ public class BTreeCell {
      *
      * @see SqliteConstants
      */
-    public final int CellType;
+    public final int cellType;
+
+    /**
+     *
+     */
+    public CellType type;
 
     /**
      *
@@ -74,7 +81,7 @@ public class BTreeCell {
      * @param cellType type of cell
      */
     public BTreeCell(int cellType, int cellCount) {
-        this.CellType = cellType;
+        this.cellType = cellType;
         this.cellCount = cellCount;
         this.leftChildPointers = new int[cellCount];
         this.rowId = new long[cellCount];
