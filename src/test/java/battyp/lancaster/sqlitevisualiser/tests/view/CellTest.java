@@ -39,11 +39,11 @@ public class CellTest {
 
     @Test
     public void TestDefaultCreation() {
-        Cell cell = new Cell(CellType.Default);
+        Cell cell = new Cell(CellType.Default, "Test!");
     }
 
     @Test
     public void TestCreationWithNull() {
-        Cell cell = new Cell(null);
+        Cell cell = new Cell(null, null);
     }
 }

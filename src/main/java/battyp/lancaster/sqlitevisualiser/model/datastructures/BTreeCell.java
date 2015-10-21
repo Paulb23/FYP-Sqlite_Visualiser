@@ -35,18 +35,24 @@ public class BTreeCell {
 
     /**
      * Cell type should be from the constants
+     * Internal use?
      *
      * @see SqliteConstants
      */
     public final int cellType;
 
     /**
-     *
+     * The type of cell
      */
     public CellType type;
 
     /**
-     *
+     * Page number of the cells;
+     */
+    public final long pageNumber;
+
+    /**
+     * Number of cells
      */
     public final int cellCount;
 
@@ -80,9 +86,10 @@ public class BTreeCell {
      *
      * @param cellType type of cell
      */
-    public BTreeCell(int cellType, int cellCount) {
+    public BTreeCell(int cellType, int cellCount, long pageNumber) {
         this.cellType = cellType;
         this.cellCount = cellCount;
+        this.pageNumber = pageNumber;
         this.leftChildPointers = new int[cellCount];
         this.rowId = new long[cellCount];
         this.payLoadSize = new long[cellCount];

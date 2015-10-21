@@ -25,6 +25,7 @@
 package battyp.lancaster.sqlitevisualiser.view;
 
 
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -43,18 +44,20 @@ public class Cell extends Pane {
      *
      * @param type Type of the cell
      */
-    public Cell(CellType type) {
+    public Cell(CellType type, String label) {
         if (type == null) {
           type = CellType.Default;
         }
-        this.type= type;
-        setView();
+        this.type = type;
+        setView(label);
     }
 
     /**
      * Set the view based on the type
+     *
+     * @param label The label to go on the cell
      */
-    private void setView() {
+    private void setView(String label) {
         switch(this.type) {
             case Default: {
                 Rectangle view = new Rectangle( 50,50);
@@ -70,6 +73,7 @@ public class Cell extends Pane {
                 view.setFill(Color.INDIANRED);
 
                 getChildren().add(view);
+                getChildren().add(new Label(label));
             }
             break;
             case Data: {
@@ -78,6 +82,7 @@ public class Cell extends Pane {
                 view.setFill(Color.CHARTREUSE);
 
                 getChildren().add(view);
+                getChildren().add(new Label(label));
             }
             break;
             case Table_Pointer_Internal: {
@@ -86,6 +91,7 @@ public class Cell extends Pane {
                 view.setFill(Color.DARKORANGE);
 
                 getChildren().add(view);
+                getChildren().add(new Label(label));
             }
             break;
             case Index_Leaf: {
@@ -94,6 +100,7 @@ public class Cell extends Pane {
                 view.setFill(Color.DARKGOLDENROD);
 
                 getChildren().add(view);
+                getChildren().add(new Label(label));
             }
             break;
             case Index_Pointer_Internal: {
@@ -102,6 +109,7 @@ public class Cell extends Pane {
                 view.setFill(Color.DARKSLATEBLUE);
 
                 getChildren().add(view);
+                getChildren().add(new Label(label));
             }
             break;
         }

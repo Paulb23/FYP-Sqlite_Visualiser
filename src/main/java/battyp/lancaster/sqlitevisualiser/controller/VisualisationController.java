@@ -26,18 +26,15 @@ package battyp.lancaster.sqlitevisualiser.controller;
 
 import battyp.lancaster.sqlitevisualiser.model.Model;
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
-import battyp.lancaster.sqlitevisualiser.model.datastructures.BTree;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeNode;
 import battyp.lancaster.sqlitevisualiser.view.Cell;
-import battyp.lancaster.sqlitevisualiser.view.CellType;
 import battyp.lancaster.sqlitevisualiser.view.Edge;
 import battyp.lancaster.sqlitevisualiser.view.ZoomableScrollPane;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -85,15 +82,15 @@ public class VisualisationController extends Controller {
      * @param pane Pane to attach the node to
      */
     private void addCell(BTreeNode<BTreeCell> node, Cell parent, int x, int y, Pane pane) {
-        Cell cell = new Cell(node.getData().type);
+        Cell cell = new Cell(node.getData().type, "Page: " + node.getData().pageNumber);
         cell.setLayoutX(x);
         cell.setLayoutY(y);
-        pane.getChildren().add(cell);
 
         if (parent != null) {
             Edge edge = new Edge(parent, cell);
             pane.getChildren().add(edge);
         }
+        pane.getChildren().add(cell);
 
         List<BTreeNode<BTreeCell>> children = node.getChildren();
 
@@ -101,7 +98,6 @@ public class VisualisationController extends Controller {
             y += 100;
             int xInc = x;
             x = x / node.getNumberOfChildren();
-            System.out.println(x);
             for (BTreeNode<BTreeCell> child : children) {
                 addCell(child, cell, x, y, pane);
                 x += xInc;

@@ -40,18 +40,18 @@ public class EdgeTest {
 
     @Test
     public void TestCreationWithValidCells() {
-        new Edge(new Cell(CellType.Default), new Cell(CellType.Default));
+        new Edge(new Cell(CellType.Default, null), new Cell(CellType.Default, null));
     }
 
     @Test
     public void TestCreationWithSameCell() {
-        Cell cell = new Cell(CellType.Default);
+        Cell cell = new Cell(CellType.Default, null);
         new Edge(cell, cell);
     }
 
     @Test(expected = NullPointerException.class)
     public void TestCreationWithSingleNull() {
-        new Edge(new Cell(CellType.Default), null);
+        new Edge(new Cell(CellType.Default, null), null);
     }
 
     @Test(expected = NullPointerException.class)

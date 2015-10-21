@@ -191,7 +191,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
             int rightMostPointer = in.readInt();
         }
 
-        BTreeCell cell = new BTreeCell(type, numberOfCells);
+        BTreeCell cell = new BTreeCell(type, numberOfCells, realPageNumber);
 
         long[] cellPointers = new long[numberOfCells];
         for (int i = 0; i < numberOfCells; i++) {
