@@ -94,7 +94,7 @@ public class SqlEditorController extends Controller {
             int cols = result.getMetaData().getColumnCount();
             while (result.next()) {
                 for (int i = 1; i < cols; i++) {
-                    sqleditorreturn.appendText(result.getString(i));
+                    sqleditorreturn.appendText(result.getString(i) + "\t");
                 }
                 sqleditorreturn.appendText("\r\n");
             }
