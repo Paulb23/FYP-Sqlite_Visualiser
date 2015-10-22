@@ -229,10 +229,11 @@ public class DefaultDatabaseParser implements DatabaseParser {
                     if (table == 1) {
                         cell.type = CellType.Table;
                         node.addChild(parseBtree(in, tablePage, pageSize));
-                    } else {
+                    } else if (cell.type == null) {
                         cell.type = CellType.Data;
                     }
-                    //System.out.println(cell.previewData[i]);
+
+                    //System.out.println(cell.previewData[i] + " " + table);
                     // read overflow
                    // cell.overflowPageNumbers[i] = in.readInt();
                 }
