@@ -37,6 +37,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -126,10 +127,14 @@ public class MenubarController extends Controller {
         try {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Open Database");
-            String path = fileChooser.showOpenDialog(null).getCanonicalPath();
+            File file = fileChooser.showOpenDialog(null);
 
-            this.model.openDatabase(path, new Database(new BTree<BTreeCell>(), new Metadata()));
-            notifyObserver();
+            if (file != null) {
+                this.model.openDatabase(file.getCanonicalPath(), new Database(new BTree<BTreeCell>(), new Metadata()));
+                notifyObserver();
+            } else {
+
+            }
         } catch (IOException e) {
             UiUtil.showExceptionError("Error Dialog", "Oooops, Could not read that file!", e);
         } catch (InvalidFileException e) {
