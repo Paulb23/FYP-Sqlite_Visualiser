@@ -187,6 +187,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
                     }
 
                     int table = 0;
+                    int index = 0;
                     int tablePage = 0;
                     for (int j = 0; j < k; j++) {      // read payload
                         if (types[j] == 0) {
@@ -222,7 +223,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
                             in.read(bytes);
                             String str = new String(bytes);
                             cell.previewData[i] += " " + str + " ";
-                            if (str.equals("table")) {
+                            if (str.equals("table") || str.equals("index")) {
                                 table = 1;
                             }
                         }
