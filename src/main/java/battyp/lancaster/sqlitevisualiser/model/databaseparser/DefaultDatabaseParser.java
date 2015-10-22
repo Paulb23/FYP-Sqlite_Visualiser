@@ -152,9 +152,10 @@ public class DefaultDatabaseParser implements DatabaseParser {
             startOfCell = 65536;
         }
         int fagmentedFreeBytes = in.readByte();
+        int rightMostPointer = 0;
 
         if (type == SqliteConstants.INDEX_BTREE_INTERIOR_CELL || type == SqliteConstants.TABLE_BTREE_INTERIOR_CELL) {
-            int rightMostPointer = in.readInt();
+            rightMostPointer = in.readInt();
         }
 
         BTreeCell cell = new BTreeCell(type, numberOfCells, realPageNumber);
@@ -232,8 +233,6 @@ public class DefaultDatabaseParser implements DatabaseParser {
                     } else if (cell.type == null) {
                         cell.type = CellType.Data;
                     }
-
-                    //System.out.println(cell.previewData[i] + " " + table);
                     // read overflow
                    // cell.overflowPageNumbers[i] = in.readInt();
                 }
@@ -260,6 +259,12 @@ public class DefaultDatabaseParser implements DatabaseParser {
                     //cell.overflowPageNumbers[i] = in.readInt();
                 }
                 break;
+            }
+        }
+
+        if (type == SqliteConstants.INDEX_BTREE_INTERIOR_CELL || type == SqliteConstants.TABLE_BTREE_INTERIOR_CELL) {
+            if (rightMostPointer != 0) {
+                node.addChild(parseBtree(in, rightMostPointer, pageSize));
             }
         }
 
