@@ -29,6 +29,7 @@ import battyp.lancaster.sqlitevisualiser.model.database.Database;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeNode;
 import battyp.lancaster.sqlitevisualiser.view.Cell;
+import battyp.lancaster.sqlitevisualiser.view.CellFactory;
 import battyp.lancaster.sqlitevisualiser.view.Edge;
 import battyp.lancaster.sqlitevisualiser.view.ZoomableScrollPane;
 import javafx.fxml.FXML;
@@ -46,6 +47,8 @@ public class VisualisationController extends Controller {
     @FXML
     private ZoomableScrollPane zoomablepane;
 
+    private CellFactory cellFactory;
+
     /**
      * Creates a new Controller with the model set
      *
@@ -53,6 +56,7 @@ public class VisualisationController extends Controller {
      */
     public VisualisationController(Model model) {
         super(model);
+        cellFactory = new CellFactory();
     }
 
     /**
@@ -81,7 +85,7 @@ public class VisualisationController extends Controller {
      * @param pane Pane to attach the node to
      */
     private void addCell(BTreeNode<BTreeCell> node, Cell parent, int x, int y, Pane pane) {
-        Cell cell = new Cell(node.getData().type, "Page: " + node.getData().pageNumber);
+        Cell cell = cellFactory.createCell(node.getData().type, "Page: " + node.getData().pageNumber);
         cell.setLayoutX(x);
         cell.setLayoutY(y);
 

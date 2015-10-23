@@ -24,6 +24,7 @@
 
 package battyp.lancaster.sqlitevisualiser.tests.view;
 
+import battyp.lancaster.sqlitevisualiser.tests.view.Mocks.MockCell;
 import battyp.lancaster.sqlitevisualiser.view.Cell;
 import battyp.lancaster.sqlitevisualiser.view.CellType;
 import org.junit.Test;
@@ -39,11 +40,11 @@ public class CellTest {
 
     @Test
     public void TestDefaultCreation() {
-        Cell cell = new Cell(CellType.Default, "Test!");
+        Cell cell = new MockCell(CellType.Default, "Test!");
     }
 
     @Test
     public void TestCreationWithNull() {
-        Cell cell = new Cell(null, null);
+        Cell cell = new MockCell(null, null);
     }
 }

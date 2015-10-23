@@ -24,27 +24,49 @@
 
 package battyp.lancaster.sqlitevisualiser.view;
 
-import javafx.scene.layout.Pane;
+import battyp.lancaster.sqlitevisualiser.view.Cells.*;
 
 /**
- * Abstract cell AKA node in the the b-tree that different types will extend from
+ * Factory for creating view cells
  *
  * @author Paul Batty
  */
-public abstract class Cell extends Pane {
-
-    private CellType type;
+public class CellFactory {
 
     /**
-     * Creates a new cell
+     * Creates a new cell factory
+     */
+    public CellFactory(){
+    }
+
+    /**
+     * Creates a new Cell
      *
      * @param type Type of the cell
-     * @param label Label to put on the cell
+     * @param label Text to pout on the cell
+     * @return
      */
-    public Cell(CellType type, String label) {
-        if (type == null) {
-          type = CellType.Default;
+    public Cell createCell(CellType type, String label) {
+        switch(type) {
+            case Default: {
+                return new DefaultCell(type, label);
+            }
+            case Table: {
+                return new TableCell(type, label);
+            }
+            case Data: {
+                return new DataCell(type, label);
+            }
+            case Table_Pointer_Internal: {
+                return new TablePointerInternal(type, label);
+            }
+            case Index_Leaf: {
+                return new IndexLeaf(type, label);
+            }
+            case Index_Pointer_Internal: {
+                return new IndexPointerInternal(type, label);
+            }
         }
-        this.type = type;
+        return new DefaultCell(type, label);
     }
 }

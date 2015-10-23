@@ -22,29 +22,23 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.view;
 
-import javafx.scene.layout.Pane;
+package battyp.lancaster.sqlitevisualiser.tests.view.Mocks;
+
+import battyp.lancaster.sqlitevisualiser.view.Cell;
+import battyp.lancaster.sqlitevisualiser.view.CellType;
+
 
 /**
- * Abstract cell AKA node in the the b-tree that different types will extend from
+ * Mock implementation of the Cell
+ *
+ * @see battyp.lancaster.sqlitevisualiser.view.Cell
  *
  * @author Paul Batty
  */
-public abstract class Cell extends Pane {
+public class MockCell extends Cell {
 
-    private CellType type;
-
-    /**
-     * Creates a new cell
-     *
-     * @param type Type of the cell
-     * @param label Label to put on the cell
-     */
-    public Cell(CellType type, String label) {
-        if (type == null) {
-          type = CellType.Default;
-        }
-        this.type = type;
+    public MockCell(CellType type, String label) {
+        super(type, label);
     }
 }

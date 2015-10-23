@@ -22,29 +22,35 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.view;
+package battyp.lancaster.sqlitevisualiser.view.Cells;
 
-import javafx.scene.layout.Pane;
+import battyp.lancaster.sqlitevisualiser.view.Cell;
+import battyp.lancaster.sqlitevisualiser.view.CellType;
+import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 /**
- * Abstract cell AKA node in the the b-tree that different types will extend from
+ * Table cell type
  *
  * @author Paul Batty
  */
-public abstract class Cell extends Pane {
-
-    private CellType type;
+public class TableCell extends Cell {
 
     /**
      * Creates a new cell
      *
-     * @param type Type of the cell
+     * @param type  Type of the cell
      * @param label Label to put on the cell
      */
-    public Cell(CellType type, String label) {
-        if (type == null) {
-          type = CellType.Default;
-        }
-        this.type = type;
+    public TableCell(CellType type, String label) {
+        super(type, label);
+
+        Rectangle view = new Rectangle( 50,50);
+        view.setStroke(Color.INDIANRED);
+        view.setFill(Color.INDIANRED);
+
+        getChildren().add(view);
+        getChildren().add(new Label(label));
     }
 }
