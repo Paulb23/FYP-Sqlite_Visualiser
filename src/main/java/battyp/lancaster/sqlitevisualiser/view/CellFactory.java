@@ -44,7 +44,8 @@ public class CellFactory {
      *
      * @param type Type of the cell
      * @param label Text to pout on the cell
-     * @return
+     *
+     * @return Cell of the corresponding type.
      */
     public Cell createCell(CellType type, String label) {
         switch(type) {
