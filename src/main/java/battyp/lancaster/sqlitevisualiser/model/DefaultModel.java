@@ -74,6 +74,8 @@ public class DefaultModel implements Model {
         databaseParser = new DefaultDatabaseParser();
         sqlExecutor = new DefaultSqlExecutor();
         fileWatcher = new DefaultFileWatcher();
+        Thread thread = new Thread(fileWatcher, "FileWatcher");
+        thread.start();
         isFileOpen = false;
     }
 
@@ -88,6 +90,8 @@ public class DefaultModel implements Model {
         this.databaseParser = databaseParser;
         this.sqlExecutor = sqlExecutor;
         this.fileWatcher = fileWatcher;
+        Thread thread = new Thread(this.fileWatcher, "FileWatcher");
+        thread.start();
         this.isFileOpen = false;
     }
 

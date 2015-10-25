@@ -62,6 +62,8 @@ public class MenubarController extends Controller {
     public MenubarController(Model model, BorderPane root) {
         super(model);
         this.root = root;
+
+        this.model.getFileWatcher().addObserver(this);
     }
 
     /**
@@ -76,6 +78,7 @@ public class MenubarController extends Controller {
      */
     @FXML
     private void exit() {
+        this.model.getFileWatcher().terminate();
        System.exit(0);
     }
 
