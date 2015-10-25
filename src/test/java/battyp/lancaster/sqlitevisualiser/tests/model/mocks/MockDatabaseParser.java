@@ -22,29 +22,25 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.controller;
+package battyp.lancaster.sqlitevisualiser.tests.model.mocks;
 
-import battyp.lancaster.sqlitevisualiser.model.Model;
-import battyp.lancaster.sqlitevisualiser.observerinterface.Observer;
+import battyp.lancaster.sqlitevisualiser.model.database.Database;
+import battyp.lancaster.sqlitevisualiser.model.databaseparser.DatabaseParser;
+import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
+
+import java.io.FileNotFoundException;
 
 /**
- * Abstract Controller that all controllers will inherit from, injected via MenubarContoller or main
+ * Mock implementation of the DatabaseParser
  *
- * @see MenubarController
- * @see battyp.lancaster.sqlitevisualiser.app.SqliteVisualiser
+ * @see DatabaseParser
  *
  * @author Paul Batty
  */
-public abstract class Controller implements Observer {
+public class MockDatabaseParser implements DatabaseParser {
 
-    protected Model model;
-
-    /**
-     * Creates a new Controller with the model set
-     *
-     * @param model The model to use
-     */
-    public Controller(Model model) {
-        this.model = model;
+    @Override
+    public Database parseDatabase(String pathToDatabase, Database database) throws FileNotFoundException, InvalidFileException {
+        return null;
     }
 }

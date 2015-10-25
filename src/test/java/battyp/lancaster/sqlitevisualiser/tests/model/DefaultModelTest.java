@@ -30,10 +30,10 @@ import battyp.lancaster.sqlitevisualiser.model.databaseparser.DefaultDatabasePar
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTree;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
 import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
-import battyp.lancaster.sqlitevisualiser.tests.model.Mocks.MockDatabase;
-import battyp.lancaster.sqlitevisualiser.tests.model.Mocks.MockDatabaseInterface;
-import battyp.lancaster.sqlitevisualiser.tests.model.Mocks.MockDatabaseParser;
-import battyp.lancaster.sqlitevisualiser.tests.model.Mocks.MockSqlExecutor;
+import battyp.lancaster.sqlitevisualiser.tests.model.mocks.MockDatabase;
+import battyp.lancaster.sqlitevisualiser.tests.model.mocks.MockDatabaseInterface;
+import battyp.lancaster.sqlitevisualiser.tests.model.mocks.MockDatabaseParser;
+import battyp.lancaster.sqlitevisualiser.tests.model.mocks.MockSqlExecutor;
 import org.junit.Assert;
 import org.junit.Test;
 

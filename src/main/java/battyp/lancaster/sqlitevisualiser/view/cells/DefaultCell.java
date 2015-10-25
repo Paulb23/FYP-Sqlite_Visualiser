@@ -22,52 +22,33 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.tests.model.Mocks;
+package battyp.lancaster.sqlitevisualiser.view.cells;
 
-import battyp.lancaster.sqlitevisualiser.model.database.Database;
-import battyp.lancaster.sqlitevisualiser.model.databaseinterface.DatabaseInterface;
+import battyp.lancaster.sqlitevisualiser.view.Cell;
+import battyp.lancaster.sqlitevisualiser.view.CellType;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 /**
- * Mock implementation of the DatabaseInterface
- *
- * @see DatabaseInterface
+ * Default cell type
  *
  * @author Paul Batty
  */
-public class MockDatabaseInterface implements DatabaseInterface {
+public class DefaultCell extends Cell {
 
-    @Override
-    public Database getCurrent() {
-        return new MockDatabase();
-    }
+    /**
+     * Creates a new cell
+     *
+     * @param type  Type of the cell
+     * @param label
+     */
+    public DefaultCell(CellType type, String label) {
+        super(type, label);
 
-    @Override
-    public Database getPrevious() {
-        return new MockDatabase();
-    }
+        Rectangle view = new Rectangle( 50,50);
+        view.setStroke(Color.DODGERBLUE);
+        view.setFill(Color.DODGERBLUE);
 
-    @Override
-    public Database getNext() {
-        return new MockDatabase();
-    }
-
-    @Override
-    public void nextStep() {
-
-    }
-
-    @Override
-    public void previousStep() {
-
-    }
-
-    @Override
-    public void addDatabase(Database database) {
-
-    }
-
-    @Override
-    public void clear() {
-
+        getChildren().add(view);
     }
 }

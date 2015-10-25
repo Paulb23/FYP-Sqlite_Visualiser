@@ -22,36 +22,43 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.view.Cells;
+package battyp.lancaster.sqlitevisualiser.model.filewatcher;
 
+import battyp.lancaster.sqlitevisualiser.observerinterface.Subject;
 
-import battyp.lancaster.sqlitevisualiser.view.Cell;
-import battyp.lancaster.sqlitevisualiser.view.CellType;
-import javafx.scene.control.Label;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import java.io.IOException;
 
 /**
- * Index leaf type
+ * Interface that the database updated detector will extend from, This class will
+ * notify all observers when a file change is detected
  *
  * @author Paul Batty
  */
-public class IndexLeaf extends Cell {
+public interface FileWatcher extends Subject, Runnable {
 
     /**
-     * Creates a new cell
-     *
-     * @param type  Type of the cell
-     * @param label
+     * Stops the thread
      */
-    public IndexLeaf(CellType type, String label) {
-        super(type, label);
+    public void terminate();
 
-        Rectangle view = new Rectangle( 50,50);
-        view.setStroke(Color.DARKGOLDENROD);
-        view.setFill(Color.DARKGOLDENROD);
+    /**
+     * Gets the current file path
+     *
+     * @return File path
+     */
+    public String getFilePath();
 
-        getChildren().add(view);
-        getChildren().add(new Label(label));
-    }
+    /**
+     * Gets the current file name
+     *
+     * @return File name
+     */
+    public String getFileName();
+
+    /**
+     * Sets the file to watch
+     *
+     * @param path Path to file including name and extension
+     */
+    public void setFile(String path) throws IOException;
 }

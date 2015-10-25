@@ -24,7 +24,7 @@
 
 package battyp.lancaster.sqlitevisualiser.controller;
 
-import battyp.lancaster.sqlitevisualiser.Util.UiUtil;
+import battyp.lancaster.sqlitevisualiser.util.UiUtil;
 import battyp.lancaster.sqlitevisualiser.model.Model;
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTree;

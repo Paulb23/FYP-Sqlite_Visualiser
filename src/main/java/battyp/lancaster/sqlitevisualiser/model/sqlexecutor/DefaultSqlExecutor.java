@@ -22,9 +22,9 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.model.SqlExecutor;
+package battyp.lancaster.sqlitevisualiser.model.sqlexecutor;
 
-import battyp.lancaster.sqlitevisualiser.Util.FileUtil;
+import battyp.lancaster.sqlitevisualiser.util.FileUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;

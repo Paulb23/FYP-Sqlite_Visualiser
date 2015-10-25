@@ -22,29 +22,35 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.controller;
+package battyp.lancaster.sqlitevisualiser.view.cells;
 
-import battyp.lancaster.sqlitevisualiser.model.Model;
-import battyp.lancaster.sqlitevisualiser.observerinterface.Observer;
+import battyp.lancaster.sqlitevisualiser.view.Cell;
+import battyp.lancaster.sqlitevisualiser.view.CellType;
+import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 /**
- * Abstract Controller that all controllers will inherit from, injected via MenubarContoller or main
- *
- * @see MenubarController
- * @see battyp.lancaster.sqlitevisualiser.app.SqliteVisualiser
+ * Data cell type
  *
  * @author Paul Batty
  */
-public abstract class Controller implements Observer {
-
-    protected Model model;
+public class DataCell extends Cell{
 
     /**
-     * Creates a new Controller with the model set
+     * Creates a new cell
      *
-     * @param model The model to use
+     * @param type  Type of the cell
+     * @param label
      */
-    public Controller(Model model) {
-        this.model = model;
+    public DataCell(CellType type, String label) {
+        super(type, label);
+
+        Rectangle view = new Rectangle( 50,50);
+        view.setStroke(Color.CHARTREUSE);
+        view.setFill(Color.CHARTREUSE);
+
+        getChildren().add(view);
+        getChildren().add(new Label(label));
     }
 }

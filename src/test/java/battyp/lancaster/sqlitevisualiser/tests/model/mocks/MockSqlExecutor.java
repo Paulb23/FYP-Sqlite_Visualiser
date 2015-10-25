@@ -22,23 +22,40 @@
  * THE SOFTWARE.
  */
 
+package battyp.lancaster.sqlitevisualiser.tests.model.mocks;
 
-package battyp.lancaster.sqlitevisualiser.tests.view.Mocks;
 
-import battyp.lancaster.sqlitevisualiser.view.Cell;
-import battyp.lancaster.sqlitevisualiser.view.CellType;
+import battyp.lancaster.sqlitevisualiser.model.sqlexecutor.SqlExecutor;
 
+import java.sql.ResultSet;
 
 /**
- * Mock implementation of the Cell
+ * Mock implementation of the sqlexecutor
  *
- * @see battyp.lancaster.sqlitevisualiser.view.Cell
+ * @see battyp.lancaster.sqlitevisualiser.model.sqlexecutor.SqlExecutor
  *
  * @author Paul Batty
  */
-public class MockCell extends Cell {
+public class MockSqlExecutor implements SqlExecutor {
 
-    public MockCell(CellType type, String label) {
-        super(type, label);
+    @Override
+    public void setDatabaseFile(String path) {
+    }
+
+    @Override
+    public void connect() {
+    }
+
+    @Override
+    public void disconnect() {
+    }
+
+    @Override
+    public ResultSet executeSql(String sql) {
+        return null;
+    }
+
+    @Override
+    public void performUpdate(String sql) {
     }
 }

@@ -22,19 +22,23 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.observerInterface;
+
+package battyp.lancaster.sqlitevisualiser.tests.view.mocks;
+
+import battyp.lancaster.sqlitevisualiser.view.Cell;
+import battyp.lancaster.sqlitevisualiser.view.CellType;
+
 
 /**
- * General Interface for all subject, used in the observer pattern.
+ * Mock implementation of the Cell
  *
- * This is used to notify objects to reload as the database has been updated.
+ * @see battyp.lancaster.sqlitevisualiser.view.Cell
  *
  * @author Paul Batty
  */
-public interface Observer {
+public class MockCell extends Cell {
 
-    /**
-     * Called by the Subject to notify it's observers
-     */
-    public void notifyObserver();
+    public MockCell(CellType type, String label) {
+        super(type, label);
+    }
 }

@@ -22,36 +22,22 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.view.Cells;
+package battyp.lancaster.sqlitevisualiser.tests.model.mocks;
 
-
-import battyp.lancaster.sqlitevisualiser.view.Cell;
-import battyp.lancaster.sqlitevisualiser.view.CellType;
-import javafx.scene.control.Label;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import battyp.lancaster.sqlitevisualiser.model.database.Database;
+import battyp.lancaster.sqlitevisualiser.model.datastructures.BTree;
+import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
 
 /**
- * Table Pointer Internal cell type
+ * Mock implementation of the Database
+ *
+ * @see Database
  *
  * @author Paul Batty
  */
-public class TablePointerInternal extends Cell {
+public class MockDatabase extends Database {
 
-    /**
-     * Creates a new cell
-     *
-     * @param type  Type of the cell
-     * @param label
-     */
-    public TablePointerInternal(CellType type, String label) {
-        super(type, label);
-
-        Rectangle view = new Rectangle( 50,50);
-        view.setStroke(Color.DARKORANGE);
-        view.setFill(Color.DARKORANGE);
-
-        getChildren().add(view);
-        getChildren().add(new Label(label));
+    public MockDatabase() {
+        super(new BTree(), new Metadata());
     }
 }

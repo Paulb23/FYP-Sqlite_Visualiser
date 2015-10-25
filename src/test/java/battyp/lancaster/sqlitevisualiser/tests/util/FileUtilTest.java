@@ -22,35 +22,32 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.view.Cells;
+package battyp.lancaster.sqlitevisualiser.tests.util;
 
-import battyp.lancaster.sqlitevisualiser.view.Cell;
-import battyp.lancaster.sqlitevisualiser.view.CellType;
-import javafx.scene.control.Label;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import battyp.lancaster.sqlitevisualiser.util.FileUtil;
+import org.junit.Assert;
+import org.junit.Test;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 
 /**
- * Table cell type
+ * JUnit tests for the FileUtil
+ *
+ * @see battyp.lancaster.sqlitevisualiser.util.FileUtil
  *
  * @author Paul Batty
  */
-public class TableCell extends Cell {
+public class FileUtilTest {
 
-    /**
-     * Creates a new cell
-     *
-     * @param type  Type of the cell
-     * @param label Label to put on the cell
-     */
-    public TableCell(CellType type, String label) {
-        super(type, label);
+    @Test
+    public void TestReturnsValidFile() throws FileNotFoundException {
+        File file = FileUtil.openFile("validDatabase");
+        Assert.assertTrue(file != null);
+    }
 
-        Rectangle view = new Rectangle( 50,50);
-        view.setStroke(Color.INDIANRED);
-        view.setFill(Color.INDIANRED);
-
-        getChildren().add(view);
-        getChildren().add(new Label(label));
+    @Test(expected = FileNotFoundException.class)
+    public void TestThrowsExceptionOnInvalidFile() throws FileNotFoundException {
+        File file = FileUtil.openFile("thereisnowaythisisavalidfile");
     }
 }

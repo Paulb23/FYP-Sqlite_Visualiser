@@ -24,7 +24,7 @@
 
 package battyp.lancaster.sqlitevisualiser.view;
 
-import battyp.lancaster.sqlitevisualiser.view.Cells.*;
+import battyp.lancaster.sqlitevisualiser.view.cells.*;
 
 /**
  * Factory for creating view cells

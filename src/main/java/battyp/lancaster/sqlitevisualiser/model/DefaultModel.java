@@ -24,8 +24,8 @@
 
 package battyp.lancaster.sqlitevisualiser.model;
 
-import battyp.lancaster.sqlitevisualiser.model.SqlExecutor.DefaultSqlExecutor;
-import battyp.lancaster.sqlitevisualiser.model.SqlExecutor.SqlExecutor;
+import battyp.lancaster.sqlitevisualiser.model.sqlexecutor.DefaultSqlExecutor;
+import battyp.lancaster.sqlitevisualiser.model.sqlexecutor.SqlExecutor;
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
 import battyp.lancaster.sqlitevisualiser.model.databaseinterface.DatabaseInterface;
 import battyp.lancaster.sqlitevisualiser.model.databaseinterface.DefaultDatabaseInterface;

@@ -22,9 +22,9 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.tests.model.SqlExecutor;
+package battyp.lancaster.sqlitevisualiser.tests.model.sqlexecutor;
 
-import battyp.lancaster.sqlitevisualiser.model.SqlExecutor.DefaultSqlExecutor;
+import battyp.lancaster.sqlitevisualiser.model.sqlexecutor.DefaultSqlExecutor;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
@@ -33,7 +33,7 @@ import java.sql.SQLException;
 /**
  * JUnit tests for DefaultSqlExecutor
  *
- * @see battyp.lancaster.sqlitevisualiser.model.SqlExecutor.SqlExecutor
+ * @see battyp.lancaster.sqlitevisualiser.model.sqlexecutor.SqlExecutor
  *
  * @author Paul Batty
  */

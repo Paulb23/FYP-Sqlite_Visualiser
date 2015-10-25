@@ -24,7 +24,7 @@
 
 package battyp.lancaster.sqlitevisualiser.model;
 
-import battyp.lancaster.sqlitevisualiser.model.SqlExecutor.SqlExecutor;
+import battyp.lancaster.sqlitevisualiser.model.sqlexecutor.SqlExecutor;
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
 import battyp.lancaster.sqlitevisualiser.model.databaseparser.DatabaseParser;
 import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;

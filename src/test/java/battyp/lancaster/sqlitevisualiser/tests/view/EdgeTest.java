@@ -24,7 +24,7 @@
 
 package battyp.lancaster.sqlitevisualiser.tests.view;
 
-import battyp.lancaster.sqlitevisualiser.tests.view.Mocks.MockCell;
+import battyp.lancaster.sqlitevisualiser.tests.view.mocks.MockCell;
 import battyp.lancaster.sqlitevisualiser.view.Cell;
 import battyp.lancaster.sqlitevisualiser.view.CellType;
 import battyp.lancaster.sqlitevisualiser.view.Edge;

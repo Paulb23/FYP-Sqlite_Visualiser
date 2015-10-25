@@ -22,46 +22,36 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.Util;
-
-import javafx.scene.control.Alert;
-import javafx.scene.control.TextArea;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
+package battyp.lancaster.sqlitevisualiser.observerinterface;
 
 /**
- * Utility class for user interface
+ * Interface that subjects for the Observer pattern will inherit
  *
  * @author Paul Batty
  */
-public class UiUtil {
+public interface Subject {
 
     /**
-     * Shows an exception error Alert, with stacktrace
+     * Adds a observer to be notified
      *
-     * @param title Title of the alert box
-     * @param content Content message of the alert
-     * @param e The exception for the stacktrace
+     * @param observer Observer to add
      */
-    public static void showExceptionError(String title, String content, Exception e) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setContentText(content + "\n\n More Details:\n");
-        alert.setResizable(true);
+    public void addObserver(Observer observer);
 
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        e.printStackTrace(pw);
-        String exceptionText = sw.toString();
+    /**
+     * Removes a observer
+     *
+     * @param observer Observer to remove
+     */
+    public void removeObserver(Observer observer);
 
-        TextArea textArea = new TextArea(exceptionText);
-        textArea.setEditable(false);
-        textArea.setWrapText(true);
-        textArea.setMaxWidth(Double.MAX_VALUE);
-        textArea.setMaxHeight(Double.MAX_VALUE);
+    /**
+     * Removes all observers
+     */
+    public void removeAllObservers();
 
-        alert.getDialogPane().setExpandableContent(textArea);
-        alert.showAndWait();
-    }
+    /**
+     * Notifies all observers added
+     */
+    public void notifyObservers();
 }

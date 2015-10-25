@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.view.Cells;
+package battyp.lancaster.sqlitevisualiser.view.cells;
 
 
 import battyp.lancaster.sqlitevisualiser.view.Cell;
@@ -32,11 +32,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 /**
- * Index Pointer Internal cell type
+ * Index leaf type
  *
  * @author Paul Batty
  */
-public class IndexPointerInternal extends Cell {
+public class IndexLeaf extends Cell {
 
     /**
      * Creates a new cell
@@ -44,12 +44,12 @@ public class IndexPointerInternal extends Cell {
      * @param type  Type of the cell
      * @param label
      */
-    public IndexPointerInternal(CellType type, String label) {
+    public IndexLeaf(CellType type, String label) {
         super(type, label);
 
         Rectangle view = new Rectangle( 50,50);
-        view.setStroke(Color.DARKSLATEBLUE);
-        view.setFill(Color.DARKSLATEBLUE);
+        view.setStroke(Color.DARKGOLDENROD);
+        view.setFill(Color.DARKGOLDENROD);
 
         getChildren().add(view);
         getChildren().add(new Label(label));

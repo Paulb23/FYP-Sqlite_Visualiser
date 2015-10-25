@@ -22,51 +22,46 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.model.SqlExecutor;
+package battyp.lancaster.sqlitevisualiser.util;
 
-import java.io.FileNotFoundException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javafx.scene.control.Alert;
+import javafx.scene.control.TextArea;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 /**
- * SqlExecutor is a interface that all outgoing sql commands and executions will be ran through
+ * Utility class for user interface
  *
  * @author Paul Batty
  */
-public interface SqlExecutor {
+public class UiUtil {
 
     /**
-     * Sets the current database file
+     * Shows an exception error Alert, with stacktrace
      *
-     * @param path path to the database
+     * @param title Title of the alert box
+     * @param content Content message of the alert
+     * @param e The exception for the stacktrace
      */
-    public void setDatabaseFile(String path);
+    public static void showExceptionError(String title, String content, Exception e) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setContentText(content + "\n\n More Details:\n");
+        alert.setResizable(true);
 
-    /**
-     * Connects to the database
-     */
-    public void connect() throws FileNotFoundException, SQLException, ClassNotFoundException;
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+        String exceptionText = sw.toString();
 
-    /**
-     * Disconnects the database
-     */
-    public void disconnect();
+        TextArea textArea = new TextArea(exceptionText);
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+        textArea.setMaxWidth(Double.MAX_VALUE);
+        textArea.setMaxHeight(Double.MAX_VALUE);
 
-    /**
-     * Executes Sql on the database such as Selects
-     *
-     * @param sql Sql to execute
-     *
-     * @return Result Set containing the result
-     */
-    public ResultSet executeSql(String sql) throws SQLException;
-
-    /**
-     * Executes Sql on the database such as Update, Delete
-     *
-     * @param sql Sql to execute
-     *
-     * @return Result Set containing the result
-     */
-    public void performUpdate(String sql) throws SQLException;
+        alert.getDialogPane().setExpandableContent(textArea);
+        alert.showAndWait();
+    }
 }

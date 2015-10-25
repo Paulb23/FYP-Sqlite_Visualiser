@@ -22,32 +22,35 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.tests.Util;
+package battyp.lancaster.sqlitevisualiser.view.cells;
 
-import battyp.lancaster.sqlitevisualiser.Util.FileUtil;
-import org.junit.Assert;
-import org.junit.Test;
-
-import java.io.File;
-import java.io.FileNotFoundException;
+import battyp.lancaster.sqlitevisualiser.view.Cell;
+import battyp.lancaster.sqlitevisualiser.view.CellType;
+import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 /**
- * JUnit tests for the FileUtil
- *
- * @see battyp.lancaster.sqlitevisualiser.Util.FileUtil
+ * Table cell type
  *
  * @author Paul Batty
  */
-public class FileUtilTest {
+public class TableCell extends Cell {
 
-    @Test
-    public void TestReturnsValidFile() throws FileNotFoundException {
-        File file = FileUtil.openFile("validDatabase");
-        Assert.assertTrue(file != null);
-    }
+    /**
+     * Creates a new cell
+     *
+     * @param type  Type of the cell
+     * @param label Label to put on the cell
+     */
+    public TableCell(CellType type, String label) {
+        super(type, label);
 
-    @Test(expected = FileNotFoundException.class)
-    public void TestThrowsExceptionOnInvalidFile() throws FileNotFoundException {
-        File file = FileUtil.openFile("thereisnowaythisisavalidfile");
+        Rectangle view = new Rectangle( 50,50);
+        view.setStroke(Color.INDIANRED);
+        view.setFill(Color.INDIANRED);
+
+        getChildren().add(view);
+        getChildren().add(new Label(label));
     }
 }

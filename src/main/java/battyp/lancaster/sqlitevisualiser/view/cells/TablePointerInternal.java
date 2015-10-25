@@ -22,40 +22,36 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.tests.model.Mocks;
+package battyp.lancaster.sqlitevisualiser.view.cells;
 
 
-import battyp.lancaster.sqlitevisualiser.model.SqlExecutor.SqlExecutor;
-
-import java.sql.ResultSet;
+import battyp.lancaster.sqlitevisualiser.view.Cell;
+import battyp.lancaster.sqlitevisualiser.view.CellType;
+import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 /**
- * Mock implementation of the SqlExecutor
- *
- * @see battyp.lancaster.sqlitevisualiser.model.SqlExecutor.SqlExecutor
+ * Table Pointer Internal cell type
  *
  * @author Paul Batty
  */
-public class MockSqlExecutor implements SqlExecutor {
+public class TablePointerInternal extends Cell {
 
-    @Override
-    public void setDatabaseFile(String path) {
-    }
+    /**
+     * Creates a new cell
+     *
+     * @param type  Type of the cell
+     * @param label
+     */
+    public TablePointerInternal(CellType type, String label) {
+        super(type, label);
 
-    @Override
-    public void connect() {
-    }
+        Rectangle view = new Rectangle( 50,50);
+        view.setStroke(Color.DARKORANGE);
+        view.setFill(Color.DARKORANGE);
 
-    @Override
-    public void disconnect() {
-    }
-
-    @Override
-    public ResultSet executeSql(String sql) {
-        return null;
-    }
-
-    @Override
-    public void performUpdate(String sql) {
+        getChildren().add(view);
+        getChildren().add(new Label(label));
     }
 }

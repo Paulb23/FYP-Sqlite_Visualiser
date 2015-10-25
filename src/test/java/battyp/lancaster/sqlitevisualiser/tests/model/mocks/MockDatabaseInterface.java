@@ -22,25 +22,52 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.tests.model.Mocks;
+package battyp.lancaster.sqlitevisualiser.tests.model.mocks;
 
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
-import battyp.lancaster.sqlitevisualiser.model.databaseparser.DatabaseParser;
-import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
-
-import java.io.FileNotFoundException;
+import battyp.lancaster.sqlitevisualiser.model.databaseinterface.DatabaseInterface;
 
 /**
- * Mock implementation of the DatabaseParser
+ * Mock implementation of the DatabaseInterface
  *
- * @see DatabaseParser
+ * @see DatabaseInterface
  *
  * @author Paul Batty
  */
-public class MockDatabaseParser implements DatabaseParser {
+public class MockDatabaseInterface implements DatabaseInterface {
 
     @Override
-    public Database parseDatabase(String pathToDatabase, Database database) throws FileNotFoundException, InvalidFileException {
-        return null;
+    public Database getCurrent() {
+        return new MockDatabase();
+    }
+
+    @Override
+    public Database getPrevious() {
+        return new MockDatabase();
+    }
+
+    @Override
+    public Database getNext() {
+        return new MockDatabase();
+    }
+
+    @Override
+    public void nextStep() {
+
+    }
+
+    @Override
+    public void previousStep() {
+
+    }
+
+    @Override
+    public void addDatabase(Database database) {
+
+    }
+
+    @Override
+    public void clear() {
+
     }
 }

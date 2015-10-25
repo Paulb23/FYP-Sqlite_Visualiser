@@ -22,29 +22,26 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.controller;
+package battyp.lancaster.sqlitevisualiser.tests.filewatcher.mocks;
 
-import battyp.lancaster.sqlitevisualiser.model.Model;
 import battyp.lancaster.sqlitevisualiser.observerinterface.Observer;
 
 /**
- * Abstract Controller that all controllers will inherit from, injected via MenubarContoller or main
+ * Mock implementation of the Observer
  *
- * @see MenubarController
- * @see battyp.lancaster.sqlitevisualiser.app.SqliteVisualiser
+ * @see battyp.lancaster.sqlitevisualiser.observerinterface.Observer
  *
  * @author Paul Batty
  */
-public abstract class Controller implements Observer {
-
-    protected Model model;
+public class MockObserver implements Observer {
 
     /**
-     * Creates a new Controller with the model set
-     *
-     * @param model The model to use
+     * Used to see if we were notified
      */
-    public Controller(Model model) {
-        this.model = model;
+    public boolean notified = false;
+
+    @Override
+    public void notifyObserver() {
+        notified = true;
     }
 }

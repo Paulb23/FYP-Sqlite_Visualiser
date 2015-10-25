@@ -22,35 +22,51 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.view.Cells;
+package battyp.lancaster.sqlitevisualiser.model.sqlexecutor;
 
-import battyp.lancaster.sqlitevisualiser.view.Cell;
-import battyp.lancaster.sqlitevisualiser.view.CellType;
-import javafx.scene.control.Label;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import java.io.FileNotFoundException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
- * Data cell type
+ * sqlexecutor is a interface that all outgoing sql commands and executions will be ran through
  *
  * @author Paul Batty
  */
-public class DataCell extends Cell{
+public interface SqlExecutor {
 
     /**
-     * Creates a new cell
+     * Sets the current database file
      *
-     * @param type  Type of the cell
-     * @param label
+     * @param path path to the database
      */
-    public DataCell(CellType type, String label) {
-        super(type, label);
+    public void setDatabaseFile(String path);
 
-        Rectangle view = new Rectangle( 50,50);
-        view.setStroke(Color.CHARTREUSE);
-        view.setFill(Color.CHARTREUSE);
+    /**
+     * Connects to the database
+     */
+    public void connect() throws FileNotFoundException, SQLException, ClassNotFoundException;
 
-        getChildren().add(view);
-        getChildren().add(new Label(label));
-    }
+    /**
+     * Disconnects the database
+     */
+    public void disconnect();
+
+    /**
+     * Executes Sql on the database such as Selects
+     *
+     * @param sql Sql to execute
+     *
+     * @return Result Set containing the result
+     */
+    public ResultSet executeSql(String sql) throws SQLException;
+
+    /**
+     * Executes Sql on the database such as Update, Delete
+     *
+     * @param sql Sql to execute
+     *
+     * @return Result Set containing the result
+     */
+    public void performUpdate(String sql) throws SQLException;
 }

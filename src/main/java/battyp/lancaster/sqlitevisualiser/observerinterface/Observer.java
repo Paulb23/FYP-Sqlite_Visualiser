@@ -22,22 +22,19 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.tests.model.Mocks;
-
-import battyp.lancaster.sqlitevisualiser.model.database.Database;
-import battyp.lancaster.sqlitevisualiser.model.datastructures.BTree;
-import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
+package battyp.lancaster.sqlitevisualiser.observerinterface;
 
 /**
- * Mock implementation of the Database
+ * General Interface for all subject, used in the observer pattern.
  *
- * @see Database
+ * This is used to notify objects to reload as the database has been updated.
  *
  * @author Paul Batty
  */
-public class MockDatabase extends Database {
+public interface Observer {
 
-    public MockDatabase() {
-        super(new BTree(), new Metadata());
-    }
+    /**
+     * Called by the Subject to notify it's observers
+     */
+    public void notifyObserver();
 }
