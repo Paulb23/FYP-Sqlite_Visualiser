@@ -30,10 +30,7 @@ import battyp.lancaster.sqlitevisualiser.model.databaseparser.DefaultDatabasePar
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTree;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
 import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
-import battyp.lancaster.sqlitevisualiser.tests.model.mocks.MockDatabase;
-import battyp.lancaster.sqlitevisualiser.tests.model.mocks.MockDatabaseInterface;
-import battyp.lancaster.sqlitevisualiser.tests.model.mocks.MockDatabaseParser;
-import battyp.lancaster.sqlitevisualiser.tests.model.mocks.MockSqlExecutor;
+import battyp.lancaster.sqlitevisualiser.tests.model.mocks.*;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -59,10 +56,11 @@ public class DefaultModelTest {
 
     @Test
     public void TestCustomModesAreLoadedOnCreation() {
-        DefaultModel model = new DefaultModel(new MockDatabaseInterface(), new MockDatabaseParser(), new MockSqlExecutor());
+        DefaultModel model = new DefaultModel(new MockDatabaseInterface(), new MockDatabaseParser(), new MockSqlExecutor(), new MockFileWatcher());
         Assert.assertTrue(model.getDatabase() instanceof MockDatabase);
         Assert.assertTrue(model.getDatabaseParser() instanceof MockDatabaseParser);
         Assert.assertTrue(model.getSqlExecutor() instanceof MockSqlExecutor);
+        Assert.assertTrue(model.getFileWatcher() instanceof MockFileWatcher);
     }
 
     @Test

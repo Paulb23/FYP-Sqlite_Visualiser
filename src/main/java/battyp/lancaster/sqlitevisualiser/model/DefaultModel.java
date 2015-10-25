@@ -24,6 +24,8 @@
 
 package battyp.lancaster.sqlitevisualiser.model;
 
+import battyp.lancaster.sqlitevisualiser.model.filewatcher.DefaultFileWatcher;
+import battyp.lancaster.sqlitevisualiser.model.filewatcher.FileWatcher;
 import battyp.lancaster.sqlitevisualiser.model.sqlexecutor.DefaultSqlExecutor;
 import battyp.lancaster.sqlitevisualiser.model.sqlexecutor.SqlExecutor;
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
@@ -48,6 +50,7 @@ public class DefaultModel implements Model {
     private DatabaseInterface databaseInterface;
     private DatabaseParser databaseParser;
     private SqlExecutor sqlExecutor;
+    private FileWatcher fileWatcher;
 
     /**
      * {@inheritDoc}
@@ -59,6 +62,7 @@ public class DefaultModel implements Model {
         this.databaseInterface.addDatabase(database);
         this.sqlExecutor.setDatabaseFile(path);
         this.sqlExecutor.connect();
+        this.fileWatcher.setFile(path);
         isFileOpen = true;
     }
 
@@ -69,6 +73,7 @@ public class DefaultModel implements Model {
         databaseInterface = new DefaultDatabaseInterface();
         databaseParser = new DefaultDatabaseParser();
         sqlExecutor = new DefaultSqlExecutor();
+        fileWatcher = new DefaultFileWatcher();
         isFileOpen = false;
     }
 
@@ -78,10 +83,11 @@ public class DefaultModel implements Model {
      * @param databaseInterface DatabaseInterface to use
      * @param databaseParser DatabaseParser to use
      */
-    public DefaultModel(DatabaseInterface databaseInterface, DatabaseParser databaseParser, SqlExecutor sqlExecutor) {
+    public DefaultModel(DatabaseInterface databaseInterface, DatabaseParser databaseParser, SqlExecutor sqlExecutor, FileWatcher fileWatcher) {
         this.databaseInterface = databaseInterface;
         this.databaseParser = databaseParser;
         this.sqlExecutor = sqlExecutor;
+        this.fileWatcher = fileWatcher;
         this.isFileOpen = false;
     }
 
@@ -107,6 +113,14 @@ public class DefaultModel implements Model {
     @Override
     public SqlExecutor getSqlExecutor() {
         return this.sqlExecutor;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public FileWatcher getFileWatcher() {
+        return this.fileWatcher;
     }
 
     /**
