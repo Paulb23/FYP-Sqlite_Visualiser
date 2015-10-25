@@ -25,6 +25,7 @@
 package battyp.lancaster.sqlitevisualiser.model;
 
 import battyp.lancaster.sqlitevisualiser.model.filewatcher.FileWatcher;
+import battyp.lancaster.sqlitevisualiser.model.liveupdater.LiveUpdater;
 import battyp.lancaster.sqlitevisualiser.model.sqlexecutor.SqlExecutor;
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
 import battyp.lancaster.sqlitevisualiser.model.databaseparser.DatabaseParser;
@@ -76,6 +77,13 @@ public interface Model {
      * @return current File Watcher
      */
     public FileWatcher getFileWatcher();
+
+    /**
+     * Gets the current live updater
+     *
+     * @return current live updater
+     */
+    public LiveUpdater getLiveUpdater();
 
     /**
      * Gets whether we currently have a file open

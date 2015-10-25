@@ -56,11 +56,12 @@ public class DefaultModelTest {
 
     @Test
     public void TestCustomModesAreLoadedOnCreation() {
-        DefaultModel model = new DefaultModel(new MockDatabaseInterface(), new MockDatabaseParser(), new MockSqlExecutor(), new MockFileWatcher());
+        DefaultModel model = new DefaultModel(new MockDatabaseInterface(), new MockDatabaseParser(), new MockSqlExecutor(), new MockFileWatcher(), new MockLiveUpdater());
         Assert.assertTrue(model.getDatabase() instanceof MockDatabase);
         Assert.assertTrue(model.getDatabaseParser() instanceof MockDatabaseParser);
         Assert.assertTrue(model.getSqlExecutor() instanceof MockSqlExecutor);
         Assert.assertTrue(model.getFileWatcher() instanceof MockFileWatcher);
+        Assert.assertTrue(model.getLiveUpdater() instanceof MockLiveUpdater);
     }
 
     @Test

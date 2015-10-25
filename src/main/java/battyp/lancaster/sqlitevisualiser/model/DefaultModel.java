@@ -26,6 +26,8 @@ package battyp.lancaster.sqlitevisualiser.model;
 
 import battyp.lancaster.sqlitevisualiser.model.filewatcher.DefaultFileWatcher;
 import battyp.lancaster.sqlitevisualiser.model.filewatcher.FileWatcher;
+import battyp.lancaster.sqlitevisualiser.model.liveupdater.DefaultLiveUpdater;
+import battyp.lancaster.sqlitevisualiser.model.liveupdater.LiveUpdater;
 import battyp.lancaster.sqlitevisualiser.model.sqlexecutor.DefaultSqlExecutor;
 import battyp.lancaster.sqlitevisualiser.model.sqlexecutor.SqlExecutor;
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
@@ -51,6 +53,7 @@ public class DefaultModel implements Model {
     private DatabaseParser databaseParser;
     private SqlExecutor sqlExecutor;
     private FileWatcher fileWatcher;
+    private LiveUpdater liveUpdater;
 
     /**
      * {@inheritDoc}
@@ -62,6 +65,7 @@ public class DefaultModel implements Model {
         this.databaseInterface.addDatabase(database);
         this.sqlExecutor.setDatabaseFile(path);
         this.sqlExecutor.connect();
+        this.liveUpdater.setDatabase(path, this.databaseParser, this.databaseInterface);
         this.fileWatcher.setFile(path);
         isFileOpen = true;
     }
@@ -73,10 +77,12 @@ public class DefaultModel implements Model {
         databaseInterface = new DefaultDatabaseInterface();
         databaseParser = new DefaultDatabaseParser();
         sqlExecutor = new DefaultSqlExecutor();
+        liveUpdater = new DefaultLiveUpdater();
         fileWatcher = new DefaultFileWatcher();
         Thread thread = new Thread(fileWatcher, "FileWatcher");
         thread.start();
         isFileOpen = false;
+        fileWatcher.addObserver(liveUpdater);
     }
 
     /**
@@ -85,14 +91,16 @@ public class DefaultModel implements Model {
      * @param databaseInterface DatabaseInterface to use
      * @param databaseParser DatabaseParser to use
      */
-    public DefaultModel(DatabaseInterface databaseInterface, DatabaseParser databaseParser, SqlExecutor sqlExecutor, FileWatcher fileWatcher) {
+    public DefaultModel(DatabaseInterface databaseInterface, DatabaseParser databaseParser, SqlExecutor sqlExecutor, FileWatcher fileWatcher, LiveUpdater liveUpdater) {
         this.databaseInterface = databaseInterface;
         this.databaseParser = databaseParser;
         this.sqlExecutor = sqlExecutor;
         this.fileWatcher = fileWatcher;
+        this.liveUpdater = liveUpdater;
         Thread thread = new Thread(this.fileWatcher, "FileWatcher");
         thread.start();
         this.isFileOpen = false;
+        this.fileWatcher.addObserver(this.liveUpdater);
     }
 
     /**
@@ -125,6 +133,14 @@ public class DefaultModel implements Model {
     @Override
     public FileWatcher getFileWatcher() {
         return this.fileWatcher;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public LiveUpdater getLiveUpdater() {
+        return this.liveUpdater;
     }
 
     /**
