@@ -77,7 +77,7 @@ public class MenubarController extends Controller {
      * Quits the program
      */
     @FXML
-    private void exit() {
+    public void exit() {
         this.model.getFileWatcher().terminate();
        System.exit(0);
     }
