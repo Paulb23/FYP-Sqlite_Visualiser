@@ -28,7 +28,7 @@ import battyp.lancaster.sqlitevisualiser.model.filewatcher.DefaultFileWatcher;
 import battyp.lancaster.sqlitevisualiser.observerinterface.Observer;
 import battyp.lancaster.sqlitevisualiser.tests.filewatcher.mocks.MockObserver;
 import battyp.lancaster.sqlitevisualiser.util.FileUtil;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
