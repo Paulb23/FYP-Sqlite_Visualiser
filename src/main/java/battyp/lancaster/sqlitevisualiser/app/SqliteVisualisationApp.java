@@ -35,7 +35,7 @@ import battyp.lancaster.sqlitevisualiser.model.DefaultModel;
  * special command line arguments that are passed in.
  *
  * @author Paul Batty
- * @version 0.8
+ * @version 0.9
  * @since 0.5
  */
 public class SqliteVisualisationApp {
