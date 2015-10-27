@@ -33,9 +33,17 @@ import javafx.scene.transform.Scale;
 
 
 /**
- * ZoomableScrollPane for visualising the b-trees
+ * <h1>< Zoomable Scroll Pane </h1>
+ *
+ * <p>
+ * This class is used to add zoom functionality to the scroll pane,
+ * and is used to draw the tree visualisation. Made up of Cells and
+ * edges.
  *
  * @author Paul Batty
+ * @see Cell
+ * @see Edge
+ * @since 0.7
  */
 public class ZoomableScrollPane extends ScrollPane {
 

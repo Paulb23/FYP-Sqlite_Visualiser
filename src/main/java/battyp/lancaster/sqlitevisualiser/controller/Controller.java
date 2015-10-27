@@ -28,21 +28,31 @@ import battyp.lancaster.sqlitevisualiser.model.Model;
 import battyp.lancaster.sqlitevisualiser.observerinterface.Observer;
 
 /**
- * Abstract Controller that all controllers will inherit from, injected via MenubarContoller or main
+ * <h1> Controller </h1>
  *
- * @see MenubarController
- * @see battyp.lancaster.sqlitevisualiser.app.SqliteVisualiser
+ * <p>
+ * Abstract Controller that all FXML controllers extends, in order to allow
+ * the Model to be injected on creation.
+ *
+ * <p>
+ * This also implements Observer to allow the controller to receive
+ * notifications as to when the database file was modified / changed.
  *
  * @author Paul Batty
+ * @see Observer
+ * @see Model
+ * @since 0.5
  */
 public abstract class Controller implements Observer {
 
+    /* protected so we stop outside access while
+    * removing the need for getters.          */
     protected Model model;
 
     /**
-     * Creates a new Controller with the model set
+     * Constructor.
      *
-     * @param model The model to use
+     * @param model The model that this controller will use.
      */
     public Controller(Model model) {
         this.model = model;

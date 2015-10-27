@@ -31,22 +31,34 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
- * DatabaseParser is the interface that all database file parsers will
- * inherit. This is called every time the database file needs parsing
- * into a usable format for the software.
+ * <h1> Database Parser </h1>
+ *
+ * <p>
+ * This class is designed to parse the database file. And retrieve the
+ * information then store it inside the database object passed in.
+ *
+ * <p>
+ * This Class only contains one, method as it should only parse the file
+ * All other action are coordinated inside the model, for opening the
+ * database, And the updating is done via the live updater.
  *
  * @author Paul Batty
+ * @see Database
+ * @see battyp.lancaster.sqlitevisualiser.model.Model
+ * @see battyp.lancaster.sqlitevisualiser.model.liveupdater.LiveUpdater
+ * @since 0.3
  */
 public interface DatabaseParser {
 
     /**
-     * Takes the database file in the path as parses it into a usable format
-     * for the running program, this is automatically called when a database change
-     * is detected.
+     * Takes the database file in the path as parses it into the database
+     * object, this is automatically called when a database change
+     * is detected, or when a new database in opened.
      *
-     * @param pathToDatabase The string path to the database include file name and extension
-     * @param database The database class to fill with data
-     * @return Database class filled with the format data
+     * @param pathToDatabase The string path to the database including file name and extension.
+     * @param database The database class to fill with data.
+     *
+     * @return Database class filled with the format data.
      */
-    public Database parseDatabase(final String pathToDatabase, Database database) throws IOException, FileNotFoundException, InvalidFileException;
+    public Database parseDatabase(final String pathToDatabase, Database database) throws IOException, InvalidFileException;
 }

@@ -38,9 +38,30 @@ import javafx.scene.layout.Pane;
 import java.util.List;
 
 /**
- * Controller for visualisation.fxml
+ * <h1> Visualisation Controller </h1>
+ *
+ * <p>
+ * FXML Controller for the log tab, located in visualisation.fxml.
+ *
+ * <p>
+ * The visualisation of the internal structure of a SqliteDatabase, using nodes
+ * on a scrollable pane connected via lines, to referent the different types
+ * of cells in the database.
+ *
+ * <p>
+ * Uses a cell factory to create the correct node types, that are set when parsed
+ * via the DatabaseParser. It also uses tree structure also produced when the
+ * file was parsed.
  *
  * @author Paul Batty
+ * @see ZoomableScrollPane
+ * @see CellFactory
+ * @see Cell
+ * @see Edge
+ * @see battyp.lancaster.sqlitevisualiser.model.datastructures.BTree
+ * @see BTreeNode
+ * @see BTreeCell
+ * @since 0.5
  */
 public class VisualisationController extends Controller {
 
@@ -50,9 +71,9 @@ public class VisualisationController extends Controller {
     private CellFactory cellFactory;
 
     /**
-     * Creates a new Controller with the model set
+     * Constructor.
      *
-     * @param model The model to use
+     * @param model The model that this controller will use.
      */
     public VisualisationController(Model model) {
         super(model);
@@ -76,13 +97,20 @@ public class VisualisationController extends Controller {
     }
 
     /**
-     * Creates cells from a node, and add them to the panel with lines
+     * Creates the visual structure of the btree and attached them to a pane.
+     *
+     * <p>
+     * Uses recursion to illiterate over the node located in the tree, Therefor
+     * the first call should always be with the root node. All children nodes
+     * will then be added.
+     *
+     * TODO: Fix Drawing of tree all over the place.
      *
      * @param node Node to represent
-     * @param parent Parent to the node or null for self
-     * @param x X pos to draw the node
-     * @param y Y pos to draw the node
-     * @param pane Pane to attach the node to
+     * @param parent Parent to the node or null for self.
+     * @param x X pos to draw the node.
+     * @param y Y pos to draw the node.
+     * @param pane Pane to attach the node to.
      */
     private void addCell(BTreeNode<BTreeCell> node, Cell parent, int x, int y, Pane pane) {
         Cell cell = cellFactory.createCell(node.getData().type, "Page: " + node.getData().pageNumber);

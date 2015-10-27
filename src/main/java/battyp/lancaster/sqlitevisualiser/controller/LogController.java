@@ -27,16 +27,20 @@ package battyp.lancaster.sqlitevisualiser.controller;
 import battyp.lancaster.sqlitevisualiser.model.Model;
 
 /**
- * Controller for log.fxml
+ * <h1> Log Controller </h1>
+ *
+ * <p>
+ * FXML Controller for the log tab, located in log.fxml.
  *
  * @author Paul Batty
+ * @since 0.5
  */
 public class LogController extends Controller {
 
     /**
-     * Creates a new Controller with the model set
+     * Constructor.
      *
-     * @param model The model to use
+     * @param model The model that this controller will use.
      */
     public LogController(Model model) {
         super(model);

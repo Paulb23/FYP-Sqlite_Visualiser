@@ -27,23 +27,24 @@ package battyp.lancaster.sqlitevisualiser.view;
 import battyp.lancaster.sqlitevisualiser.view.cells.*;
 
 /**
- * Factory for creating view cells
+ * <h1> Cell factory </h1>
+ *
+ * <p>
+ * This class produces the corresponding cell types, based on
+ * the CellType enum.
  *
  * @author Paul Batty
+ * @see Cell
+ * @see CellType
+ * @since 0.8
  */
 public class CellFactory {
 
     /**
-     * Creates a new cell factory
-     */
-    public CellFactory(){
-    }
-
-    /**
-     * Creates a new Cell
+     * Creates a new Cell.
      *
-     * @param type Type of the cell
-     * @param label Text to pout on the cell
+     * @param type Type of the cell.
+     * @param label Text to put on the cell.
      *
      * @return Cell of the corresponding type.
      */
@@ -59,13 +60,13 @@ public class CellFactory {
                 return new DataCell(type, label);
             }
             case Table_Pointer_Internal: {
-                return new TablePointerInternal(type, label);
+                return new TablePointerInternalCell(type, label);
             }
             case Index_Leaf: {
-                return new IndexLeaf(type, label);
+                return new IndexLeafCell(type, label);
             }
             case Index_Pointer_Internal: {
-                return new IndexPointerInternal(type, label);
+                return new IndexPointerInternalCell(type, label);
             }
         }
         return new DefaultCell(type, label);

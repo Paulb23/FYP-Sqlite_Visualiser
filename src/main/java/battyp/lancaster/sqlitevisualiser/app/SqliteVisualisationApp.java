@@ -27,18 +27,32 @@ package battyp.lancaster.sqlitevisualiser.app;
 import battyp.lancaster.sqlitevisualiser.model.DefaultModel;
 
 /**
- * SqliteVisualisationApp is the starting point.
+ * <h1> Sqlite Visualisation App </h1>
+ *
+ * <p>
+ * This Class only contains the main method.
+ * It is designed to conduct the start up of the application and deal with any
+ * special command line arguments that are passed in.
  *
  * @author Paul Batty
+ * @version 0.8
+ * @since 0.5
  */
 public class SqliteVisualisationApp {
 
     /**
-     * Main.
+     * <h1> Main. </h1>
      *
-     * @param args command line args, currently do nothing
+     * <p>
+     * Starting point for the application.
+     *
+     * @param args Command line arguments, Currently non are supported so does
+     *             nothing.
      */
     public static void main(String args[]) {
+
+        /* Use the static calls to start javaFx else
+         * it wont launch properly.               */
         SqliteVisualiser.setModel(new DefaultModel());
         SqliteVisualiser.launch(SqliteVisualiser.class);
     }

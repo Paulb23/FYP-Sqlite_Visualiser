@@ -38,19 +38,47 @@ import javafx.stage.WindowEvent;
 import java.io.IOException;
 
 /**
- * SqliteVisualiser start of the javaFx Application. Make sure to set the model else it will auto load the
- * default set.
+ * <h1> Sqlite Visualiser </h1>
+ *
+ * <p>
+ * This class is the start of the JavaFx application.
+ * It is designed to set up the front end of the application using the Model
+ * created at the start.  If this model is non-existent the application will
+ * use load the default model.
+ *
+ * <p>
+ * This currently works by injecting a "master" like Controller into the
+ * stage.
+ * This controller will then inject the different views controller, in order to
+ * provide the model, across the various views without having, to put
+ * the model into global space.
+ *
+ * <p>
+ * <b>NOTE:<b/> Make sure you have initialised the Model before starting the application.
+ *
+ * <p>
+ * <b>NOTE:<b/> The "Master" controller for this application is MenubarController.
  *
  * @author Paul Batty
+ * @see SqliteVisualisationApp
+ * @see Model
+ * @see battyp.lancaster.sqlitevisualiser.controller.Controller
+ * @see MenubarController
+ * @since 0.5
  */
 public class SqliteVisualiser extends Application {
 
+    /* Has to be static else javafx wont be able to use it */
     private static Model MODEL;
 
     /**
-     * Sets the model to use throughout the program
+     * Sets the Model to use throughout the program.
+     * Make sure this is set before starting the javaFx Thread.
      *
-     * @param model The model to use
+     * <p>
+     * This has to be static to allow it to be set before the application is started.
+     *
+     * @param model The model to use use when the application is launched.
      */
     protected static void setModel(Model model) {
         MODEL = model;
@@ -66,22 +94,17 @@ public class SqliteVisualiser extends Application {
         }
         BorderPane root = new BorderPane();
 
-        /*
-         inject the controller so we can load it with the model and root pane
-          */
+        /* Load and inject the "master "controller so we can load it with the model and root pane */
         FXMLLoader menubarloader = new FXMLLoader(getClass().getClassLoader().getResource("view/fxml/menubar.fxml"));
         MenubarController menubarController = new MenubarController(MODEL, root);
         menubarloader.setController(menubarController);
         BorderPane bar = menubarloader.load();
-
-        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent event) {
-                menubarController.exit();
-            }
-        });
-
         root.setTop(bar);
+
+        /* Make sure we use a custom close to exit cleanly */
+        primaryStage.setOnCloseRequest(event -> menubarController.exit());
+
+        /* Should move resolution to options / config. */
         Scene scene = new Scene(root, 800, 600);
         primaryStage.setScene(scene);
         primaryStage.show();

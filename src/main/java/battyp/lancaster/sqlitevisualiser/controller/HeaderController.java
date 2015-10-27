@@ -31,9 +31,18 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 
 /**
- * Controller for header.fxml
+ * <h1> Header Controller </h1>
+ *
+ * <p>
+ * FXML Controller for the Header information tab, located in header.fxml.
+ *
+ * <p>
+ * All of the data that is needed for this tab is stored in the Metadata object, so is
+ * fairly simple to show in the view.
  *
  * @author Paul Batty
+ * @see Metadata
+ * @since 0.5
  */
 public class HeaderController extends Controller {
 
@@ -41,9 +50,9 @@ public class HeaderController extends Controller {
     private TextArea headerTextArea;
 
     /**
-     * Creates a new Controller with the model set
+     * Constructor.
      *
-     * @param model The model to use
+     * @param model The model that this controller will use.
      */
     public HeaderController(Model model) {
         super(model);
@@ -56,6 +65,12 @@ public class HeaderController extends Controller {
         reload();
     }
 
+    /**
+     * Injected via FXML but also called on creation and when a database updated
+     * is detected.
+     *
+     * This is designed to reload / display the information for this view.
+     */
     @FXML
     private void reload() {
         if (model.isFileOpen()) {
@@ -68,16 +83,16 @@ public class HeaderController extends Controller {
                             "Max Embed Payload:" + metadata.maxEmbeddedPayload           + "\n" +
                             "Min Embed Payload:" + metadata.minEmbeddedPayload           + "\n" +
                             "Leaf Payload:"      + metadata.leafPayloadFraction          + "\n" +
-                            "Change Counter:"    + metadata.fileChageCounter             + "\n" +
+                            "Change Counter:"    + metadata.fileChangeCounter + "\n" +
                             "Size in pages:"     + metadata.sizeOfDatabaseInPages        + "\n" +
                             "Freelist Pages:"    + metadata.totalFreeListPages           + "\n" +
                             "Schema cookie:"     + metadata.schemaCookie                 + "\n" +
                             "Schema Format:"     + metadata.schemaFormat                 + "\n" +
-                            "Cache Size:"        + metadata.defualtPageCacheSize         + "\n" +
+                            "Cache Size:"        + metadata.defaultPageCacheSize + "\n" +
                             "Page Large Tree:"   + metadata.pageNumberToLargestBTreePage + "\n" +
                             "text encoding:"     + metadata.textEncoding                 + "\n" +
                             "User Version:"      + metadata.userVersion                  + "\n" +
-                            "Vacuum Mode:"       + metadata.vacuummMode                  + "\n" +
+                            "Vacuum Mode:"       + metadata.vacuumMode + "\n" +
                             "Application ID:"    + metadata.appID                        + "\n" +
                             "Valid Number"       + metadata.versionValidNumber           + "\n" +
                             "Sqlite version:"   + metadata.sqliteVersion                 + "\n"

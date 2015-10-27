@@ -29,44 +29,49 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * sqlexecutor is a interface that all outgoing sql commands and executions will be ran through
+ * <h1> Sql Executor </h1>
+ *
+ * <p>
+ * This class manages the sql connection to the database, and any SQL commands
+ * will pass through it.
  *
  * @author Paul Batty
+ * @since 0.7
  */
 public interface SqlExecutor {
 
     /**
-     * Sets the current database file
+     * Sets the current database file.
      *
-     * @param path path to the database
+     * @param path path to the database.
      */
     public void setDatabaseFile(String path);
 
     /**
-     * Connects to the database
+     * Connects to the database.
      */
     public void connect() throws FileNotFoundException, SQLException, ClassNotFoundException;
 
     /**
-     * Disconnects the database
+     * Disconnects the database.
      */
     public void disconnect();
 
     /**
-     * Executes Sql on the database such as Selects
+     * Executes Sql on the database such as Select.
      *
-     * @param sql Sql to execute
+     * @param sql Sql to execute.
      *
-     * @return Result Set containing the result
+     * @return Result Set containing the result.
      */
     public ResultSet executeSql(String sql) throws SQLException;
 
     /**
-     * Executes Sql on the database such as Update, Delete
+     * Executes Sql on the database such as Update, Delete.
      *
-     * @param sql Sql to execute
+     * @param sql Sql to execute.
      *
-     * @return Result Set containing the result
+     * @return Result Set containing the result.
      */
     public void performUpdate(String sql) throws SQLException;
 }

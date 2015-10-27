@@ -25,50 +25,55 @@
 package battyp.lancaster.sqlitevisualiser.model.datastructures;
 
 /**
- * A data structure for holding the constants
+ * <h1> Sqlite Constants </h1>
+ *
+ * <p>
+ * A data structure for holding the constants around a
+ * Sqlite database.
  *
  * @author Paul Batty
+ * @since 0.6
  */
 public class SqliteConstants {
 
     /**
-     *  Size of the header
+     *  Size of the header.
      */
     public static final int HEADER_SIZE = 100;
 
     /**
-     * Length of the magic number
+     * Length of the magic number.
      */
     public static final int MAGIC_NUMBER_LENGTH = 16;
 
     /**
      * The magic number in bytes, in text it reads:
-     * SQLite format 3
+     * SQLite format 3.
      */
     public static final int MAGIC_NUMBER[] = new int[] {0x53, 0x51, 0x4c, 0x69, 0x74, 0x65, 0x20, 0x66, 0x6f, 0x72, 0x6d, 0x61, 0x74, 0x20, 0x33, 0x00};
 
     /**
-     * Table leaf cell identifier
+     * Table leaf cell identifier.
      */
     public static final int TABLE_BTREE_LEAF_CELL = 0x0d;
 
     /**
-     * Table interior cell identifier
+     * Table interior cell identifier.
      */
     public static final int TABLE_BTREE_INTERIOR_CELL = 0x05;
 
     /**
-     * Index leaf cell identifier
+     * Index leaf cell identifier.
      */
     public static final int INDEX_BTREE_LEAF_CELL = 0x0a;
 
     /**
-     * Index interior cell identifier
+     * Index interior cell identifier.
      */
     public static final int INDEX_BTREE_INTERIOR_CELL = 0x02;
 
     /**
-     * Private constructor so it cannot be created
+     * Private constructor so it cannot be created.
      */
     private SqliteConstants() {
     }

@@ -25,16 +25,24 @@
 package battyp.lancaster.sqlitevisualiser.observerinterface;
 
 /**
- * General Interface for all subject, used in the observer pattern.
+ * <h1> Observer </h1>
  *
- * This is used to notify objects to reload as the database has been updated.
+ * <p>
+ * This class is used in the observer pattern, where
+ * the subject will notify all observers on a event.
+ *
+ * <p>
+ * In the case of this program the observers are notified
+ * when the database is modified.
  *
  * @author Paul Batty
+ * @see Subject
+ * @since 0.6
  */
 public interface Observer {
 
     /**
-     * Called by the Subject to notify it's observers
+     * Called by the Subject to notify it's observers.
      */
     public void notifyObserver();
 }

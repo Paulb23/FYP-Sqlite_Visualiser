@@ -42,9 +42,14 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 /**
- * DefaultModel is the default interface into the model
+ * <h1> Default Model </h1>
+ *
+ * <p>
+ * Default implementation of the model interface.
  *
  * @author Paul Batty
+ * @see Model
+ * @since 0.4
  */
 public class DefaultModel implements Model {
 
@@ -59,7 +64,7 @@ public class DefaultModel implements Model {
      * {@inheritDoc}
      */
     @Override
-    public void openDatabase(final String path, Database database) throws IOException, FileNotFoundException, InvalidFileException, SQLException, ClassNotFoundException {
+    public void openDatabase(final String path, Database database) throws IOException, InvalidFileException, SQLException, ClassNotFoundException {
         database = this.databaseParser.parseDatabase(path, database);
         this.databaseInterface.clear();
         this.databaseInterface.addDatabase(database);
@@ -71,7 +76,7 @@ public class DefaultModel implements Model {
     }
 
     /**
-     * Creates a new instance of the default model with default mode
+     * Creates a new instance of the default model with default mode.
      */
     public DefaultModel() {
         databaseInterface = new DefaultDatabaseInterface();
@@ -86,10 +91,10 @@ public class DefaultModel implements Model {
     }
 
     /**
-     * Creates a new instance of the model with custom modes
+     * Creates a new instance of the model with custom modules.
      *
-     * @param databaseInterface DatabaseInterface to use
-     * @param databaseParser DatabaseParser to use
+     * @param databaseInterface DatabaseInterface to use.
+     * @param databaseParser DatabaseParser to use.
      */
     public DefaultModel(DatabaseInterface databaseInterface, DatabaseParser databaseParser, SqlExecutor sqlExecutor, FileWatcher fileWatcher, LiveUpdater liveUpdater) {
         this.databaseInterface = databaseInterface;

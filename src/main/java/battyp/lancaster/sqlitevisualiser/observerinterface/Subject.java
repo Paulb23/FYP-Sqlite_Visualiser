@@ -25,9 +25,20 @@
 package battyp.lancaster.sqlitevisualiser.observerinterface;
 
 /**
- * Interface that subjects for the Observer pattern will inherit
+ * <h1> Subject </h1>
+ *
+ * <p>
+ * This class is used in the observer pattern, where
+ * the subject will notify all observers on a event.
+ *
+ * <p>
+ * In the case of this program the subject is the file watcher
+ * and will notify subject when the database is modified.
  *
  * @author Paul Batty
+ * @see Observer
+ * @see battyp.lancaster.sqlitevisualiser.model.filewatcher.FileWatcher
+ * @since 0.8
  */
 public interface Subject {
 

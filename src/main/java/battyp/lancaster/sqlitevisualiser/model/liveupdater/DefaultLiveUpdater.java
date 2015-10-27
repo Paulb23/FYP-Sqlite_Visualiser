@@ -34,9 +34,14 @@ import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
 import java.io.IOException;
 
 /**
- * Default implementation of the live updater
+ * <h1> Default Live Updater </h1>
+ *
+ * <p>
+ * Default implementation of the live updater.
  *
  * @author Paul Batty
+ * @see LiveUpdater
+ * @since 0.8
  */
 public class DefaultLiveUpdater implements LiveUpdater {
 
@@ -45,6 +50,9 @@ public class DefaultLiveUpdater implements LiveUpdater {
     private DatabaseParser databaseParser;
     private DatabaseInterface databaseInterface;
 
+    /**
+     * Constructor.
+     */
     public DefaultLiveUpdater() {
         live = true;
     }

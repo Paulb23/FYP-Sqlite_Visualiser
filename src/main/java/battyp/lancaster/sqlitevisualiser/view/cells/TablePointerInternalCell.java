@@ -32,19 +32,25 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 /**
- * Table Pointer Internal cell type
+ * <h1> Table Pointer Internal Cell </h1>
+ *
+ * <p>
+ * Cell type to represent the internal pointer cell, within the Sqlite
+ * database.
  *
  * @author Paul Batty
+ * @see Cell
+ * @since 0.8
  */
-public class TablePointerInternal extends Cell {
+public class TablePointerInternalCell extends Cell {
 
     /**
-     * Creates a new cell
+     * Constructor.
      *
-     * @param type  Type of the cell
-     * @param label
+     * @param type Type of the cell.
+     * @param label Text to put on the cell.
      */
-    public TablePointerInternal(CellType type, String label) {
+    public TablePointerInternalCell(CellType type, String label) {
         super(type, label);
 
         Rectangle view = new Rectangle( 50,50);

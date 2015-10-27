@@ -42,11 +42,30 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 /**
- * Controller for menubar.fxml view, injected via start
- * Controls the menu bar and tab switching, and injects the corresponding controllers
- * so they can have a shared model.
+ * <h1> Menubar Controller </h1>
+ *
+ * <p>
+ * FXML Controller for the Header information tab, located in menubar.fxml.
+ *
+ * <p>
+ * This is the "master" controller for this application and as such is created
+ * at the very start and is injected with the model and root pane of the stage.
+ *
+ * <p>
+ * This class is responsible for ensuring that all tabs / view have access to the
+ * model. It does this by creating and injecting the corresponding controllers
+ * when the tab / view is pressed / shown. this allows them all to have access
+ * to the model so they can get the data needed.
+ *
+ * <p>
+ * In addition to controlling the tab / view switching it as the name suggests
+ * controls the menubar containing the open, exit and other such operations.
  *
  * @author Paul Batty
+ * @see battyp.lancaster.sqlitevisualiser.app.SqliteVisualiser
+ * @see Model
+ * @see battyp.lancaster.sqlitevisualiser.model.filewatcher.FileWatcher
+ * @since 0.5
  */
 public class MenubarController extends Controller {
 
@@ -54,32 +73,58 @@ public class MenubarController extends Controller {
     private Controller currentController;
 
     /**
-     * Creates a new MenubarController
+     * Constructor.
      *
-     * @param model The shared model
-     * @param root The root pane to switch in and out of
+     * @param model The model that this controller will use.
+     * @param root The root pane of the stage.
      */
     public MenubarController(Model model, BorderPane root) {
         super(model);
         this.root = root;
 
+        /* register with the filewatcher so we get updates when the
+        * database is modified.                                  */
         this.model.getFileWatcher().addObserver(this);
     }
 
     /**
-     * {@inheritDoc}
+     * Opens a database file.
+     *
+     * If a error is detected during the process a dialog is displayed to user.
      */
-    public void notifyObserver() {
-        currentController.notifyObserver();
+    @FXML
+    private void openDatabase() {
+        try {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open Database");
+            File file = fileChooser.showOpenDialog(null);
+
+            if (file != null) {
+                this.model.openDatabase(file.getCanonicalPath(), new Database(new BTree<BTreeCell>(), new Metadata()));
+                notifyObserver();
+            } else {
+                UiUtil.showExceptionError("Error Dialog", "Oooops, no file there!", new Exception());
+            }
+        } catch (IOException e) {
+            UiUtil.showExceptionError("Error Dialog", "Oooops, Could not read that file!", e);
+        } catch (InvalidFileException e) {
+            UiUtil.showExceptionError("Error Dialog", "Oooops, That's not a valid database file!", e);
+        } catch (ClassNotFoundException e) {
+            UiUtil.showExceptionError("Error Dialog", "Oooops, Error in Classpath!", e);
+        } catch (SQLException e) {
+            UiUtil.showExceptionError("Error Dialog", "Oooops, Could not connect to the database!", e);
+        }
     }
 
     /**
-     * Quits the program
+     * Quits the program safely.
+     *
+     * Injected at the start to handle the exiting.
      */
     @FXML
     public void exit() {
         this.model.getFileWatcher().terminate();
-       System.exit(0);
+        System.exit(0);
     }
 
     /**
@@ -123,36 +168,17 @@ public class MenubarController extends Controller {
     }
 
     /**
-     * Opens a database
+     * {@inheritDoc}
      */
-    @FXML
-    private void openDatabase() {
-        try {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Open Database");
-            File file = fileChooser.showOpenDialog(null);
-
-            if (file != null) {
-                this.model.openDatabase(file.getCanonicalPath(), new Database(new BTree<BTreeCell>(), new Metadata()));
-                notifyObserver();
-            } else {
-
-            }
-        } catch (IOException e) {
-            UiUtil.showExceptionError("Error Dialog", "Oooops, Could not read that file!", e);
-        } catch (InvalidFileException e) {
-            UiUtil.showExceptionError("Error Dialog", "Oooops, That's not a valid database file", e);
-        } catch (ClassNotFoundException e) {
-            UiUtil.showExceptionError("Error Dialog", "Oooops, Error in Classpath", e);
-        } catch (SQLException e) {
-            UiUtil.showExceptionError("Error Dialog", "Oooops, Could not connect to the database", e);
-        }
+    public void notifyObserver() {
+        this.currentController.notifyObserver();
     }
 
     /**
-     * Switches to the pane, to the fxml file passed in
+     * Switches the current view or Center pane.
      *
-     * @param fxmlPath path to the fxml file
+     * @param fxmlPath Path to the FXML file.
+     * @param controller The controller responsible for the FXML file.
      */
     private void setCenterPane(String fxmlPath, Controller controller) {
         try {
@@ -164,9 +190,8 @@ public class MenubarController extends Controller {
 
             this.currentController = controller;
             notifyObserver();
-
         } catch (IOException e) {
-            e.printStackTrace();
+            UiUtil.showExceptionError("Error Dialog", "Oooops, Could not load that tab!", e);
         }
     }
 }

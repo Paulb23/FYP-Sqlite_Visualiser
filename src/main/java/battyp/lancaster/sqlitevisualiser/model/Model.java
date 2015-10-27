@@ -36,59 +36,67 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 /**
- * Model is a interface that all models will inherit from as a interface into the different model sections
+ * <h1> Model </h1>
+ *
+ * <p>
+ * This class will contain access to all the other sub modals that the view
+ * will rely on such as parsing, and getting the current Database.
+ * This class will also help conduct the sub-modules to perform tasks such
+ * as opening the database.
  *
  * @author Paul Batty
+ * @since 0.4
  */
 public interface Model {
 
     /**
-     * Opens a database
+     * Opens a database.
      *
-     * @param path path to the database
-     * @param database The database to use
+     * @param path path to the database including file name and extension
+     *             can be any type of path.
+     * @param database The database to use.
      */
-    public void openDatabase(final String path, Database database) throws IOException, FileNotFoundException, InvalidFileException, SQLException, ClassNotFoundException;
+    public void openDatabase(final String path, Database database) throws IOException, InvalidFileException, SQLException, ClassNotFoundException;
 
     /**
-     * Gets the current Database
+     * Gets the current Database.
      *
-     * @return Current Database
+     * @return Current Database.
      */
     public Database getDatabase();
 
     /**
-     * Gets the current database parser
+     * Gets the current database parser.
      *
-     * @return current database parser
+     * @return current database parser.
      */
     public DatabaseParser getDatabaseParser();
 
     /**
-     * Gets the current Sql Executor
+     * Gets the current Sql Executor.
      *
-     * @return current Sql Executor
+     * @return current Sql Executor.
      */
     public SqlExecutor getSqlExecutor();
 
     /**
-     * Gets the current File watcher
+     * Gets the current File watcher.
      *
-     * @return current File Watcher
+     * @return current File Watcher.
      */
     public FileWatcher getFileWatcher();
 
     /**
-     * Gets the current live updater
+     * Gets the current live updater.
      *
-     * @return current live updater
+     * @return current live updater.
      */
     public LiveUpdater getLiveUpdater();
 
     /**
-     * Gets whether we currently have a file open
+     * Gets whether we currently have a file open.
      *
-     * @return true if file is open else false
+     * @return true if file is open else false.
      */
     public boolean isFileOpen();
 }

@@ -28,9 +28,15 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * BTreeNode is a implementation of a generic node for the BTree data structure
+ * <h1> B-Tree Node </h1>
+ *
+ * <p>
+ * This class is a generic implementation of a node for
+ * use inside the Btree data structure.
  *
  * @author Paul Batty
+ * @see BTree
+ * @since 0.1
  */
 public class BTreeNode<T> {
 
@@ -39,9 +45,9 @@ public class BTreeNode<T> {
     private BTreeNode<T> parent;
 
     /**
-     * Creates a new BTreeNode with the specified type
+     * Creates a new BTreeNode with the specified type.
      *
-     * @param data The data to store inside the node
+     * @param data The data to store inside the node.
      */
     public BTreeNode(T data) {
         this.data = data;
@@ -50,7 +56,7 @@ public class BTreeNode<T> {
     }
 
     /**
-     * Creates a new BTreeNode with data as null
+     * Creates a new BTreeNode with data as null.
      */
     public BTreeNode() {
         this.children = new ArrayList<>();
@@ -58,45 +64,45 @@ public class BTreeNode<T> {
     }
 
     /**
-     * Gets this nodes parent
+     * Gets this nodes parent.
      *
-     * @return This nodes parent
+     * @return This nodes parent.
      */
     public BTreeNode<T> getParent() {
         return this.parent;
     }
 
     /**
-     * Sets this nodes parent
+     * Sets this nodes parent.
      *
-     * @param parent The new parent of the node
+     * @param parent The new parent of the node.
      */
     public void setParent(BTreeNode<T> parent) {
         this.parent = parent;
     }
 
     /**
-     * Gets this nodes children
+     * Gets this nodes children.
      *
-     * @return This nodes children
+     * @return This nodes children.
      */
     public List<BTreeNode<T>> getChildren() {
         return this.children;
     }
 
     /**
-     * Gets the number of children attached to this node
+     * Gets the number of children attached to this node.
      *
-     * @return number of children attached to this node
+     * @return Number of children attached to this node.
      */
     public int getNumberOfChildren() {
         return children.size();
     }
 
     /**
-     * Get whether the node has any children true if so else false
+     * Get whether the node has any children true if so else false.
      *
-     * @return true if the node has children else false
+     * @return True if the node has children else false.
      */
     public boolean hasChildren() {
         return (children.size() > 0);
@@ -104,9 +110,9 @@ public class BTreeNode<T> {
 
     /**
      * Sets the children to this node to the list passed in
-     * Removes any existing children
+     * Removes any existing children.
      *
-     * @param children children to set
+     * @param children Children to set.
      */
     public void setChildren(List<BTreeNode<T>> children) {
         for (BTreeNode<T> child : children) {
@@ -116,9 +122,9 @@ public class BTreeNode<T> {
     }
 
     /**
-     * Adds a child to the node
+     * Adds a child to the node.
      *
-     * @param child The child node to add
+     * @param child The child node to add.
      */
     public void addChild(BTreeNode<T> child) {
         child.setParent(this);
@@ -126,9 +132,9 @@ public class BTreeNode<T> {
     }
 
     /**
-     * Adds a collection children to the node
+     * Adds a collection children to the node.
      *
-     * @param children The children to add
+     * @param children The children to add.
      */
     public void addChildren(List<BTreeNode<T>> children) {
         for (BTreeNode<T> child : children) {
@@ -138,10 +144,10 @@ public class BTreeNode<T> {
     }
 
     /**
-     * Adds a child at the given index
+     * Adds a child at the given index.
      *
-     * @param index Index to add the child at
-     * @param child The child to add
+     * @param index Index to add the child at.
+     * @param child The child to add.
      */
     public void addChildAt(final int index, BTreeNode<T> child) {
         child.setParent(this);
@@ -149,34 +155,34 @@ public class BTreeNode<T> {
     }
 
     /**
-     * removes all children from the node
+     * removes all children from the node.
      */
     public void removeChildren() {
         this.children = new ArrayList<>();
     }
 
     /**
-     * remove the child form this node
+     * remove the child form this node.
      *
-     * @param child The child to remove
+     * @param child The child to remove.
      */
     public void removeChild(BTreeNode<T> child) {
         this.children.remove(child);
     }
 
     /**
-     * Removed a child at the given index
+     * Removed a child at the given index.
      *
-     * @param index Index of the child to remove
+     * @param index Index of the child to remove.
      */
     public void removeChildAt(final int index) {
         this.children.remove(index);
     }
 
     /**
-     * Gets the data stored inside the node
+     * Gets the data stored inside the node.
      *
-     * @return data stored in the node
+     * @return Data stored in the node.
      */
     public T getData() {
         return this.data;
@@ -185,12 +191,20 @@ public class BTreeNode<T> {
     /**
      * Sets the data in  the node
      *
-     * @param data The data to set to
+     * @param data The data to set to.
      */
     public void setData(T data) {
         this.data = data;
     }
 
+    /**
+     * Compares to object. They are equal if they contain the
+     * same data.
+     *
+     * @param obj Other node to compare with.
+     *
+     * @return True if equal else false.
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null)  {

@@ -29,11 +29,23 @@ import battyp.lancaster.sqlitevisualiser.model.datastructures.BTree;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
 
 /**
- * Database is the interface that all database storage will extend.
- * This class is filled with data via the {@link DatabaseParser databaseparser}
- * class, It is also passed to the view in order for the relevant data to be drawn to the screen.
+ * <h1> Database </h1>
+ *
+ * <p>
+ * This class is intended to be a storage structure for everything relevant to the database.
+ *
+ * <p>
+ * The class is filled with data via the Database parser, then stored inside the Database
+ * Interface.  Currently the class stores the metadata and the btree structure of the
+ * database. It is also passed to the view in order for the relevant data to be
+ * drawn to the screen.
  *
  * @author Paul Batty
+ * @see DatabaseParser
+ * @see battyp.lancaster.sqlitevisualiser.model.databaseinterface.DatabaseInterface
+ * @see Metadata
+ * @see BTree
+ * @since 0.2
  */
 public class Database {
 
@@ -41,28 +53,29 @@ public class Database {
     private final Metadata metadata;
 
     /**
-     * Creates a new instance of Database
+     * Constructor.
      *
-     * @param metadata The metadata object
+     * @param btree The Btree object to store.
+     * @param metadata The metadata object to store.
      */
-    public Database(BTree btree,Metadata metadata) {
+    public Database(BTree btree, Metadata metadata) {
         this.btree = btree;
         this.metadata = metadata;
     }
 
     /**
-     * Gets the btree structure representing the database
+     * Gets the btree structure representing the database.
      *
-     * @return The btree array of BTrees representing the database
+     * @return The BTree representing the database.
      */
     public BTree getBTree() {
         return this.btree;
     }
 
     /**
-     * Gets the Metadata object repenting all metadata about the database
+     * Gets the Metadata object representing all metadata about the database.
      *
-     * @return The Metadata object, containing metadata info
+     * @return The Metadata object.
      */
     public Metadata getMetadata() {
         return this.metadata;

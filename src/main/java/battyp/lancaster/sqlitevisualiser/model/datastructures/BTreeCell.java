@@ -27,14 +27,20 @@ package battyp.lancaster.sqlitevisualiser.model.datastructures;
 import battyp.lancaster.sqlitevisualiser.view.CellType;
 
 /**
- * A data structure for holding the data located in the cells
+ * <h1> B-tree Cell </h1>
+ *
+ * <p>
+ * This class is a data structure for holing information about
+ * each cell in the database.  All fields are pubic as this
+ * contains no implementation as is meant to be modified.
  *
  * @author Paul Batty
+ * @since 0.6
  */
 public class BTreeCell {
 
     /**
-     * Cell type should be from the constants
+     * Cell type should be from the constants.
      * Internal use?
      *
      * @see SqliteConstants
@@ -42,49 +48,51 @@ public class BTreeCell {
     public final int cellType;
 
     /**
-     * The type of cell
+     * The type of cell.
      */
     public CellType type;
 
     /**
-     * Page number of the cells;
+     * Page number of the cells.
      */
     public final long pageNumber;
 
     /**
-     * Number of cells
+     * Number of cells.
      */
     public final int cellCount;
 
     /**
-     * The page numbers
+     * The page numbers.
      */
     public int[] leftChildPointers;
 
     /**
-     * Payload size
+     * Payload size.
      */
     public long[] payLoadSize;
 
     /**
-     * The row ids
+     * The row ids.
      */
     public long[] rowId;
 
     /**
-     * Preview data
+     * Preview data.
      */
     public String[] previewData;
 
     /**
-     * Overflow page numbers
+     * Overflow page numbers.
      */
     public int[] overflowPageNumbers;
 
     /**
-     * Creates a new Btree Cell
+     * Creates a new Btree Cell.
      *
-     * @param cellType type of cell
+     * @param cellType Type of cell.
+     * @param cellCount Number of cells on this page.
+     * @param pageNumber Page number for these cells.
      */
     public BTreeCell(int cellType, int cellCount, long pageNumber) {
         this.cellType = cellType;

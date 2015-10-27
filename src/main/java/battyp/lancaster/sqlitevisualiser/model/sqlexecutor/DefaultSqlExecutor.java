@@ -31,19 +31,21 @@ import java.io.FileNotFoundException;
 import java.sql.*;
 
 /**
- * DefaultSqlExecutor is designed for sqlite databases
+ * <h1> Default SQl Executor </h1>
+ *
+ * <p>
+ * Default implementation of Sql Executor.
  *
  * @author Paul Batty
+ * @see SqlExecutor
+ * @since 0.7
  */
 public class DefaultSqlExecutor implements SqlExecutor {
 
     private static final String SQLITE_DATABASE_LOCATION = "jdbc:sqlite:";
     private static final String SQLite_DRIVER = "org.sqlite.JDBC";
-    protected Connection connection;
+    private Connection connection;
     private String databasePath;
-
-    public DefaultSqlExecutor() {
-    }
 
     /**
      * {@inheritDoc}

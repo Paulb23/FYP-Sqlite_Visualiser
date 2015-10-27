@@ -29,36 +29,41 @@ import battyp.lancaster.sqlitevisualiser.observerinterface.Subject;
 import java.io.IOException;
 
 /**
- * Interface that the database updated detector will extend from, This class will
- * notify all observers when a file change is detected
+ * <h1> File Watcher </h1>
+ *
+ * <p>
+ * This class is designed to watch a file for modifications, once detected
+ * notify all of it's observers.  It runs in a separate thread as not to
+ * disrupt the normal flow of the program.
  *
  * @author Paul Batty
+ * @since 0.8
  */
 public interface FileWatcher extends Subject, Runnable {
 
     /**
-     * Stops the thread
+     * Stops the thread.
      */
     public void terminate();
 
     /**
-     * Gets the current file path
+     * Gets the current file path.
      *
-     * @return File path
+     * @return File path.
      */
     public String getFilePath();
 
     /**
-     * Gets the current file name
+     * Gets the current file name.
      *
-     * @return File name
+     * @return File name.
      */
     public String getFileName();
 
     /**
-     * Sets the file to watch
+     * Sets the file to watch.
      *
-     * @param path Path to file including name and extension
+     * @param path Path to file including name and extension.
      */
     public void setFile(String path) throws IOException;
 }

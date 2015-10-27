@@ -27,55 +27,66 @@ package battyp.lancaster.sqlitevisualiser.model.databaseinterface;
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
 
 /**
- * Interface and all interaction with the inner storage will have to go through,
- * must implement, history, next, previous, adding of the Database object.
- * There should only be one of these and is controlled via the Model.
+ * <h1> Database Interface </h1>
  *
- * @see battyp.lancaster.sqlitevisualiser.model.database.Database
+ * <p>
+ * This Class is designed to provide and interface into the storage of the
+ * Database objects.  And as such provide interactions such as next, previous
+ * current, and Adding of a new database object.
+ *
+ * <p>
+ * Only one of theses should exist per database else the history will get
+ * muddled up. The interaction should be via the LiveUpdater controlling the adding and
+ * status, also the Model to retrieve the current database.
  *
  * @author Paul Batty
+ * @see Database
+ * @see battyp.lancaster.sqlitevisualiser.model.liveupdater.LiveUpdater
+ * @see battyp.lancaster.sqlitevisualiser.model.Model
+ * @since 0.4
  */
 public interface DatabaseInterface {
 
     /**
-     * Gets the current database the this time in history that is being viewed
+     * Gets the current database being viewed.
      *
-     * @return Current Database being viewed
+     * @return Current Database being viewed.
      */
     public Database getCurrent();
 
     /**
-     * Gets the previous database to the one being shown
+     * Gets the previous database to the one being shown.
      *
-     * @return Previous database to the one shown
+     * @return Previous database to the one shown.
      */
     public Database getPrevious();
 
     /**
-     * Gets the next database to the one being shown
+     * Gets the next database to the one being shown.
      *
-     * @return Next database to the one beign shown
+     * @return Next database to the one being shown.
      */
     public Database getNext();
 
     /**
-     * Steps into the next database
+     * Steps into the next database.
      */
     public void nextStep();
 
     /**
-     * Steps into the last database
+     * Steps into the last database.
      */
     public void previousStep();
 
     /**
-     * Adds a database to the front of the history queue
-     * @param database
+     * Adds a database to the front of the history queue.
+     *
+     * @param database Database to add.
      */
     public void addDatabase(Database database);
 
     /**
-     * Clears all the database history
+     * Clears everything in the database history.
      */
     public void clear();
 }

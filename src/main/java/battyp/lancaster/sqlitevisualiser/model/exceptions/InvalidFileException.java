@@ -25,9 +25,13 @@
 package battyp.lancaster.sqlitevisualiser.model.exceptions;
 
 /**
+ * <h1> Invalid File Exception </h1>
+ *
+ * <p>>
  * InvalidFileException should be thrown when an invalid file type is read.
  *
  * @author Paul Batty
+ * @since 0.3
  */
 public class InvalidFileException extends Exception {
 }

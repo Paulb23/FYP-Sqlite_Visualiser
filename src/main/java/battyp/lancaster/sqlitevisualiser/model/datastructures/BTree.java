@@ -28,18 +28,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * BTree is a standard implementation of the BTree data structure
+ * <h1> B-Tree </h1>
+ *
+ * <p>
+ * This class implements a very basic B-tree data structure with generic
+ * typing.  Using BtreeNode, as the nodes inside the tree.
  *
  * @author Paul Batty
+ * @see BTreeNode
+ * @since 0.1
  */
 public class BTree<T> {
 
     private BTreeNode<T> root;
 
     /**
-     * Gets the number of nodes in the tree
+     * Gets the number of nodes in the tree.
      *
-     * @return Number of nodes in the tree
+     * @return Number of nodes in the tree.
      */
     public int getNumberOfNodes() {
         if (this.root == null) {
@@ -64,10 +70,11 @@ public class BTree<T> {
 
     /**
      * Finds the node with the corresponding data, using depth first
-     * search
+     * search.
      *
-     * @param data data to search for
-     * @return The Node with the correfct data
+     * @param data Data to search for
+     *
+     * @return The Node with the corresponding data.
      */
     public BTreeNode<T> find(final T data) {
         if (this.root == null) {
@@ -96,37 +103,38 @@ public class BTree<T> {
 
     /**
      * Finds the node with the corresponding data, using depth first
-     * search, returns true if found else false
+     * search, returns true if found else false.
      *
-     * @param data data to search for
-     * @return true if a node is found else false
+     * @param data Data to search for.
+     *
+     * @return true if a node is found else false.
      */
     public boolean exists(final T data) {
         return (find(data) != null);
     }
 
     /**
-     * Sets the root to the node passed in
+     * Sets the root to the node passed in.
      *
-     * @param node The node to set as root
+     * @param node The node to set as root.
      */
     public void setRoot(BTreeNode<T> node) {
         this.root = node;
     }
 
     /**
-     * Gets the root node of the tree
+     * Gets the root node of the tree.
      *
-     * @return root node of the tree
+     * @return Root node of the tree.
      */
     public BTreeNode<T> getRoot() {
         return this.root;
     }
 
     /**
-     * Gets whether the tree is empty
+     * Gets whether the tree is empty.
      *
-     * @return True if empty else false
+     * @return True if empty else false.
      */
     public boolean isEmpty() {
         return (this.root == null);

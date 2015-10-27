@@ -34,9 +34,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Default implementation of the file watcher
+ * <h1> Default File Watcher </h1>
+ *
+ * <p>
+ * Default implementation of the file watcher.
  *
  * @author Paul Batty
+ * @see FileWatcher
+ * @since 0.8
  */
 public class DefaultFileWatcher implements FileWatcher {
 
@@ -49,6 +54,9 @@ public class DefaultFileWatcher implements FileWatcher {
 
     private boolean running;
 
+    /**
+     * Constructor.
+     */
     public DefaultFileWatcher() {
         this.observers = new ArrayList<>();
         running = true;

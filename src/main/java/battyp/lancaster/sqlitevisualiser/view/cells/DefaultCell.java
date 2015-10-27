@@ -30,17 +30,23 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 /**
- * Default cell type
+ * <h1> Default Cell </h1>
+ *
+ * <p>
+ * Cell type to represent the default cell, within the Sqlite
+ * database.
  *
  * @author Paul Batty
+ * @see Cell
+ * @since 0.8
  */
 public class DefaultCell extends Cell {
 
     /**
-     * Creates a new cell
+     * Constructor.
      *
-     * @param type  Type of the cell
-     * @param label
+     * @param type Type of the cell.
+     * @param label Text to put on the cell.
      */
     public DefaultCell(CellType type, String label) {
         super(type, label);

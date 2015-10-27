@@ -25,9 +25,14 @@
 package battyp.lancaster.sqlitevisualiser.view;
 
 /**
- * Different types of cells
+ * <h1> Cell types </h1>
+ *
+ * <p>
+ * Enum of the different cell types used during the vvisualisation
  *
  * @author Paul Batty
+ * @see Cell
+ * @since 0.7
  */
 public enum CellType {
     Default,

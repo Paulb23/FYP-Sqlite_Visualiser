@@ -30,11 +30,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * DefaultDatabaseInterface is a interface for the databases objects
+ * <h1> Default Database Interface </h1>
  *
- * @see battyp.lancaster.sqlitevisualiser.model.database.Database
+ * <p>
+ * Default implementation of the Database Interface Interface.
  *
  * @author Paul Batty
+ * @see DatabaseInterface
+ * @since 0.4
  */
 public class DefaultDatabaseInterface implements DatabaseInterface {
 
@@ -42,7 +45,7 @@ public class DefaultDatabaseInterface implements DatabaseInterface {
     private List<Database> history;
 
     /**
-     * Creates a new DatabaseInterface
+     * Constructor.
      */
     public DefaultDatabaseInterface() {
         this.current = 0;

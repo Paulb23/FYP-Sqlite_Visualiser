@@ -34,11 +34,16 @@ import java.io.*;
 import java.nio.ByteBuffer;
 
 /**
- * DefaultDatabaseParser is a database parser for Sqlite databases
+ * <h1>< Default Database Parser </h1>
  *
- * @see <a href="https://www.sqlite.org/fileformat2.html">Sqllite file format</a>
+ * <p>
+ * Default implementation of the Database Parser designed for
+ * Sqlite databases.
  *
  * @author Paul Batty
+ * @see DatabaseParser
+ * @see <a href="https://www.sqlite.org/fileformat2.html">Sqlite file format</a>
+ * @since 0.3
  */
 public class DefaultDatabaseParser implements DatabaseParser {
 
@@ -60,10 +65,14 @@ public class DefaultDatabaseParser implements DatabaseParser {
     }
 
     /**
-     * Checks the input stream against the magic number
+     * Checks the input stream against the magic number.
      *
-     * @param in The InputStream
-     * @throws InvalidFileException Invalid magic number
+     * <p>
+     * <b>NOTE:<b/> Assumes input stream is already in position.
+     *
+     * @param in The InputStream.
+     *
+     * @throws InvalidFileException Invalid File if the magic number is incorrect.
      */
     private void checkMagicNumber(RandomAccessFile in) throws InvalidFileException {
         try {
@@ -78,10 +87,13 @@ public class DefaultDatabaseParser implements DatabaseParser {
     }
 
     /**
-     * Reads the first 100 byte header in the database
+     * Reads the first 100 byte header in the database.
      *
-     * @param in The InputStream
-     * @param metadata the metadata object to store to
+     * <p>
+     * <b>NOTE:<b/> Assumes input stream is already in position
+     *
+     * @param in The InputStream.
+     * @param metadata The metadata object to store to.
      */
     private void readSqliteHeader(RandomAccessFile in, Metadata metadata) throws IOException, InvalidFileException {
         metadata.pageSize = in.readShort();
@@ -91,17 +103,17 @@ public class DefaultDatabaseParser implements DatabaseParser {
         metadata.maxEmbeddedPayload = in.readByte();
         metadata.minEmbeddedPayload = in.readByte();
         metadata.leafPayloadFraction = in.readByte();
-        metadata.fileChageCounter = in.readInt();
+        metadata.fileChangeCounter = in.readInt();
         metadata.sizeOfDatabaseInPages = in.readInt();
         metadata.pageNumberOfFirstFreelistPage = in.readInt();
         metadata.totalFreeListPages = in.readInt();
         metadata.schemaCookie = in.readInt();
         metadata.schemaFormat = in.readInt();
-        metadata.defualtPageCacheSize = in.readInt();
+        metadata.defaultPageCacheSize = in.readInt();
         metadata.pageNumberToLargestBTreePage = in.readInt();
         metadata.textEncoding = in.readInt();
         metadata.userVersion = in.readInt();
-        metadata.vacuummMode = in.readInt();
+        metadata.vacuumMode = in.readInt();
         metadata.appID = in.readInt();
         in.skipBytes(20);
         metadata.versionValidNumber = in.readInt();
@@ -109,11 +121,13 @@ public class DefaultDatabaseParser implements DatabaseParser {
     }
 
     /**
-     * Reads the Btree sections of the file
+     * Reads the Btree sections of the file.
      *
-     * @param in The inputStream
-     * @param database The tree to store in
-     * @throws InvalidFileException
+     * @param in The inputStream.
+     * @param database The tree to store in.
+     *
+     * @throws IOException If there is a problem reading the file.
+     * @throws InvalidFileException If there is an unusual format.
      */
     private void readBTrees(RandomAccessFile in, Database database) throws  IOException, InvalidFileException {
 
@@ -124,14 +138,24 @@ public class DefaultDatabaseParser implements DatabaseParser {
     }
 
     /**
-     * Parses the btree page
+     * Parses the btree page.
      *
-     * @param in The input stream
-     * @param pageNumber The page number we are on
-     * @param pageSize The page size
-     * @return  BtreeNode with the cell data
-     * @throws IOException
-     * @throws InvalidFileException
+     * <p>
+     * Uses recursion to load up each node, with it's children.
+     *
+     * TODO: Refactor
+     * TODO: Fix setting to page 0
+     * TODO: Read Overflow Pages
+     * TODO: Read INDEX_BTREE_LEAF_CELL and INDEX_BTREE_INTERIOR_CELL Payloads
+     *
+     * @param in The input stream.
+     * @param pageNumber The page number we are on.
+     * @param pageSize The page size.
+     *
+     * @return  BtreeNode with the cell data.
+     *
+     * @throws IOException If there is a problem reading the file.
+     * @throws InvalidFileException If there is an unusual format.
      */
     public BTreeNode<BTreeCell> parseBtree(RandomAccessFile in, long pageNumber, long pageSize) throws IOException, InvalidFileException {
         BTreeNode<BTreeCell> node = new BTreeNode();
@@ -274,10 +298,14 @@ public class DefaultDatabaseParser implements DatabaseParser {
     }
 
     /**
-     * Decodes the varint variable type and the number of bytes of the varint
+     * Decodes the varint variable type.
      *
-     * @param in The input stream to read the varint from
-     * @return long array with the first element the value, the second the number of bytes else null if invalid
+     * <p>
+     * <b>NOTE:</b> Assumes input stream is already at the correct position.
+     *
+     * @param in The input stream to read the varint from.
+     *
+     * @return long array with the first element the value, the second the number of bytes else null if invalid.
      */
     private long[] decodeVarint(RandomAccessFile in) throws IOException {
         long[] value = new long[2];

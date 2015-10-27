@@ -31,11 +31,22 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 /**
- * Utility class for user interface
+ * <h1> Ui Util </h1>
+ *
+ * <p>
+ * This class is used to provide global utility methods
+ * to UI actions.
  *
  * @author Paul Batty
+ * @since 0.8
  */
 public class UiUtil {
+
+    /**
+     * Private constructor as it's a util class.
+     */
+    private UiUtil() {
+    }
 
     /**
      * Shows an exception error Alert, with stacktrace

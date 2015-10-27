@@ -32,24 +32,30 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 /**
- * Index Pointer Internal cell type
+ * <h1> Index Leaf Cell </h1>
+ *
+ * <p>
+ * Cell type to represent the index leaf cell, within the Sqlite
+ * database.
  *
  * @author Paul Batty
+ * @see Cell
+ * @since 0.8
  */
-public class IndexPointerInternal extends Cell {
+public class IndexLeafCell extends Cell {
 
     /**
-     * Creates a new cell
+     * Constructor.
      *
-     * @param type  Type of the cell
-     * @param label
+     * @param type Type of the cell.
+     * @param label Text to put on the cell.
      */
-    public IndexPointerInternal(CellType type, String label) {
+    public IndexLeafCell(CellType type, String label) {
         super(type, label);
 
         Rectangle view = new Rectangle( 50,50);
-        view.setStroke(Color.DARKSLATEBLUE);
-        view.setFill(Color.DARKSLATEBLUE);
+        view.setStroke(Color.DARKGOLDENROD);
+        view.setFill(Color.DARKGOLDENROD);
 
         getChildren().add(view);
         getChildren().add(new Label(label));

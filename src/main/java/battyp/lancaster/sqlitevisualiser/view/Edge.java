@@ -30,9 +30,15 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
 
 /**
- * Edges between the cells / nodes
+ * <h1> Edge </h1>
+ *
+ * <p>
+ * This class is used to represent edges between cells during the visualisation
+ * of the database.
  *
  * @author Paul Batty
+ * @see Cell
+ * @since 0.7
  */
 public class Edge extends Group {
 
@@ -42,10 +48,10 @@ public class Edge extends Group {
     private Line line;
 
     /**
-     * Creates a line between two cells
+     * Constructor.
      *
-     * @param source Starting cell
-     * @param target Ending cell
+     * @param source Starting cell.
+     * @param target Ending cell.
      */
     public Edge(Cell source, Cell target) {
         this.source = source;

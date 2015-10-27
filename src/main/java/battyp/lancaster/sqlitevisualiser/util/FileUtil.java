@@ -31,25 +31,31 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 /**
- * Utility class for files
+ * <h1> File Util </h1>
+ *
+ * <p>
+ * This class is used to provide global utility methods
+ * to handle files.
  *
  * @author Paul Batty
+ * @since 0.6
  */
 public class FileUtil {
 
     /**
-     * Private constructor as it's a util class
+     * Private constructor as it's a util class.
      */
     private FileUtil() {
     }
 
     /**
-     * Opens a file
+     * Opens a file.
      *
-     * @param pathToFile Path to the file including file name and extension
+     * @param pathToFile Path to the file including file name and extension.
      *
-     * @return The file
-     * @throws FileNotFoundException
+     * @return The file.
+     *
+     * @throws FileNotFoundException If the file does not exist.
      */
     public static File openFile(String pathToFile) throws FileNotFoundException {
         /**

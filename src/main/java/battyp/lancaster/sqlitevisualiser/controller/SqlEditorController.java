@@ -33,20 +33,29 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Controller for sqleditor.fxml
+ * <h1> Sql Editor Controller </h1>
+ *
+ * <p>
+ * FXML Controller for the Sql Editor tab, located in sqleditor.fxml.
+ *
+ * <p>
+ * This Class is designed to allow sql to be ran on the currently opened
+ * database is does this by interacting with the SqlExecutor class.
+ *
+ * <p>
+ * It currently keeps state by using static variables, to allow query's
+ * and results, to stay when switching tabs / views.
  *
  * @author Paul Batty
+ * @see battyp.lancaster.sqlitevisualiser.model.sqlexecutor.SqlExecutor
+ * @since 0.5
  */
 public class SqlEditorController extends Controller {
 
-    /**
-     * To keep statement when tab switching
-     */
+    /* To keep statement when tab switching. */
     private static String saved_statment;
 
-    /**
-     * To keep result when tab switching
-     */
+    /* To keep result when tab switching. */
     private static String saved_result;
 
     @FXML
@@ -56,9 +65,9 @@ public class SqlEditorController extends Controller {
     private TextArea sqleditorreturn;
 
     /**
-     * Creates a new Controller with the model set
+     * Constructor.
      *
-     * @param model The model to use
+     * @param model The model that this controller will use.
      */
     public SqlEditorController(Model model) {
         super(model);
@@ -81,11 +90,20 @@ public class SqlEditorController extends Controller {
         }
     }
 
+    /**
+     * Injected via FXML allows us to save the string every key press.
+     */
     @FXML
     private void save() {
         saved_statment = sqleditor.getText();
     }
 
+    /**
+     * Executes SQl on the database, and prints out the results.
+     * Currency only supports, Selects.
+     *
+     * TODO: Switch between updates and queries
+     */
     @FXML
     private void executeSql() {
         sqleditorreturn.clear();

@@ -27,19 +27,23 @@ package battyp.lancaster.sqlitevisualiser.view;
 import javafx.scene.layout.Pane;
 
 /**
- * Abstract cell AKA node in the the b-tree that different types will extend from
+ * <h1> Cell </h1>
+ *
+ * <p>
+ * This class is used to visualise thedifferentt nodes within the database.
  *
  * @author Paul Batty
+ * @since 0.7
  */
 public abstract class Cell extends Pane {
 
     private CellType type;
 
     /**
-     * Creates a new cell
+     * Constructor.
      *
-     * @param type Type of the cell
-     * @param label Label to put on the cell
+     * @param type Type of the cell.
+     * @param label Text to put on the cell.
      */
     public Cell(CellType type, String label) {
         if (type == null) {

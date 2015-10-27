@@ -32,10 +32,19 @@ import battyp.lancaster.sqlitevisualiser.observerinterface.Observer;
 import java.io.IOException;
 
 /**
- * Live updater, performs the update and controls to the update, play and pausing of the
- * System
+ * <h1> Live updater </h1>
+ *
+ * <p>
+ * This class is designed to handle the state of the database interface, and updating.
+ * It should control the pause, play, next and previous buttons.  It should also handle
+ * the parsing and storage of a Database object when a change is detected.
  *
  * @author Paul Batty
+ * @see battyp.lancaster.sqlitevisualiser.model.filewatcher.FileWatcher
+ * @see battyp.lancaster.sqlitevisualiser.model.database.Database
+ * @see DatabaseInterface
+ * @see DatabaseParser
+ * @since 0.8
  */
 public interface LiveUpdater extends Observer {
 
