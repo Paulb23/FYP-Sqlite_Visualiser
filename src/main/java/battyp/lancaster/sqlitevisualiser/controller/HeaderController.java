@@ -66,12 +66,11 @@ public class HeaderController extends Controller {
     }
 
     /**
-     * Injected via FXML but also called on creation and when a database updated
+     * Called on creation and when a database updated
      * is detected.
      *
      * This is designed to reload / display the information for this view.
      */
-    @FXML
     private void reload() {
         if (model.isFileOpen()) {
             Metadata metadata = this.model.getDatabase().getMetadata();
