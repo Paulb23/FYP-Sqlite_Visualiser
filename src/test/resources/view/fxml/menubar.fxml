@@ -26,9 +26,17 @@
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 
-<BorderPane maxHeight="65.0" minHeight="65.0" prefHeight="65.0"  xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-   <center>
-      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+<BorderPane  xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+    <center>
+        <ToolBar>
+            <Button text="Open" onAction="#openDatabase"/>
+            <Button fx:id="pauseButton" text="Pause" onAction="#playOrPause" />
+            <Button text="Previous" onAction="#getPrevious" />
+            <Button text="Next" onAction="#getNext" />
+        </ToolBar>
+    </center>
+    <bottom>
+      <TabPane prefHeight="40.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
           <Tab onSelectionChanged="#switchToHeader" text="Header">
             <content>
@@ -57,7 +65,7 @@
             </Tab>
         </tabs>
       </TabPane>
-   </center>
+   </bottom>
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>

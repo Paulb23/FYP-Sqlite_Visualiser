@@ -91,6 +91,13 @@ public class ZoomableScrollPane extends ScrollPane {
     }
 
     /**
+     * Removes all nodes attached to the pane.
+     */
+    public void clear() {
+        this.zoomGroup.getChildren().clear();
+    }
+
+    /**
      * Zooms to the value passed
      *
      * @param scale Value to zoom to

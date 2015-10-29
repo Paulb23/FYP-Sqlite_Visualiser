@@ -85,6 +85,8 @@ public class VisualisationController extends Controller {
      */
     public void notifyObserver() {
         if (model.isFileOpen()) {
+            zoomablepane.clear();
+
             Database database = model.getDatabase();
 
             Pane pane = new Pane();

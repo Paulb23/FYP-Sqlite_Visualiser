@@ -69,7 +69,6 @@ public class DefaultModel implements Model {
         this.databaseInterface.clear();
         this.databaseInterface.addDatabase(database);
         this.sqlExecutor.setDatabaseFile(path);
-        this.sqlExecutor.connect();
         this.liveUpdater.setDatabase(path, this.databaseParser, this.databaseInterface);
         this.fileWatcher.setFile(path);
         isFileOpen = true;

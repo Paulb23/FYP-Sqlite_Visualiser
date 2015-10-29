@@ -30,6 +30,6 @@
     <children>
         <TextArea layoutY="0" prefHeight="100" onKeyTyped="#save" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" fx:id="sqleditor" ></TextArea>
         <Button layoutX="640.0" layoutY="110.0" onAction="#executeSql" mnemonicParsing="false" text="ExecuteSql" />
-        <TextArea layoutY="150" prefHeight="390" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" editable="false" fx:id="sqleditorreturn"> </TextArea>
+        <TextArea layoutY="150" prefHeight="340" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" editable="false" fx:id="sqleditorreturn"> </TextArea>
     </children>
 </AnchorPane>

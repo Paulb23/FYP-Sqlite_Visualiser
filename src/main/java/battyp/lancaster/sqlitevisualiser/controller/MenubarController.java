@@ -31,8 +31,10 @@ import battyp.lancaster.sqlitevisualiser.model.datastructures.BTree;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
 import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
@@ -72,6 +74,9 @@ public class MenubarController extends Controller {
     private BorderPane root;
     private Controller currentController;
 
+    @FXML
+    private Button pauseButton;
+
     /**
      * Constructor.
      *
@@ -102,8 +107,6 @@ public class MenubarController extends Controller {
             if (file != null) {
                 this.model.openDatabase(file.getCanonicalPath(), new Database(new BTree<BTreeCell>(), new Metadata()));
                 notifyObserver();
-            } else {
-                UiUtil.showExceptionError("Error Dialog", "Oooops, no file there!", new Exception());
             }
         } catch (IOException e) {
             UiUtil.showExceptionError("Error Dialog", "Oooops, Could not read that file!", e);
@@ -113,6 +116,42 @@ public class MenubarController extends Controller {
             UiUtil.showExceptionError("Error Dialog", "Oooops, Error in Classpath!", e);
         } catch (SQLException e) {
             UiUtil.showExceptionError("Error Dialog", "Oooops, Could not connect to the database!", e);
+        }
+    }
+
+    /**
+     * Pauses or plays the live updater.
+     */
+    @FXML
+    private void playOrPause() {
+        if(this.model.getLiveUpdater().isUpdating()) {
+            this.model.getLiveUpdater().stopUpdating();
+            pauseButton.setText("Play");
+        } else {
+            this.model.getLiveUpdater().startUpdating();
+            pauseButton.setText("Pause");
+        }
+    }
+
+    /**
+     * Gets the previous database.
+     */
+    @FXML
+    private void getPrevious() {
+        if (this.model.isFileOpen()) {
+            this.model.getLiveUpdater().previousStep();
+            notifyObserver();
+        }
+    }
+
+    /**
+     * Gets the previous database.
+     */
+    @FXML
+    private void getNext() {
+        if (this.model.isFileOpen()) {
+            this.model.getLiveUpdater().nextStep();
+            notifyObserver();
         }
     }
 
@@ -171,7 +210,12 @@ public class MenubarController extends Controller {
      * {@inheritDoc}
      */
     public void notifyObserver() {
-        this.currentController.notifyObserver();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                currentController.notifyObserver();
+            }
+        });
     }
 
     /**

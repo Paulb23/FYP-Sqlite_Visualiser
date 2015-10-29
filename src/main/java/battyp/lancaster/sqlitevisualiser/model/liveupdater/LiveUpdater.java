@@ -78,6 +78,16 @@ public interface LiveUpdater extends Observer {
     public void stopUpdating();
 
     /**
+     * Gets the next step.
+     */
+    public void nextStep();
+
+    /**
+     * Gets the previous step.
+     */
+    public void previousStep();
+
+    /**
      * Gets whether we are currently live updating
      *
      * @return True if updating else false

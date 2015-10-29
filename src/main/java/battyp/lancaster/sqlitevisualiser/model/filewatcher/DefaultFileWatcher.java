@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * <h1> Default File Watcher </h1>
@@ -47,12 +48,12 @@ public class DefaultFileWatcher implements FileWatcher {
 
     private List<Observer> observers;
 
-    private String path;
-    private String fileName;
+    private volatile String path;
+    private volatile String fileName;
 
-    private WatchService watchService;
+    private volatile WatchService watchService;
 
-    private boolean running;
+    private volatile boolean running;
 
     /**
      * Constructor.
@@ -107,7 +108,6 @@ public class DefaultFileWatcher implements FileWatcher {
         this.path = file.getCanonicalPath();
         this.path = this.path.substring(0, this.path.lastIndexOf(File.separator));
         this.fileName = file.getName();
-
         this.watchService = FileSystems.getDefault().newWatchService();
         Path dir = Paths.get(this.path);
         dir.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);

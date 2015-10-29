@@ -56,6 +56,14 @@ public class MockLiveUpdater implements LiveUpdater {
     }
 
     @Override
+    public void nextStep() {
+    }
+
+    @Override
+    public void previousStep() {
+    }
+
+    @Override
     public boolean isUpdating() {
         return false;
     }

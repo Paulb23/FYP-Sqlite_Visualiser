@@ -86,10 +86,27 @@ public class DefaultLiveUpdater implements LiveUpdater {
         try {
             if (path != null && databaseParser != null && databaseInterface != null) {
                 update(path, databaseParser, databaseInterface);
+                System.out.println("Updating...");
             }
         } catch (IOException e) {
         } catch (InvalidFileException e) {
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void nextStep() {
+        this.databaseInterface.nextStep();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void previousStep() {
+        this.databaseInterface.previousStep();
     }
 
     /**
