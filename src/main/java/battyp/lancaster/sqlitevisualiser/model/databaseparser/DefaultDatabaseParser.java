@@ -215,38 +215,38 @@ public class DefaultDatabaseParser implements DatabaseParser {
                     int tablePage = 0;
                     for (int j = 0; j < k; j++) {      // read payload
                         if (types[j] == 0) {
-                           cell.previewData[i] += " null ";
+                           cell.data[i] += " null ";
                         } else if (types[j] == 1) {
                             short bytes = in.readByte();
                             if (table == 1 && tablePage == 0) {
                                 tablePage = bytes;
                             }
-                           cell.previewData[i] += " " + bytes + " ";
+                           cell.data[i] += " " + bytes + " ";
                         } else if (types[j] == 2) {
-                            cell.previewData[i] += " " + new Short(in.readShort()) + " ";
+                            cell.data[i] += " " + new Short(in.readShort()) + " ";
                         } else if (types[j] == 3) {
-                            cell.previewData[i] += " " + in.readShort() + in.readByte() + " "; // fix
+                            cell.data[i] += " " + in.readShort() + in.readByte() + " "; // fix
                         } else if (types[j] == 4) {
-                            cell.previewData[i] += " " + new Integer(in.readInt()) + " ";
+                            cell.data[i] += " " + new Integer(in.readInt()) + " ";
                         } else if (types[j] == 5) {
-                            cell.previewData[i] += " " + in.readInt() + in.readShort() + " "; // fix
+                            cell.data[i] += " " + in.readInt() + in.readShort() + " "; // fix
                         } else if (types[j] == 6) {
-                            cell.previewData[i] += " " + new Long(in.readLong()) + " ";
+                            cell.data[i] += " " + new Long(in.readLong()) + " ";
                         } else if (types[j] == 7) {
-                            cell.previewData[i] += " " + new Double(in.readDouble()) + " ";
+                            cell.data[i] += " " + new Double(in.readDouble()) + " ";
                         } else if (types[j] == 8) {
-                            cell.previewData[i] += " 0 ";
+                            cell.data[i] += " 0 ";
                         } else if (types[j] == 9) {
-                            cell.previewData[i] += " 0 ";
+                            cell.data[i] += " 0 ";
                         } else if (types[j] >= 12 && types[j] % 2 == 0) {
                             byte[] bytes = new byte[(types[j]-12)/2];
                             in.read(bytes);
-                            cell.previewData[i] += " " + new String(bytes) + " ";
+                            cell.data[i] += " " + new String(bytes) + " ";
                         } else if (types[j] >= 13 && types[j] % 2 != 0) {
                             byte[] bytes = new byte[(types[j]-13)/2];
                             in.read(bytes);
                             String str = new String(bytes);
-                            cell.previewData[i] += " " + str + " ";
+                            cell.data[i] += " " + str + " ";
                             if (str.equals("table") || str.equals("index")) {
                                 table = 1;
                             }
@@ -272,7 +272,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
                 case SqliteConstants.INDEX_BTREE_LEAF_CELL: {
                     cell.type = CellType.Index_Leaf;
                     cell.payLoadSize[i] = decodeVarint(in)[0];
-                  //  cell.previewData[i] = in.readUTF();
+                  //  cell.data[i] = in.readUTF();
                   //  cell.overflowPageNumbers[i] = in.readInt();
                 }
                 break;
@@ -280,7 +280,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
                     cell.type = CellType.Index_Pointer_Internal;
                     cell.leftChildPointers[i] = in.readInt();
                     cell.payLoadSize[i] = decodeVarint(in)[0];
-                    //cell.previewData[i] = in.readUTF();
+                    //cell.data[i] = in.readUTF();
                     //cell.overflowPageNumbers[i] = in.readInt();
                 }
                 break;
@@ -293,6 +293,18 @@ public class DefaultDatabaseParser implements DatabaseParser {
             }
         }
 
+        cell.createHash();
+        if (node.getNumberOfChildren() == 0) {
+            cell.childrenHash = 1;
+        } else {
+            int childrenCount = node.getNumberOfChildren();
+            final int prime = 31;
+            int hash = 1;
+            for (int i = 0; i < childrenCount; i++) {
+                hash = hash * prime + node.getChildren().get(i).getData().cellHash;
+            }
+            cell.childrenHash = hash;
+        }
         node.setData(cell);
         return node;
     }

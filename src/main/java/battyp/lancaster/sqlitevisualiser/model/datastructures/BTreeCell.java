@@ -80,12 +80,22 @@ public class BTreeCell {
     /**
      * Preview data.
      */
-    public String[] previewData;
+    public String[] data;
 
     /**
      * Overflow page numbers.
      */
     public int[] overflowPageNumbers;
+
+    /**
+     * Hash of this cell.
+     */
+    public int cellHash;
+
+    /**
+     * Hash of the cells children.
+     */
+    public int childrenHash;
 
     /**
      * Creates a new Btree Cell.
@@ -101,7 +111,20 @@ public class BTreeCell {
         this.leftChildPointers = new int[cellCount];
         this.rowId = new long[cellCount];
         this.payLoadSize = new long[cellCount];
-        this.previewData = new String[cellCount];
+        this.data = new String[cellCount];
         this.overflowPageNumbers = new int[cellCount];
+    }
+
+    /**
+     * Calculates the hash of this cell
+     */
+    public void createHash() {
+        final int prime = 31;
+        int hash = 1;
+
+        for( String s : data) {
+            hash = hash * prime + s.hashCode();
+        }
+        cellHash = hash;
     }
 }
