@@ -123,7 +123,9 @@ public class BTreeCell {
         int hash = 1;
 
         for( String s : data) {
-            hash = hash * prime + s.hashCode();
+            if (s != null) {
+                hash = hash * prime + s.hashCode();
+            }
         }
         cellHash = hash;
     }
