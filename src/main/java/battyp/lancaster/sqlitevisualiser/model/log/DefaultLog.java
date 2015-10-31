@@ -24,12 +24,6 @@
 
 package battyp.lancaster.sqlitevisualiser.model.log;
 
-import battyp.lancaster.sqlitevisualiser.util.FileUtil;
-
-import javax.security.auth.callback.Callback;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
