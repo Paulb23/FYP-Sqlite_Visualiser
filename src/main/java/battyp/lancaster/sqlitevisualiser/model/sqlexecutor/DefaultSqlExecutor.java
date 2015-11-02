@@ -74,6 +74,9 @@ public class DefaultSqlExecutor implements SqlExecutor {
     @Override
     public void disconnect() {
         try {
+            if (this.connection.isClosed()) {
+                return;
+            }
             this.connection.commit();
             this.connection.close();
         } catch (Exception e) {
@@ -86,6 +89,9 @@ public class DefaultSqlExecutor implements SqlExecutor {
      */
     @Override
     public ResultSet executeSql(String sql) throws SQLException {
+        if (this.connection.isClosed()) {
+            return null;
+        }
         Statement statement = connection.createStatement();
         return statement.executeQuery(sql);
     }
@@ -95,6 +101,9 @@ public class DefaultSqlExecutor implements SqlExecutor {
      */
     @Override
     public void performUpdate(String sql) throws SQLException {
+        if (this.connection.isClosed()) {
+            return;
+        }
         Statement statement = connection.createStatement();
         statement.executeUpdate(sql);
     }

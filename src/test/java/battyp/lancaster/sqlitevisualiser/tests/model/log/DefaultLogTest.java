@@ -25,7 +25,7 @@
 package battyp.lancaster.sqlitevisualiser.tests.model.log;
 
 import battyp.lancaster.sqlitevisualiser.model.log.DefaultLog;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
