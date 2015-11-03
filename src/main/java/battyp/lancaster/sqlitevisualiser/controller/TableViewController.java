@@ -38,10 +38,7 @@ import javafx.util.Callback;
 
 import java.io.FileNotFoundException;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <h1> Table View Controller </h1>

@@ -27,7 +27,6 @@ package battyp.lancaster.sqlitevisualiser.model.databaseparser;
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
 import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**

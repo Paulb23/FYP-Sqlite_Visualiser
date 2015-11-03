@@ -28,12 +28,10 @@ import battyp.lancaster.sqlitevisualiser.controller.MenubarController;
 import battyp.lancaster.sqlitevisualiser.model.DefaultModel;
 import battyp.lancaster.sqlitevisualiser.model.Model;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 

@@ -51,7 +51,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
      * {@inheritDoc}
      */
     @Override
-    public Database parseDatabase(String pathToDatabase, Database database) throws IOException, FileNotFoundException, InvalidFileException {
+    public Database parseDatabase(String pathToDatabase, Database database) throws IOException, InvalidFileException {
 
         File file = FileUtil.openFile(pathToDatabase);
         RandomAccessFile in = new RandomAccessFile(file, "r");

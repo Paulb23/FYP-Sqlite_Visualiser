@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * <h1> Default File Watcher </h1>
