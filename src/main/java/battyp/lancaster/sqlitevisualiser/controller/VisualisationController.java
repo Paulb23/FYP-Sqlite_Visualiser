@@ -107,6 +107,9 @@ public class VisualisationController extends Controller {
      * will then be added.
      *
      * TODO: Fix Drawing of tree all over the place.
+     * TODO: Try drawing from bottom up
+     * TODO: add action listeners for more details
+     * TODO: add glow effect on change to previous b-tree
      *
      * @param node Node to represent
      * @param parent Parent to the node or null for self.
