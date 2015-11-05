@@ -92,7 +92,7 @@ public class VisualisationController extends Controller {
             Pane pane = new Pane();
 
             BTreeNode<BTreeCell> tree = database.getBTree().getRoot();
-            addCell(tree, null, 500, 50, pane);
+            addCell(tree, null, database.getMetadata().sizeOfDatabaseInPages * 50, 50, pane);
 
             zoomablepane.setNodeContent(pane);
         }
@@ -132,8 +132,15 @@ public class VisualisationController extends Controller {
 
         if (node.getNumberOfChildren() > 0) {
             y += 100;
+            int childCount = node.getNumberOfChildren();
             int xInc = x;
-            x = x / node.getNumberOfChildren();
+            if (childCount == 2) {
+                x = x / 2;
+            } else if (childCount > 2) {
+                xInc = x / childCount;
+                int offset = (int) Math.floor(childCount / 2);
+                x = x - (xInc * offset);
+            }
             for (BTreeNode<BTreeCell> child : children) {
                 addCell(child, cell, x, y, pane);
                 x += xInc;
