@@ -35,6 +35,9 @@ import battyp.lancaster.sqlitevisualiser.view.ZoomableScrollPane;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 
@@ -71,7 +74,21 @@ public class VisualisationController extends Controller {
     @FXML
     private ZoomableScrollPane zoomablepane;
 
+    @FXML
+    private Label cellDataPage;
+
+    @FXML
+    private Label cellDataCount;
+
+    @FXML
+    private ComboBox cellDataCombo;
+
+    @FXML
+    private TextArea cellDataData;
+
     private CellFactory cellFactory;
+
+    private Cell selectedCell;
 
     /**
      * Constructor.
@@ -159,5 +176,34 @@ public class VisualisationController extends Controller {
      * @param cell cell to show.
      */
     private void showData(Cell cell) {
+        cellDataPage.setText("Page Number: " + cell.cell.pageNumber);
+        cellDataCount.setText("Cell Count: " + cell.cell.cellCount);
+        int cellCount =  cell.cell.cellCount;
+        cellDataCombo.getItems().removeAll(cellDataCombo.getItems());
+        for (int i = 0; i < cellCount; i++) {
+            cellDataCombo.getItems().add(i);
+        }
+        cellDataCombo.getItems().add("All");
+        cellDataData.clear();
+        this.selectedCell = cell;
+    }
+
+    /**
+     * Called when the combo is changed
+     */
+    @FXML
+    private void updateCellData() {
+        if (cellDataCombo.getValue() != null) {
+            cellDataData.clear();
+            String selected = cellDataCombo.getValue().toString();
+            if (selected.equals("All")) {
+                int cellCount =  selectedCell.cell.cellCount - 1;
+                for (int i = 0; i < cellCount; i++) {
+                    cellDataData.appendText(selectedCell.cell.data[cellCount] + "\n");
+                }
+            } else {
+                cellDataData.setText(selectedCell.cell.data[Integer.parseInt(selected)]);
+            }
+        }
     }
 }

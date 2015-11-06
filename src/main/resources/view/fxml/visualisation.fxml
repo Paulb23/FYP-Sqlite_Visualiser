@@ -26,9 +26,18 @@
 <?import battyp.lancaster.sqlitevisualiser.view.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TextArea?>
 <AnchorPane fx:id="VisualisationPage" prefHeight="480.0" prefWidth="640.0" xmlns:fx="http://javafx.com/fxml">
     <children>
-        <ZoomableScrollPane fitToHeight="false" fitToWidth="false"  AnchorPane.topAnchor="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" fx:id="zoomablepane" pannable="true" vbarPolicy="NEVER" hbarPolicy="NEVER" style="-fx-ZoomableScrollPane-padding: 20 20 20 20;">
+        <Label layoutX="20" layoutY="10" style="-fx-font-weight: bold" text="Cell Info"/>
+        <Label fx:id="cellDataPage" layoutX="20" layoutY="40" text="Page Number: " />
+        <Label fx:id="cellDataCount" layoutX="20" layoutY="60" text="Cell Count: " />
+        <Label layoutX="20" layoutY="100" text="Select Cell: " />
+        <ComboBox fx:id="cellDataCombo" layoutX="20" layoutY="120" onAction="#updateCellData" />
+        <TextArea fx:id="cellDataData" editable="false" layoutX="20" layoutY="160" prefWidth="120" prefHeight="140"/>
+        <ZoomableScrollPane fitToHeight="false" fitToWidth="false"  AnchorPane.topAnchor="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="10.0" fx:id="zoomablepane" pannable="true" vbarPolicy="NEVER" hbarPolicy="NEVER" style="-fx-ZoomableScrollPane-padding: 20 20 20 20;">
         </ZoomableScrollPane>
     </children>
 </AnchorPane>
