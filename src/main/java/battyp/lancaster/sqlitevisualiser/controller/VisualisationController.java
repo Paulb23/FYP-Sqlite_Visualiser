@@ -180,10 +180,10 @@ public class VisualisationController extends Controller {
         cellDataCount.setText("Cell Count: " + cell.cell.cellCount);
         int cellCount =  cell.cell.cellCount;
         cellDataCombo.getItems().removeAll(cellDataCombo.getItems());
+        cellDataCombo.getItems().add("All");
         for (int i = 0; i < cellCount; i++) {
             cellDataCombo.getItems().add(i);
         }
-        cellDataCombo.getItems().add("All");
         cellDataData.clear();
         this.selectedCell = cell;
     }
