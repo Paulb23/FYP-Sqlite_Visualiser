@@ -197,9 +197,9 @@ public class VisualisationController extends Controller {
             cellDataData.clear();
             String selected = cellDataCombo.getValue().toString();
             if (selected.equals("All")) {
-                int cellCount =  selectedCell.cell.cellCount - 1;
+                int cellCount =  selectedCell.cell.cellCount;
                 for (int i = 0; i < cellCount; i++) {
-                    cellDataData.appendText(selectedCell.cell.data[cellCount] + "\n");
+                    cellDataData.appendText(selectedCell.cell.data[i] + "\n");
                 }
             } else {
                 cellDataData.setText(selectedCell.cell.data[Integer.parseInt(selected)]);
