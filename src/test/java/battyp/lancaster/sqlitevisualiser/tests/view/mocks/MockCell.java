@@ -25,6 +25,7 @@
 
 package battyp.lancaster.sqlitevisualiser.tests.view.mocks;
 
+import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
 import battyp.lancaster.sqlitevisualiser.view.Cell;
 import battyp.lancaster.sqlitevisualiser.view.CellType;
 
@@ -38,7 +39,7 @@ import battyp.lancaster.sqlitevisualiser.view.CellType;
  */
 public class MockCell extends Cell {
 
-    public MockCell(CellType type, String label) {
-        super(type, label);
+    public MockCell(CellType type, BTreeCell cell) {
+        super(type, cell);
     }
 }

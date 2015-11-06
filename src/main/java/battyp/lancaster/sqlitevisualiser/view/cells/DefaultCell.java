@@ -24,6 +24,7 @@
 
 package battyp.lancaster.sqlitevisualiser.view.cells;
 
+import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
 import battyp.lancaster.sqlitevisualiser.view.Cell;
 import battyp.lancaster.sqlitevisualiser.view.CellType;
 import javafx.scene.paint.Color;
@@ -46,10 +47,10 @@ public class DefaultCell extends Cell {
      * Constructor.
      *
      * @param type Type of the cell.
-     * @param label Text to put on the cell.
+     * @param cell The cell this Cell represents.
      */
-    public DefaultCell(CellType type, String label) {
-        super(type, label);
+    public DefaultCell(CellType type, BTreeCell cell) {
+        super(type, cell);
 
         Rectangle view = new Rectangle( 50,50);
         view.setStroke(Color.DODGERBLUE);

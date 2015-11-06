@@ -24,6 +24,7 @@
 
 package battyp.lancaster.sqlitevisualiser.view;
 
+import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
 import javafx.scene.layout.Pane;
 
 /**
@@ -39,16 +40,19 @@ public abstract class Cell extends Pane {
 
     private CellType type;
 
+    public final BTreeCell cell;
+
     /**
      * Constructor.
      *
      * @param type Type of the cell.
-     * @param label Text to put on the cell.
+     * @param cell The cell this Cell represents.
      */
-    public Cell(CellType type, String label) {
+    public Cell(CellType type, BTreeCell cell) {
         if (type == null) {
           type = CellType.Default;
         }
         this.type = type;
+        this.cell = cell;
     }
 }

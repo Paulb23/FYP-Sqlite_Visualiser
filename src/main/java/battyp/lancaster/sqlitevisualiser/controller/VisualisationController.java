@@ -32,8 +32,10 @@ import battyp.lancaster.sqlitevisualiser.view.Cell;
 import battyp.lancaster.sqlitevisualiser.view.CellFactory;
 import battyp.lancaster.sqlitevisualiser.view.Edge;
 import battyp.lancaster.sqlitevisualiser.view.ZoomableScrollPane;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 
 import java.util.List;
@@ -93,9 +95,10 @@ public class VisualisationController extends Controller {
             Pane pane = new Pane();
 
             BTreeNode<BTreeCell> tree = database.getBTree().getRoot();
-           // addCell(tree, null, database.getMetadata().sizeOfDatabaseInPages * 50, 50, pane);
             addCell(tree, null, 50, 50, pane);
 
+            //pane.setRotate(90);
+            //pane.setScaleY(-1);
             zoomablepane.setNodeContent(pane);
         }
     }
@@ -120,10 +123,14 @@ public class VisualisationController extends Controller {
      * @param pane Pane to attach the node to.
      */
     private void addCell(BTreeNode<BTreeCell> node, Cell parent, int x, int y, Pane pane) {
-        Cell cell = cellFactory.createCell(node.getData().type, "Page: " + node.getData().pageNumber);
+        Cell cell = cellFactory.createCell(node.getData().type, node.getData());
 
-        cell.setLayoutX(x+150);
+        cell.setLayoutX(x + 150);
         cell.setLayoutY(y);
+        cell.setOnMouseClicked(event -> {
+            Cell cell1 = (Cell)event.getSource();
+            showData(cell1);
+        });
 
         if (parent != null) {
             Edge edge = new Edge(parent, cell);
@@ -144,33 +151,13 @@ public class VisualisationController extends Controller {
                 x++;
             }
         }
+    }
 
- /*
-        Cell cell = cellFactory.createCell(node.getData().type, "Page: " + node.getData().pageNumber);
-
-        if (parent != null) {
-            Edge edge = new Edge(parent, cell);
-            pane.getChildren().add(edge);
-        }
-        pane.getChildren().add(cell);
-
-        List<BTreeNode<BTreeCell>> children = node.getChildren();
-
-        if (node.getNumberOfChildren() > 0) {
-            y += 100;
-            int childCount = node.getNumberOfChildren();
-            int xInc = x;
-            if (childCount == 2) {
-                x = x / 2;
-            } else if (childCount > 2) {
-                xInc = x / childCount;
-                int offset = (int) Math.floor(childCount / 2);
-                x = x - (xInc * offset);
-            }
-            for (BTreeNode<BTreeCell> child : children) {
-                addCell(child, cell, x, y, pane);
-                x += xInc;
-            }
-        }*/
+    /**
+     * Shows the Clicked cell data to the user.
+     *
+     * @param cell cell to show.
+     */
+    private void showData(Cell cell) {
     }
 }

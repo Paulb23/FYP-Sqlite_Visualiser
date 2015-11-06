@@ -24,6 +24,7 @@
 
 package battyp.lancaster.sqlitevisualiser.view;
 
+import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
 import battyp.lancaster.sqlitevisualiser.view.cells.*;
 
 /**
@@ -44,31 +45,31 @@ public class CellFactory {
      * Creates a new Cell.
      *
      * @param type Type of the cell.
-     * @param label Text to put on the cell.
+     * @param cell The cell this Cell represents.
      *
      * @return Cell of the corresponding type.
      */
-    public Cell createCell(CellType type, String label) {
+    public Cell createCell(CellType type, BTreeCell cell) {
         switch(type) {
             case Default: {
-                return new DefaultCell(type, label);
+                return new DefaultCell(type, cell);
             }
             case Table: {
-                return new TableCell(type, label);
+                return new TableCell(type, cell);
             }
             case Data: {
-                return new DataCell(type, label);
+                return new DataCell(type, cell);
             }
             case Table_Pointer_Internal: {
-                return new TablePointerInternalCell(type, label);
+                return new TablePointerInternalCell(type, cell);
             }
             case Index_Leaf: {
-                return new IndexLeafCell(type, label);
+                return new IndexLeafCell(type, cell);
             }
             case Index_Pointer_Internal: {
-                return new IndexPointerInternalCell(type, label);
+                return new IndexPointerInternalCell(type, cell);
             }
         }
-        return new DefaultCell(type, label);
+        return new DefaultCell(type, cell);
     }
 }

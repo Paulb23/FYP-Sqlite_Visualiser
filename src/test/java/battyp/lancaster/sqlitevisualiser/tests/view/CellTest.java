@@ -24,6 +24,7 @@
 
 package battyp.lancaster.sqlitevisualiser.tests.view;
 
+import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
 import battyp.lancaster.sqlitevisualiser.tests.view.mocks.MockCell;
 import battyp.lancaster.sqlitevisualiser.view.Cell;
 import battyp.lancaster.sqlitevisualiser.view.CellType;
@@ -40,7 +41,7 @@ public class CellTest {
 
     @Test
     public void TestDefaultCreation() {
-        Cell cell = new MockCell(CellType.Default, "Test!");
+        Cell cell = new MockCell(CellType.Default, new BTreeCell(0,0,0));
     }
 
     @Test
