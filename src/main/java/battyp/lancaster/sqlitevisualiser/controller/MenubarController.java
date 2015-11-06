@@ -24,6 +24,7 @@
 
 package battyp.lancaster.sqlitevisualiser.controller;
 
+import battyp.lancaster.sqlitevisualiser.util.FileUtil;
 import battyp.lancaster.sqlitevisualiser.util.UiUtil;
 import battyp.lancaster.sqlitevisualiser.model.Model;
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
@@ -86,6 +87,16 @@ public class MenubarController extends Controller {
     public MenubarController(Model model, BorderPane root) {
         super(model);
         this.root = root;
+
+        /* Load in the sql executor side bar */
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("view/fxml/sqleditor.fxml"));
+            loader.setController(new SqlEditorController(model));
+            AnchorPane loadedPane = loader.load();
+            root.setRight(loadedPane);
+        } catch (IOException e) {
+            UiUtil.showExceptionError("Error Dialog", "Error Loading Sql pane!", e);
+        }
 
         /* register with the filewatcher so we get updates when the
         * database is modified.                                  */
@@ -196,14 +207,6 @@ public class MenubarController extends Controller {
     @FXML
     private void switchToLog() {
         setCenterPane("view/fxml/log.fxml", new LogController(this.model));
-    }
-
-    /**
-     * switches the center pane to the sql editor view
-     */
-    @FXML
-    private void switchToSqlEditor() {
-        setCenterPane("view/fxml/sqleditor.fxml", new SqlEditorController(this.model));
     }
 
     /**

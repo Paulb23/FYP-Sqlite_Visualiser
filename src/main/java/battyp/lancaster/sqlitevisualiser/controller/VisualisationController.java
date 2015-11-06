@@ -94,7 +94,7 @@ public class VisualisationController extends Controller {
 
             BTreeNode<BTreeCell> tree = database.getBTree().getRoot();
            // addCell(tree, null, database.getMetadata().sizeOfDatabaseInPages * 50, 50, pane);
-            addCell(tree, null, 0, 50, pane);
+            addCell(tree, null, 50, 50, pane);
 
             zoomablepane.setNodeContent(pane);
         }
@@ -125,7 +125,6 @@ public class VisualisationController extends Controller {
         cell.setLayoutX(x+150);
         cell.setLayoutY(y);
 
-
         if (parent != null) {
             Edge edge = new Edge(parent, cell);
             pane.getChildren().add(edge);
@@ -138,8 +137,8 @@ public class VisualisationController extends Controller {
         if (node.getNumberOfChildren() > 0) {
             for (BTreeNode<BTreeCell> child : children) {
                 if (pane.getChildren().size() > 0) {
-                    Node xx = pane.getChildren().get(pane.getChildren().size() - 1);
-                    x = (int) xx.getLayoutX();
+                    Node previousAddedNode = pane.getChildren().get(pane.getChildren().size() - 1);
+                    x = (int) previousAddedNode.getLayoutX();
                 }
                 addCell(child, cell, x, y, pane);
                 x++;

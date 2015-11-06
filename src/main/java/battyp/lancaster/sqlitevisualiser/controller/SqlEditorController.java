@@ -107,26 +107,33 @@ public class SqlEditorController extends Controller {
      */
     @FXML
     private void executeSql() {
-        sqleditorreturn.clear();
-        try {
-            model.getSqlExecutor().connect();
-            ResultSet result = model.getSqlExecutor().executeSql(sqleditor.getText());
-            int cols = result.getMetaData().getColumnCount();
-            while (result.next()) {
-                for (int i = 1; i < cols; i++) {
-                    sqleditorreturn.appendText(result.getString(i) + "\t");
-                }
-                sqleditorreturn.appendText("\r\n");
+        if (this.model.isFileOpen()) {
+            if (sqleditor.getText().equals("")) {
+                return;
             }
-            saved_result = sqleditorreturn.getText();
-            result.close();
-            model.getSqlExecutor().disconnect();
-        } catch (SQLException e) {
-            UiUtil.showExceptionError("Error Dialog",  "Oooops, Something went wring with that statement", e);
-        } catch (ClassNotFoundException e) {
-            UiUtil.showExceptionError("Error Dialog", "Oooops, Something wrong with the class path", e);
-        } catch (FileNotFoundException e) {
-            UiUtil.showExceptionError("Error Dialog", "Oooops, Could not find the database", e);
+
+            sqleditorreturn.clear();
+            try {
+                model.getSqlExecutor().connect();
+                ResultSet result = model.getSqlExecutor().executeSql(sqleditor.getText());
+
+                int cols = result.getMetaData().getColumnCount();
+                while (result.next()) {
+                    for (int i = 1; i < cols; i++) {
+                        sqleditorreturn.appendText(result.getString(i) + "\t");
+                    }
+                    sqleditorreturn.appendText("\r\n");
+                }
+                saved_result = sqleditorreturn.getText();
+                result.close();
+                model.getSqlExecutor().disconnect();
+            } catch (SQLException e) {
+                UiUtil.showExceptionError("Error Dialog", "Oooops, Something went wring with that statement", e);
+            } catch (ClassNotFoundException e) {
+                UiUtil.showExceptionError("Error Dialog", "Oooops, Something wrong with the class path", e);
+            } catch (FileNotFoundException e) {
+                UiUtil.showExceptionError("Error Dialog", "Oooops, Could not find the database", e);
+            }
         }
     }
 }

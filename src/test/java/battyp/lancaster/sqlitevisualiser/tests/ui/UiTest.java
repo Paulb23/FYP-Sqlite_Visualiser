@@ -85,10 +85,4 @@ public class UiTest extends GuiTest {
         click("Log");
         exists("#LogPage");
     }
-
-    @Test
-    public void TestSqlEditorTabShowsSqlEditorFile() {
-        click("Sql editor");
-        exists("#SqlEditorPage");
-    }
 }
