@@ -33,6 +33,7 @@ import battyp.lancaster.sqlitevisualiser.view.CellFactory;
 import battyp.lancaster.sqlitevisualiser.view.Edge;
 import battyp.lancaster.sqlitevisualiser.view.ZoomableScrollPane;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 
 import java.util.List;
@@ -92,7 +93,8 @@ public class VisualisationController extends Controller {
             Pane pane = new Pane();
 
             BTreeNode<BTreeCell> tree = database.getBTree().getRoot();
-            addCell(tree, null, database.getMetadata().sizeOfDatabaseInPages * 50, 50, pane);
+           // addCell(tree, null, database.getMetadata().sizeOfDatabaseInPages * 50, 50, pane);
+            addCell(tree, null, 0, 50, pane);
 
             zoomablepane.setNodeContent(pane);
         }
@@ -119,8 +121,33 @@ public class VisualisationController extends Controller {
      */
     private void addCell(BTreeNode<BTreeCell> node, Cell parent, int x, int y, Pane pane) {
         Cell cell = cellFactory.createCell(node.getData().type, "Page: " + node.getData().pageNumber);
-        cell.setLayoutX(x);
+
+        cell.setLayoutX(x+150);
         cell.setLayoutY(y);
+
+
+        if (parent != null) {
+            Edge edge = new Edge(parent, cell);
+            pane.getChildren().add(edge);
+        }
+        pane.getChildren().add(cell);
+
+        List<BTreeNode<BTreeCell>> children = node.getChildren();
+
+        y+=150;
+        if (node.getNumberOfChildren() > 0) {
+            for (BTreeNode<BTreeCell> child : children) {
+                if (pane.getChildren().size() > 0) {
+                    Node xx = pane.getChildren().get(pane.getChildren().size() - 1);
+                    x = (int) xx.getLayoutX();
+                }
+                addCell(child, cell, x, y, pane);
+                x++;
+            }
+        }
+
+ /*
+        Cell cell = cellFactory.createCell(node.getData().type, "Page: " + node.getData().pageNumber);
 
         if (parent != null) {
             Edge edge = new Edge(parent, cell);
@@ -145,6 +172,6 @@ public class VisualisationController extends Controller {
                 addCell(child, cell, x, y, pane);
                 x += xInc;
             }
-        }
+        }*/
     }
 }
