@@ -183,6 +183,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
         }
 
         BTreeCell cell = new BTreeCell(type, numberOfCells, realPageNumber);
+        cell.rightChildPointer = rightMostPointer;
 
         long[] cellPointers = new long[numberOfCells];
         for (int i = 0; i < numberOfCells; i++) {

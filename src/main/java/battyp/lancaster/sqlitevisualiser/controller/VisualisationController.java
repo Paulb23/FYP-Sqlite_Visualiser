@@ -81,6 +81,12 @@ public class VisualisationController extends Controller {
     private Label cellDataCount;
 
     @FXML
+    private Label cellDataType;
+
+    @FXML
+    private Label cellRightPointer;
+
+    @FXML
     private ComboBox cellDataCombo;
 
     @FXML
@@ -177,6 +183,8 @@ public class VisualisationController extends Controller {
     private void showData(Cell cell) {
         cellDataPage.setText("Page Number: " + cell.cell.pageNumber);
         cellDataCount.setText("Cell Count: " + cell.cell.cellCount);
+        cellDataType.setText("Cell Type: " + cell.cell.cellType);
+        cellRightPointer.setText("Right Pointer: " + cell.cell.rightChildPointer);
         int cellCount =  cell.cell.cellCount;
         cellDataCombo.getItems().removeAll(cellDataCombo.getItems());
         cellDataCombo.getItems().add("All");
@@ -194,14 +202,28 @@ public class VisualisationController extends Controller {
     private void updateCellData() {
         if (cellDataCombo.getValue() != null) {
             cellDataData.clear();
+            BTreeCell cell = selectedCell.cell;
             String selected = cellDataCombo.getValue().toString();
             if (selected.equals("All")) {
                 int cellCount =  selectedCell.cell.cellCount;
                 for (int i = 0; i < cellCount; i++) {
-                    cellDataData.appendText(selectedCell.cell.data[i] + "\n");
+                    cellDataData.appendText("\n-----------" +
+                                    "\nCell: " + i +
+                                    "\nLeft Child pointer: " + cell.leftChildPointers[i] +
+                                    "\nRow Id: " + cell.rowId[i] +
+                                    "\nPayload Size: " + cell.payLoadSize[i] +
+                                    "\nData: " + cell.data[i]
+                    );
                 }
             } else {
-                cellDataData.setText(selectedCell.cell.data[Integer.parseInt(selected)]);
+                int numSelected = Integer.parseInt(selected);
+                cellDataData.appendText("\n-----------" +
+                        "\nCell: " + numSelected +
+                        "\nLeft Child pointer: " + cell.leftChildPointers[numSelected] +
+                        "\nRow Id: " + cell.rowId[numSelected] +
+                        "\nPayload Size: " + cell.payLoadSize[numSelected] +
+                        "\nData: " + cell.data[numSelected]
+                );
             }
         }
     }

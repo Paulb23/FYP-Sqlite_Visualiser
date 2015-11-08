@@ -36,8 +36,8 @@
         <Label fx:id="cellDataCount" layoutX="20" layoutY="60" text="Cell Count: " />
         <Label layoutX="20" layoutY="100" text="Select Cell: " />
         <ComboBox fx:id="cellDataCombo" layoutX="20" layoutY="120" onAction="#updateCellData" />
-        <TextArea fx:id="cellDataData" editable="false" layoutX="20" layoutY="160" prefWidth="120" prefHeight="140"/>
-        <ZoomableScrollPane fitToHeight="false" fitToWidth="false"  AnchorPane.topAnchor="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="10.0" fx:id="zoomablepane" pannable="true" vbarPolicy="NEVER" hbarPolicy="NEVER" style="-fx-ZoomableScrollPane-padding: 20 20 20 20;">
+        <TextArea fx:id="cellDataData" editable="false"  AnchorPane.bottomAnchor="10.0" AnchorPane.topAnchor="155.0" layoutX="20" layoutY="160" prefWidth="200" />
+        <ZoomableScrollPane fitToHeight="false" fitToWidth="false"  AnchorPane.topAnchor="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="230.0" AnchorPane.rightAnchor="10.0" fx:id="zoomablepane" pannable="true" vbarPolicy="NEVER" hbarPolicy="NEVER" style="-fx-ZoomableScrollPane-padding: 20 20 20 20;">
         </ZoomableScrollPane>
     </children>
 </AnchorPane>

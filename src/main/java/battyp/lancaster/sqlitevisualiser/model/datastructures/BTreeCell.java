@@ -68,6 +68,11 @@ public class BTreeCell {
     public int[] leftChildPointers;
 
     /**
+     * The right child pointer.
+     */
+    public int rightChildPointer;
+
+    /**
      * Payload size.
      */
     public long[] payLoadSize;

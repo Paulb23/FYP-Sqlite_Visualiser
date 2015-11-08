@@ -66,6 +66,16 @@ public class ZoomableScrollPane extends ScrollPane {
         zoomGroup.getTransforms().add(scaleTransform);
 
         /**
+         * Disable scrolling with mouse wheel
+         */
+        this.addEventHandler(ScrollEvent.SCROLL, new EventHandler<ScrollEvent>() {
+            @Override
+            public void handle(ScrollEvent event) {
+                event.consume();
+            }
+        });
+
+        /**
          * inner class to handle the zooming
          */
         zoomGroup.setOnScroll(new EventHandler<ScrollEvent>() {
