@@ -24,6 +24,7 @@
 
 package battyp.lancaster.sqlitevisualiser.model;
 
+import battyp.lancaster.sqlitevisualiser.model.databaseinterface.DatabaseInterface;
 import battyp.lancaster.sqlitevisualiser.model.filewatcher.FileWatcher;
 import battyp.lancaster.sqlitevisualiser.model.liveupdater.LiveUpdater;
 import battyp.lancaster.sqlitevisualiser.model.log.Log;
@@ -72,6 +73,13 @@ public interface Model {
      * @return current database parser.
      */
     public DatabaseParser getDatabaseParser();
+
+    /**
+     * Gets the current Database Interface.
+     *
+     * @return current Database Interface.
+     */
+    public DatabaseInterface getDatabaseInterface();
 
     /**
      * Gets the current Sql Executor.

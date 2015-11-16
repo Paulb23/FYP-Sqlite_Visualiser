@@ -273,7 +273,9 @@ public class DefaultDatabaseParser implements DatabaseParser {
                 case SqliteConstants.INDEX_BTREE_LEAF_CELL: {
                     cell.type = CellType.Index_Leaf;
                     cell.payLoadSize[i] = decodeVarint(in)[0];
-                  //  cell.data[i] = in.readUTF();
+                    byte[] bytes = new byte[(int)cell.payLoadSize[i]];
+                    in.read(bytes);
+                    cell.data[i] = new String(bytes);
                   //  cell.overflowPageNumbers[i] = in.readInt();
                 }
                 break;

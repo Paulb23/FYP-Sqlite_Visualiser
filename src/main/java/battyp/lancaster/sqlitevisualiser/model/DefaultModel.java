@@ -132,6 +132,14 @@ public class DefaultModel implements Model {
      * {@inheritDoc}
      */
     @Override
+    public DatabaseInterface getDatabaseInterface() {
+        return this.databaseInterface;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public SqlExecutor getSqlExecutor() {
         return this.sqlExecutor;
     }

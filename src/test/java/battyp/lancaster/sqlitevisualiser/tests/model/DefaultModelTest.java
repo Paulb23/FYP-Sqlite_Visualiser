@@ -63,6 +63,7 @@ public class DefaultModelTest {
         Assert.assertTrue(model.getFileWatcher() instanceof MockFileWatcher);
         Assert.assertTrue(model.getLiveUpdater() instanceof MockLiveUpdater);
         Assert.assertTrue(model.getLog() instanceof MockLog);
+        Assert.assertTrue(model.getDatabaseInterface() instanceof  MockDatabaseInterface);
     }
 
     @Test
