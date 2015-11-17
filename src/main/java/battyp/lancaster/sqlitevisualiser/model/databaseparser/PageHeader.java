@@ -78,31 +78,31 @@ public class PageHeader {
      */
     public void parsePageHeader(RandomAccessFile in, long pageNumber, long pageSize) throws IOException {
         this.pageSize = pageSize;
-        realPageNumber = pageNumber - 1;
-        pageOffset = realPageNumber * pageSize;
-        if (realPageNumber == 0) {
+        this.realPageNumber = pageNumber - 1;
+        this.pageOffset = this.realPageNumber * pageSize;
+        if (this.realPageNumber == 0) {
             in.seek(SqliteConstants.HEADER_SIZE);
         } else {
-            in.seek(pageOffset);
+            in.seek(this.pageOffset);
         }
 
-        pageType = in.readByte();
-        firstFreeBlockOffset = in.readShort();
-        numberOfCells = in.readShort();
-        startOfCell = in.readShort();
-        if (startOfCell == 0) {
-            startOfCell = 65536;
+        this.pageType = in.readByte();
+        this.firstFreeBlockOffset = in.readShort();
+        this.numberOfCells = in.readShort();
+        this.startOfCell = in.readShort();
+        if (this.startOfCell == 0) {
+            this.startOfCell = 65536;
         }
-        fagmentedFreeBytes = in.readByte();
-        rightMostPointer = 0;
+        this.fagmentedFreeBytes = in.readByte();
+        this.rightMostPointer = 0;
 
-        if (pageType == SqliteConstants.INDEX_BTREE_INTERIOR_CELL || pageType == SqliteConstants.TABLE_BTREE_INTERIOR_CELL) {
-            rightMostPointer = in.readInt();
+        if (this.pageType == SqliteConstants.INDEX_BTREE_INTERIOR_CELL || this.pageType == SqliteConstants.TABLE_BTREE_INTERIOR_CELL) {
+            this.rightMostPointer = in.readInt();
         }
 
-        cellPointers = new long[numberOfCells];
-        for (int i = 0; i < numberOfCells; i++) {
-            cellPointers[i] = in.readShort() + pageOffset;
+        this.cellPointers = new long[this.numberOfCells];
+        for (int i = 0; i < this.numberOfCells; i++) {
+            this.cellPointers[i] = in.readShort() + this.pageOffset;
         }
     }
 

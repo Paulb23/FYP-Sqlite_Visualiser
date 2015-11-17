@@ -278,7 +278,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
             // read overflow
             // cell.overflowPageNumbers[i] = in.readInt();
         }
-        return  cell;
+        return cell;
     }
 
     /**
