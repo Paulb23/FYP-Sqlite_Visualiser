@@ -140,4 +140,29 @@ public class BTreeCell {
         }
         cellHash = hash;
     }
+
+
+    /**
+     * Compares to object. They are equal if they contain the
+     * same data.
+     *
+     * @param obj Other node to compare with.
+     *
+     * @return True if equal else false.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)  {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        BTreeCell cell = (BTreeCell) obj;
+        return this.cellHash == cell.cellHash;
+    }
 }
