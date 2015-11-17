@@ -111,6 +111,8 @@ public class VisualisationController extends Controller {
      */
     public void notifyObserver() {
         if (model.isFileOpen()) {
+            double hvalue = zoomablepane.getHvalue();
+            double vvalue = zoomablepane.getVvalue();
             zoomablepane.clear();
 
             Database database = model.getDatabase();
@@ -123,6 +125,8 @@ public class VisualisationController extends Controller {
             //pane.setRotate(90);
             //pane.setScaleY(-1);
             zoomablepane.setNodeContent(pane);
+            zoomablepane.setHvalue(hvalue);
+            zoomablepane.setVvalue(vvalue);
         }
     }
 
