@@ -240,7 +240,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
             int tablePage = 0;
             for (int j = 0; j < k; j++) {      // read payload
                 if (types[j] == 0) {
-                    cell.data[i] += " null ";
+                    cell.data[i] += "";
                 } else if (types[j] == 1) {
                     short bytes = in.readByte();
                     if (isTable && tablePage == 0) {
@@ -248,17 +248,21 @@ public class DefaultDatabaseParser implements DatabaseParser {
                     }
                     cell.data[i] += " " + bytes + " ";
                 } else if (types[j] == 2) {
-                    cell.data[i] += " " + new Short(in.readShort()) + " ";
+                    cell.data[i] += " " + in.readShort() + " ";
                 } else if (types[j] == 3) {
-                    cell.data[i] += " " + in.readShort() + in.readByte() + " "; // fix
+                    byte[] bytes = new byte[3];
+                    in.read(bytes);
+                    cell.data[i] += " " + new String(bytes) + " ";
                 } else if (types[j] == 4) {
-                    cell.data[i] += " " + new Integer(in.readInt()) + " ";
+                    cell.data[i] += " " + in.readInt() + " ";
                 } else if (types[j] == 5) {
-                    cell.data[i] += " " + in.readInt() + in.readShort() + " "; // fix
+                    byte[] bytes = new byte[6];
+                    in.read(bytes);
+                    cell.data[i] += " " + new String(bytes) + " ";
                 } else if (types[j] == 6) {
-                    cell.data[i] += " " + new Long(in.readLong()) + " ";
+                    cell.data[i] += " " + in.readLong() + " ";
                 } else if (types[j] == 7) {
-                    cell.data[i] += " " + new Double(in.readDouble()) + " ";
+                    cell.data[i] += " " + in.readDouble() + " ";
                 } else if (types[j] == 8) {
                     cell.data[i] += " 0 ";
                 } else if (types[j] == 9) {
