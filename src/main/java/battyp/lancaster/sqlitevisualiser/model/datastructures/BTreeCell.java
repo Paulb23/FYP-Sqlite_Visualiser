@@ -103,6 +103,11 @@ public class BTreeCell {
     public int childrenHash;
 
     /**
+     * Detects if the cell comparison is changed.
+     */
+    public boolean changed;
+
+    /**
      * Creates a new Btree Cell.
      *
      * @param cellType Type of cell.
@@ -118,6 +123,7 @@ public class BTreeCell {
         this.payLoadSize = new long[cellCount];
         this.data = new String[cellCount];
         this.overflowPageNumbers = new int[cellCount];
+        this.changed = false;
     }
 
     /**

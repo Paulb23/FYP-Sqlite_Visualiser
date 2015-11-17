@@ -26,6 +26,9 @@ package battyp.lancaster.sqlitevisualiser.view;
 
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
 import battyp.lancaster.sqlitevisualiser.view.cells.*;
+import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 /**
  * <h1> Cell factory </h1>
@@ -50,26 +53,42 @@ public class CellFactory {
      * @return Cell of the corresponding type.
      */
     public Cell createCell(CellType type, BTreeCell cell) {
+        Cell cellReturn = new DefaultCell(type, cell);
         switch(type) {
             case Default: {
-                return new DefaultCell(type, cell);
+                cellReturn = new DefaultCell(type, cell);
+                break;
             }
             case Table: {
-                return new TableCell(type, cell);
+                cellReturn = new TableCell(type, cell);
+                break;
             }
             case Data: {
-                return new DataCell(type, cell);
+                cellReturn = new DataCell(type, cell);
+                break;
             }
             case Table_Pointer_Internal: {
-                return new TablePointerInternalCell(type, cell);
+                cellReturn = new TablePointerInternalCell(type, cell);
+                break;
             }
             case Index_Leaf: {
-                return new IndexLeafCell(type, cell);
+                cellReturn = new IndexLeafCell(type, cell);
+                break;
             }
             case Index_Pointer_Internal: {
-                return new IndexPointerInternalCell(type, cell);
+                cellReturn = new IndexPointerInternalCell(type, cell);
+                break;
             }
         }
-        return new DefaultCell(type, cell);
+        if (cell.changed) {
+            Rectangle view = new Rectangle( 50,50);
+            view.setStrokeWidth(10);
+            view.setStroke(Color.BLUEVIOLET);
+            view.setFill(Color.TRANSPARENT);
+
+            cellReturn.getChildren().add(1, view);
+        }
+
+        return cellReturn;
     }
 }

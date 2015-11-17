@@ -28,10 +28,14 @@ import battyp.lancaster.sqlitevisualiser.model.database.Database;
 import battyp.lancaster.sqlitevisualiser.model.databaseinterface.DatabaseInterface;
 import battyp.lancaster.sqlitevisualiser.model.databaseparser.DatabaseParser;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTree;
+import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
+import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeNode;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
 import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Stack;
 
 /**
  * <h1> Default Live Updater </h1>
@@ -72,10 +76,50 @@ public class DefaultLiveUpdater implements LiveUpdater {
      */
     @Override
     public void update(String path, DatabaseParser databaseParser, DatabaseInterface databaseInterface) throws IOException, InvalidFileException {
-        databaseInterface.addDatabase(databaseParser.parseDatabase(path, new Database(new BTree(), new Metadata())));
+        Database newDatabase = databaseParser.parseDatabase(path, new Database(new BTree(), new Metadata()));
+        Database previousDatabase = databaseInterface.getCurrent();
+
+        if (previousDatabase != null && newDatabase != null) {
+            BTreeNode<BTreeCell> oldRoot = previousDatabase.getBTree().getRoot();
+            BTreeNode<BTreeCell> newRoot = newDatabase.getBTree().getRoot();
+
+            if (oldRoot != null && newRoot != null) {
+                Stack<BTreeCell> oldTree = new Stack<>();
+                Stack<BTreeCell> newTree = new Stack<>();
+
+                // create stacks
+                addNodesToStack(oldRoot, oldTree);
+                addNodesToStack(newRoot, newTree);
+
+                // check current node for changes
+                int numNodes = oldTree.size();
+                for (int i = 0; i < numNodes; i++) {
+                    BTreeCell oldCell = oldTree.pop();
+                    BTreeCell newCell = newTree.pop();
+
+                    if (oldCell.cellHash != newCell.cellHash) {
+                        newCell.changed = true;
+                    }
+                }
+            }
+        }
+
+        databaseInterface.addDatabase(newDatabase);
         if (live) {
             databaseInterface.nextStep();
         }
+    }
+
+    private void addNodesToStack(BTreeNode<BTreeCell> node, Stack<BTreeCell> stack) {
+
+        List<BTreeNode<BTreeCell>> children = node.getChildren();
+        if (node.getNumberOfChildren() > 0) {
+            for (BTreeNode<BTreeCell> child : children) {
+                addNodesToStack(child, stack);
+            }
+        }
+
+        stack.add(node.getData());
     }
 
     /**
@@ -86,7 +130,6 @@ public class DefaultLiveUpdater implements LiveUpdater {
         try {
             if (path != null && databaseParser != null && databaseInterface != null) {
                 update(path, databaseParser, databaseInterface);
-                System.out.println("Updating...");
             }
         } catch (IOException e) {
         } catch (InvalidFileException e) {
