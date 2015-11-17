@@ -93,16 +93,6 @@ public class BTreeCell {
     public int[] overflowPageNumbers;
 
     /**
-     * Hash of this cell.
-     */
-    public int cellHash;
-
-    /**
-     * Hash of the cells children.
-     */
-    public int childrenHash;
-
-    /**
      * Detects if the cell comparison is changed.
      */
     public boolean changed;
@@ -163,6 +153,6 @@ public class BTreeCell {
         }
 
         BTreeCell cell = (BTreeCell) obj;
-        return this.cellHash == cell.cellHash;
+        return this.hashCode() == cell.hashCode();
     }
 }

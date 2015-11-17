@@ -202,6 +202,9 @@ public class BTreeNode<T> {
      */
     @Override
     public int hashCode() {
+        if (this.getNumberOfChildren() == 0) {
+            return 1;
+        }
         final int prime = 31;
         int hash = 1;
         for (BTreeNode<T> child : children) {

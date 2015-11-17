@@ -97,7 +97,7 @@ public class DefaultLiveUpdater implements LiveUpdater {
                     BTreeCell oldCell = oldTree.pop();
                     BTreeCell newCell = newTree.pop();
 
-                    if (oldCell.cellHash != newCell.cellHash) {
+                    if (oldCell.hashCode() != newCell.hashCode()) {
                         newCell.changed = true;
                     }
                 }

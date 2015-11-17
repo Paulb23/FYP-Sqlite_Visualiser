@@ -56,8 +56,8 @@ public class DefaultDatabaceParserTestDatabaseTest {
     @Test
     public void TestRootNodeHash() {
         BTreeCell cell = (BTreeCell) database.getBTree().getRoot().getData();
-        Assert.assertEquals(1, cell.cellHash);
-        Assert.assertEquals(1923428457, cell.childrenHash);
+        Assert.assertEquals(1, cell.hashCode());
+        Assert.assertEquals(1923428457, database.getBTree().getRoot().hashCode());
     }
 
     @Test

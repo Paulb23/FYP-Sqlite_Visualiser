@@ -298,20 +298,8 @@ public class DefaultDatabaseParser implements DatabaseParser {
             }
         }
 
-        createCellHashes(cell, node);
         node.setData(cell);
         return node;
-    }
-
-    /**
-     * Creates the Cell hashes
-     *
-     * @param cell The cell to store the hash
-     * @param node The node, with children to hash
-     */
-    private void createCellHashes(BTreeCell cell, BTreeNode<BTreeCell> node) {
-        cell.cellHash = cell.hashCode();
-        cell.childrenHash = node.hashCode();
     }
 
     /**
