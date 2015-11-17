@@ -129,7 +129,8 @@ public class BTreeCell {
     /**
      * Calculates the hash of this cell
      */
-    public void createHash() {
+    @Override
+    public int hashCode() {
         final int prime = 31;
         int hash = 1;
 
@@ -138,9 +139,8 @@ public class BTreeCell {
                 hash = hash * prime + s.hashCode();
             }
         }
-        cellHash = hash;
+        return hash;
     }
-
 
     /**
      * Compares to object. They are equal if they contain the

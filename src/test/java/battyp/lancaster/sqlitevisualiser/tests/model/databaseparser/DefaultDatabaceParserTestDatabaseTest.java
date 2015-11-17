@@ -27,9 +27,12 @@ package battyp.lancaster.sqlitevisualiser.tests.model.databaseparser;
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
 import battyp.lancaster.sqlitevisualiser.model.databaseparser.DefaultDatabaseParser;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTree;
+import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
 import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
+import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.IOException;
 
@@ -48,5 +51,17 @@ public class DefaultDatabaceParserTestDatabaseTest {
     public static void setUp() throws IOException, InvalidFileException {
         database = new Database(new BTree(), new Metadata());
         new DefaultDatabaseParser().parseDatabase("testDatabase", database);
+    }
+
+    @Test
+    public void TestRootNodeHash() {
+        BTreeCell cell = (BTreeCell) database.getBTree().getRoot().getData();
+        Assert.assertEquals(1, cell.cellHash);
+        Assert.assertEquals(1923428457, cell.childrenHash);
+    }
+
+    @Test
+    public void TestNumberOfPagesRead() {
+        Assert.assertEquals(40, database.getBTree().getNumberOfNodes());
     }
 }

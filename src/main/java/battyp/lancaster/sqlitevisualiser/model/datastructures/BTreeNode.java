@@ -198,6 +198,19 @@ public class BTreeNode<T> {
     }
 
     /**
+     * calculate the hash of this node, sum of all children hashes.
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int hash = 1;
+        for (BTreeNode<T> child : children) {
+            hash = hash * prime + child.getData().hashCode();
+        }
+        return hash;
+    }
+
+    /**
      * Compares to object. They are equal if they contain the
      * same data.
      *

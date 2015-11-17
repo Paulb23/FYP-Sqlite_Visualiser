@@ -32,6 +32,8 @@ import battyp.lancaster.sqlitevisualiser.view.CellType;
 
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <h1>< Default Database Parser </h1>
@@ -296,20 +298,20 @@ public class DefaultDatabaseParser implements DatabaseParser {
             }
         }
 
-        cell.createHash();
-        if (node.getNumberOfChildren() == 0) {
-            cell.childrenHash = 1;
-        } else {
-            int childrenCount = node.getNumberOfChildren();
-            final int prime = 31;
-            int hash = 1;
-            for (int i = 0; i < childrenCount; i++) {
-                hash = hash * prime + node.getChildren().get(i).getData().cellHash;
-            }
-            cell.childrenHash = hash;
-        }
+        createCellHashes(cell, node);
         node.setData(cell);
         return node;
+    }
+
+    /**
+     * Creates the Cell hashes
+     *
+     * @param cell The cell to store the hash
+     * @param node The node, with children to hash
+     */
+    private void createCellHashes(BTreeCell cell, BTreeNode<BTreeCell> node) {
+        cell.cellHash = cell.hashCode();
+        cell.childrenHash = node.hashCode();
     }
 
     /**
