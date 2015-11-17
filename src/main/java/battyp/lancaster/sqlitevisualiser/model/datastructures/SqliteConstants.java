@@ -42,6 +42,11 @@ public class SqliteConstants {
     public static final int HEADER_SIZE = 100;
 
     /**
+     * Size of the empty space in header
+     */
+    public static final int HEADER_RESEVED_SPACE_SIZE = 20;
+
+    /**
      * Length of the magic number.
      */
     public static final int MAGIC_NUMBER_LENGTH = 16;

@@ -117,7 +117,9 @@ public class DefaultDatabaseParser implements DatabaseParser {
         metadata.userVersion = in.readInt();
         metadata.vacuumMode = in.readInt();
         metadata.appID = in.readInt();
-        in.skipBytes(20);
+
+        in.skipBytes(SqliteConstants.HEADER_RESEVED_SPACE_SIZE);
+
         metadata.versionValidNumber = in.readInt();
         metadata.sqliteVersion = in.readInt();
     }
@@ -133,8 +135,10 @@ public class DefaultDatabaseParser implements DatabaseParser {
      */
     private void readBTrees(RandomAccessFile in, Database database) throws  IOException, InvalidFileException {
 
+        final int starting_page_number = 1;
+
         int pageSize = database.getMetadata().pageSize;
-        BTreeNode<BTreeCell> root = parseBtree(in, 1, pageSize);
+        BTreeNode<BTreeCell> root = parseBtree(in, starting_page_number, pageSize);
 
         database.getBTree().setRoot(root);
     }
@@ -161,35 +165,16 @@ public class DefaultDatabaseParser implements DatabaseParser {
      */
     public BTreeNode<BTreeCell> parseBtree(RandomAccessFile in, long pageNumber, long pageSize) throws IOException, InvalidFileException {
         BTreeNode<BTreeCell> node = new BTreeNode();
-        long realPageNumber = pageNumber - 1;
-        long pageOffset = realPageNumber * pageSize;
-        if (realPageNumber == 0) {
-         //   in.seek(SqliteConstants.HEADER_SIZE);
-        } else {
-            in.seek(pageOffset);
-        }
+        PageHeader pageHeader = new PageHeader(in, pageNumber, pageSize);
 
-        // read b-tree header
-        int type = in.readByte();
-        int firstFreeBlockOffset = in.readShort();
-        int numberOfCells = in.readShort();
-        int startOfCell = in.readShort();
-        if (startOfCell == 0) {
-            startOfCell = 65536;
-        }
-        int fagmentedFreeBytes = in.readByte();
-        int rightMostPointer = 0;
+        int numberOfCells = pageHeader.getNumberOfCells();
+        int cellType = pageHeader.getPageType();
 
-        if (type == SqliteConstants.INDEX_BTREE_INTERIOR_CELL || type == SqliteConstants.TABLE_BTREE_INTERIOR_CELL) {
-            rightMostPointer = in.readInt();
-        }
-
-        BTreeCell cell = new BTreeCell(type, numberOfCells, realPageNumber);
-        cell.rightChildPointer = rightMostPointer;
+        BTreeCell cell = new BTreeCell(cellType, numberOfCells, pageHeader.getPageNumber());
 
         long[] cellPointers = new long[numberOfCells];
         for (int i = 0; i < numberOfCells; i++) {
-            cellPointers[i] = in.readShort() + pageOffset;
+            cellPointers[i] = in.readShort() + pageHeader.getPageOffset();
         }
 
         // follow pointer and get b-tree
@@ -197,7 +182,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
             in.seek(cellPointers[i]);
 
             // parse that type of b-tree
-            switch (type) {
+            switch (cellType) {
                 case SqliteConstants.TABLE_BTREE_LEAF_CELL: {
                     cell.payLoadSize[i] = decodeVarint(in)[0];     //read cell header
                     cell.rowId[i] = decodeVarint(in)[0];
@@ -292,12 +277,13 @@ public class DefaultDatabaseParser implements DatabaseParser {
             }
         }
 
-        if (type == SqliteConstants.INDEX_BTREE_INTERIOR_CELL || type == SqliteConstants.TABLE_BTREE_INTERIOR_CELL) {
-            if (rightMostPointer != 0) {
-                node.addChild(parseBtree(in, rightMostPointer, pageSize));
+        if (cellType == SqliteConstants.INDEX_BTREE_INTERIOR_CELL || cellType == SqliteConstants.TABLE_BTREE_INTERIOR_CELL) {
+            if (pageHeader.getRightMostPointer() != 0) {
+                node.addChild(parseBtree(in, pageHeader.getRightMostPointer(), pageSize));
             }
         }
 
+        cell.rightChildPointer = pageHeader.getRightMostPointer();
         node.setData(cell);
         return node;
     }
