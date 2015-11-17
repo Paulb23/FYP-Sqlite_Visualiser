@@ -149,7 +149,6 @@ public class DefaultDatabaseParser implements DatabaseParser {
      * <p>
      * Uses recursion to load up each node, with it's children.
      *
-     * TODO: Refactor
      * TODO: Read Overflow Pages
      * TODO: Read INDEX_BTREE_LEAF_CELL and INDEX_BTREE_INTERIOR_CELL Payloads
      *
@@ -196,18 +195,30 @@ public class DefaultDatabaseParser implements DatabaseParser {
                 node.addChild(parseBtree(in, pageHeader.getRightMostPointer(), pageSize));
             }
         }
-
         cell.rightChildPointer = pageHeader.getRightMostPointer();
         node.setData(cell);
         return node;
     }
 
+    /**
+     * Parses a Table Btree Leaf Cell: Hex value of: 0x0D
+     *
+     * @param in RandomAccessFile input stream
+     * @param pageHeader PageHeader of the page with the cells.
+     * @param node Btree node to attach children cell to if found.
+     *
+     * @return BTreeCell containing the cell data.
+     *
+     * @throws IOException If there is a problem reading the file.
+     * @throws InvalidFileException If there is an unusual format.
+     */
     private BTreeCell parseTableBtreeLeafCell(RandomAccessFile in, PageHeader pageHeader, BTreeNode<BTreeCell> node) throws IOException, InvalidFileException {
         final int numberOfCells = pageHeader.getNumberOfCells();
         final int cellType = pageHeader.getPageType();
         final long[] cellPointers = pageHeader.getCellPointers();
 
         BTreeCell cell = new BTreeCell(cellType, numberOfCells, pageHeader.getPageNumber());
+        cell.type = CellType.Data;
 
         for (int i = 0; i < numberOfCells; i++) {
             in.seek(cellPointers[i]);
@@ -216,7 +227,6 @@ public class DefaultDatabaseParser implements DatabaseParser {
             cell.rowId[i] = decodeVarint(in)[0];
             long bytesInHeader = decodeVarint(in)[0] - 1;
             int[] types = new int[(int) bytesInHeader];
-            int headerSize = 0;
             int bytesCounted = 0;
             int k = 0;
             while (bytesCounted < bytesInHeader) {
@@ -226,15 +236,14 @@ public class DefaultDatabaseParser implements DatabaseParser {
                 k++;
             }
 
-            int table = 0;
-            int index = 0;
+            boolean isTable = false;
             int tablePage = 0;
             for (int j = 0; j < k; j++) {      // read payload
                 if (types[j] == 0) {
                     cell.data[i] += " null ";
                 } else if (types[j] == 1) {
                     short bytes = in.readByte();
-                    if (table == 1 && tablePage == 0) {
+                    if (isTable && tablePage == 0) {
                         tablePage = bytes;
                     }
                     cell.data[i] += " " + bytes + " ";
@@ -264,15 +273,13 @@ public class DefaultDatabaseParser implements DatabaseParser {
                     String str = new String(bytes);
                     cell.data[i] += " " + str + " ";
                     if (str.equals("table") || str.equals("index")) {
-                        table = 1;
+                        isTable = true;
                     }
                 }
             }
-            if (table == 1) {
+            if (isTable) {
                 cell.type = CellType.Table;
                 node.addChild(parseBtree(in, tablePage, pageHeader.getPageSize()));
-            } else if (cell.type == null) {
-                cell.type = CellType.Data;
             }
             // read overflow
             // cell.overflowPageNumbers[i] = in.readInt();
@@ -280,17 +287,29 @@ public class DefaultDatabaseParser implements DatabaseParser {
         return  cell;
     }
 
+    /**
+     * Parses a Table Btree Interior Cell: Hex value of: 0x05
+     *
+     * @param in RandomAccessFile input stream
+     * @param pageHeader PageHeader of the page with the cells.
+     * @param node Btree node to attach children cell to if found.
+     *
+     * @return BTreeCell containing the cell data.
+     *
+     * @throws IOException If there is a problem reading the file.
+     * @throws InvalidFileException If there is an unusual format.
+     */
     private BTreeCell parseTableBtreeInteriorCell(RandomAccessFile in, PageHeader pageHeader, BTreeNode<BTreeCell> node) throws IOException, InvalidFileException {
         final int numberOfCells = pageHeader.getNumberOfCells();
         final int cellType = pageHeader.getPageType();
         final long[] cellPointers = pageHeader.getCellPointers();
 
         BTreeCell cell = new BTreeCell(cellType, numberOfCells, pageHeader.getPageNumber());
+        cell.type = CellType.Table_Pointer_Internal;
 
         for (int i = 0; i < numberOfCells; i++) {
             in.seek(cellPointers[i]);
 
-            cell.type = CellType.Table_Pointer_Internal;
             cell.leftChildPointers[i] = in.readInt();
             cell.rowId[i] = decodeVarint(in)[0];
             node.addChild(parseBtree(in, cell.leftChildPointers[i], pageHeader.getPageSize()));
@@ -298,38 +317,59 @@ public class DefaultDatabaseParser implements DatabaseParser {
         return cell;
     }
 
+    /**
+     * Parses a Index Btree Leaf Cell: Hex value of: 0x0A
+     *
+     * @param in RandomAccessFile input stream
+     * @param pageHeader PageHeader of the page with the cells.
+     *
+     * @return BTreeCell containing the cell data.
+     *
+     * @throws IOException If there is a problem reading the file.
+     * @throws InvalidFileException If there is an unusual format.
+     */
     private BTreeCell parseIndexBtreeLeafCell(RandomAccessFile in, PageHeader pageHeader) throws IOException, InvalidFileException {
         final int numberOfCells = pageHeader.getNumberOfCells();
         final int cellType = pageHeader.getPageType();
         final long[] cellPointers = pageHeader.getCellPointers();
 
         BTreeCell cell = new BTreeCell(cellType, numberOfCells, pageHeader.getPageNumber());
+        cell.type = CellType.Index_Leaf;
 
         for (int i = 0; i < numberOfCells; i++) {
             in.seek(cellPointers[i]);
 
-            cell.type = CellType.Index_Leaf;
             cell.payLoadSize[i] = decodeVarint(in)[0];
             byte[] bytes = new byte[(int)cell.payLoadSize[i]];
             in.read(bytes);
             cell.data[i] = new String(bytes);
             //  cell.overflowPageNumbers[i] = in.readInt();
-
         }
         return cell;
     }
 
+    /**
+     * Parses a Index Btree Interior Cell: Hex value of: 0x02
+     *
+     * @param in RandomAccessFile input stream
+     * @param pageHeader PageHeader of the page with the cells.
+     *
+     * @return BTreeCell containing the cell data.
+     *
+     * @throws IOException If there is a problem reading the file.
+     * @throws InvalidFileException If there is an unusual format.
+     */
     private BTreeCell parseIndexBtreeInteriorCell(RandomAccessFile in, PageHeader pageHeader) throws IOException, InvalidFileException {
         final int numberOfCells = pageHeader.getNumberOfCells();
         final int cellType = pageHeader.getPageType();
         final long[] cellPointers = pageHeader.getCellPointers();
 
         BTreeCell cell = new BTreeCell(cellType, numberOfCells, pageHeader.getPageNumber());
+        cell.type = CellType.Index_Pointer_Internal;
 
         for (int i = 0; i < numberOfCells; i++) {
             in.seek(cellPointers[i]);
 
-            cell.type = CellType.Index_Pointer_Internal;
             cell.leftChildPointers[i] = in.readInt();
             cell.payLoadSize[i] = decodeVarint(in)[0];
             //cell.data[i] = in.readUTF();
