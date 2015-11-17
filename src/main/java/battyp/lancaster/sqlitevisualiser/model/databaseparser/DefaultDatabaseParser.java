@@ -32,8 +32,6 @@ import battyp.lancaster.sqlitevisualiser.view.CellType;
 
 import java.io.*;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <h1>< Default Database Parser </h1>
@@ -162,7 +160,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
      * @throws InvalidFileException If there is an unusual format.
      */
     public BTreeNode<BTreeCell> parseBtree(RandomAccessFile in, long pageNumber, long pageSize) throws IOException, InvalidFileException {
-        BTreeNode<BTreeCell> node = new BTreeNode();
+        BTreeNode<BTreeCell> node = new BTreeNode<>();
         PageHeader pageHeader = new PageHeader(in, pageNumber, pageSize);
 
         final int cellType = pageHeader.getPageType();
@@ -223,42 +221,38 @@ public class DefaultDatabaseParser implements DatabaseParser {
         for (int i = 0; i < numberOfCells; i++) {
             in.seek(cellPointers[i]);
 
-            cell.payLoadSize[i] = decodeVarint(in)[0];     //read cell header
+            cell.payLoadSize[i] = decodeVarint(in)[0];
             cell.rowId[i] = decodeVarint(in)[0];
             long bytesInHeader = decodeVarint(in)[0] - 1;
             int[] types = new int[(int) bytesInHeader];
             int bytesCounted = 0;
-            int k = 0;
+            int numberOfItems = 0;
             while (bytesCounted < bytesInHeader) {
                 long[] varint = decodeVarint(in);
-                types[k] = (int) varint[0];
+                types[numberOfItems] = (int) varint[0];
                 bytesCounted += varint[1];
-                k++;
+                numberOfItems++;
             }
 
             boolean isTable = false;
-            int tablePage = 0;
-            for (int j = 0; j < k; j++) {      // read payload
+            int tablePageNumber = 0;
+            for (int j = 0; j < numberOfItems; j++) {
                 if (types[j] == 0) {
                     cell.data[i] += "";
                 } else if (types[j] == 1) {
                     short bytes = in.readByte();
-                    if (isTable && tablePage == 0) {
-                        tablePage = bytes;
+                    if (isTable && tablePageNumber == 0) {
+                        tablePageNumber = bytes;
                     }
                     cell.data[i] += " " + bytes + " ";
                 } else if (types[j] == 2) {
                     cell.data[i] += " " + in.readShort() + " ";
                 } else if (types[j] == 3) {
-                    byte[] bytes = new byte[3];
-                    in.read(bytes);
-                    cell.data[i] += " " + new String(bytes) + " ";
+                    cell.data[i] += " " + readBytesAsString(in, 3) + " ";
                 } else if (types[j] == 4) {
                     cell.data[i] += " " + in.readInt() + " ";
                 } else if (types[j] == 5) {
-                    byte[] bytes = new byte[6];
-                    in.read(bytes);
-                    cell.data[i] += " " + new String(bytes) + " ";
+                    cell.data[i] += " " + readBytesAsString(in, 6) + " ";
                 } else if (types[j] == 6) {
                     cell.data[i] += " " + in.readLong() + " ";
                 } else if (types[j] == 7) {
@@ -268,13 +262,9 @@ public class DefaultDatabaseParser implements DatabaseParser {
                 } else if (types[j] == 9) {
                     cell.data[i] += " 0 ";
                 } else if (types[j] >= 12 && types[j] % 2 == 0) {
-                    byte[] bytes = new byte[(types[j] - 12) / 2];
-                    in.read(bytes);
-                    cell.data[i] += " " + new String(bytes) + " ";
+                    cell.data[i] += " " + readBytesAsString(in, (types[j] - 12) / 2) + " ";
                 } else if (types[j] >= 13 && types[j] % 2 != 0) {
-                    byte[] bytes = new byte[(types[j] - 13) / 2];
-                    in.read(bytes);
-                    String str = new String(bytes);
+                    String str = readBytesAsString(in, (types[j] - 13) / 2);
                     cell.data[i] += " " + str + " ";
                     if (str.equals("table") || str.equals("index")) {
                         isTable = true;
@@ -283,7 +273,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
             }
             if (isTable) {
                 cell.type = CellType.Table;
-                node.addChild(parseBtree(in, tablePage, pageHeader.getPageSize()));
+                node.addChild(parseBtree(in, tablePageNumber, pageHeader.getPageSize()));
             }
             // read overflow
             // cell.overflowPageNumbers[i] = in.readInt();
@@ -414,5 +404,21 @@ public class DefaultDatabaseParser implements DatabaseParser {
             value[1] = i + 1;
         }
         return value;
+    }
+
+    /**
+     * Reads a string from the input stream.
+     *
+     * @param in The input stream to read the from.
+     * @param numberOfBytes Size of the string
+     *
+     * @return String read from the input stream
+     *
+     * @throws IOException If there is a problem reading the file.
+     */
+    private String readBytesAsString(RandomAccessFile in, int numberOfBytes) throws IOException {
+        byte[] bytes = new byte[numberOfBytes];
+        in.read(bytes);
+        return new String(bytes);
     }
 }
