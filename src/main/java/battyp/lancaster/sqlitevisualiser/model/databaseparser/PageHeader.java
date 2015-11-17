@@ -41,14 +41,16 @@ import java.io.RandomAccessFile;
  */
 public class PageHeader {
 
-    private long realPageNumber;
-    private long pageOffset;
-    private  int pageType;
-    private  int firstFreeBlockOffset;
-    private  int numberOfCells;
-    private  int startOfCell;
-    private  int fagmentedFreeBytes;
-    private  int rightMostPointer;
+    private long   pageSize;
+    private long   realPageNumber;
+    private long   pageOffset;
+    private  int   pageType;
+    private  int   firstFreeBlockOffset;
+    private  int   numberOfCells;
+    private  int   startOfCell;
+    private  int   fagmentedFreeBytes;
+    private  int   rightMostPointer;
+    private long[] cellPointers;
 
     /**
      * Constructor.
@@ -75,10 +77,11 @@ public class PageHeader {
      * @param pageSize Size of the pages.
      */
     public void parsePageHeader(RandomAccessFile in, long pageNumber, long pageSize) throws IOException {
+        this.pageSize = pageSize;
         realPageNumber = pageNumber - 1;
         pageOffset = realPageNumber * pageSize;
         if (realPageNumber == 0) {
-            //   in.seek(SqliteConstants.HEADER_SIZE);
+            in.seek(SqliteConstants.HEADER_SIZE);
         } else {
             in.seek(pageOffset);
         }
@@ -96,6 +99,20 @@ public class PageHeader {
         if (pageType == SqliteConstants.INDEX_BTREE_INTERIOR_CELL || pageType == SqliteConstants.TABLE_BTREE_INTERIOR_CELL) {
             rightMostPointer = in.readInt();
         }
+
+        cellPointers = new long[numberOfCells];
+        for (int i = 0; i < numberOfCells; i++) {
+            cellPointers[i] = in.readShort() + pageOffset;
+        }
+    }
+
+    /**
+     * Gets the page size.
+     *
+     * @return Page size.
+     */
+    public long getPageSize() {
+        return  this.pageSize;
     }
 
     /**
@@ -107,7 +124,7 @@ public class PageHeader {
      * @return the Page number
      */
     public long getPageNumber() {
-        return realPageNumber;
+        return this.realPageNumber;
     }
 
     /**
@@ -116,7 +133,7 @@ public class PageHeader {
      * @return Page offset int bytes from the start of the file.
      */
     public long getPageOffset() {
-        return pageOffset;
+        return this.pageOffset;
     }
 
     /**
@@ -127,7 +144,7 @@ public class PageHeader {
      * @return Page type.
      */
     public int getPageType() {
-        return pageType;
+        return this.pageType;
     }
 
     /**
@@ -136,7 +153,7 @@ public class PageHeader {
      * @return Freeblock cell pointer.
      */
     public int getFirstFreeBlockOffset() {
-        return firstFreeBlockOffset;
+        return this.firstFreeBlockOffset;
     }
 
     /**
@@ -145,7 +162,7 @@ public class PageHeader {
      * @return Number of cells
      */
     public int getNumberOfCells() {
-        return numberOfCells;
+        return this.numberOfCells;
     }
 
     /**
@@ -154,7 +171,7 @@ public class PageHeader {
      * @return cell block offset.
      */
     public int getStartOfCell() {
-        return startOfCell;
+        return this.startOfCell;
     }
 
     /**
@@ -163,7 +180,7 @@ public class PageHeader {
      * @return number of fragmented bytes.
      */
     public int getFagmentedFreeBytes() {
-        return fagmentedFreeBytes;
+        return this.fagmentedFreeBytes;
     }
 
     /**
@@ -174,6 +191,15 @@ public class PageHeader {
      * @return Rightmost pointer page number.
      */
     public int getRightMostPointer() {
-        return rightMostPointer;
+        return this.rightMostPointer;
+    }
+
+    /**
+     * Gets the list of cell pointers.
+     *
+     * @return Array of cell pointers, byte offset from the start of the file.
+     */
+    public long[] getCellPointers() {
+        return  this.cellPointers;
     }
 }
