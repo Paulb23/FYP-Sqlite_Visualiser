@@ -97,11 +97,8 @@ public class DefaultLiveUpdater implements LiveUpdater {
 
             if (oldRoot != null && newRoot != null) {
                 if (oldRoot.hashCode() != newRoot.hashCode() && oldRoot.getData().hashCode() != newRoot.getData().hashCode()) {
-                    Stack<BTreeCell> oldTree = new Stack<>();
-                    Stack<BTreeCell> newTree = new Stack<>();
-
-                    addNodesToStack(oldRoot, oldTree);
-                    addNodesToStack(newRoot, newTree);
+                    Stack<BTreeCell> oldTree = oldRoot.childrenToStack();
+                    Stack<BTreeCell> newTree = newRoot.childrenToStack();
 
                     int numNodes = newTree.size();
                     for (int i = 0; i < numNodes; i++) {
@@ -115,22 +112,6 @@ public class DefaultLiveUpdater implements LiveUpdater {
                 }
             }
         }
-    }
-
-    /**
-     * Takes a tree and turns it into a stack.
-     *
-     * @param node Root node.
-     * @param stack Stack to add the nodes to.
-     */
-    private void addNodesToStack(BTreeNode<BTreeCell> node, Stack<BTreeCell> stack) {
-        List<BTreeNode<BTreeCell>> children = node.getChildren();
-        if (node.getNumberOfChildren() > 0) {
-            for (BTreeNode<BTreeCell> child : children) {
-                addNodesToStack(child, stack);
-            }
-        }
-        stack.add(node.getData());
     }
 
     /**

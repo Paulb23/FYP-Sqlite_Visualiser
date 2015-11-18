@@ -30,6 +30,7 @@ import org.junit.Test;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Stack;
 
 /**
  * JUnit tests for BTreeNode data structure
@@ -209,5 +210,33 @@ public class BTreeNodeTest {
 
         node.setChildren(children);
         Assert.assertEquals(node.getChildren().get(0).getParent(), node);
+    }
+
+    @Test
+    public void TestChildrenToStackWithNoChildren() {
+        BTreeNode<String> node = new BTreeNode<>();
+        Stack<String> stack = node.childrenToStack();
+        Assert.assertEquals(1, stack.size());
+    }
+
+    @Test
+    public void TestChildrenToStackWithMoreThenOneChild() {
+        BTreeNode<String> node = new BTreeNode<>();
+
+        node.addChild(new BTreeNode<>("Test"));
+
+        Stack<String> stack = node.childrenToStack();
+        Assert.assertEquals(2, stack.size());
+    }
+
+    @Test
+    public void TestChildrenToStackOrdering() {
+        BTreeNode<String> node = new BTreeNode<>();
+
+        node.addChild(new BTreeNode<>("Test"));
+
+        Stack<String> stack = node.childrenToStack();
+        Assert.assertEquals(stack.pop(), null);
+        Assert.assertEquals(stack.pop(), "Test");
     }
 }

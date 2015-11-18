@@ -26,6 +26,7 @@ package battyp.lancaster.sqlitevisualiser.model.datastructures;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Stack;
 
 /**
  * <h1> B-Tree Node </h1>
@@ -79,6 +80,33 @@ public class BTreeNode<T> {
      */
     public void setParent(BTreeNode<T> parent) {
         this.parent = parent;
+    }
+
+    /**
+     * Adds this node, and all children including, children's children to a stack.
+     *
+     * @return Stack containing all children.
+     */
+    public Stack<T> childrenToStack() {
+        Stack<T> stack = new Stack<>();
+        addNodesToStack(this, stack);
+        return stack;
+    }
+
+    /**
+     * Takes a tree and turns it into a stack.
+     *
+     * @param node Root node.
+     * @param stack Stack to add the nodes to.
+     */
+    private void addNodesToStack(BTreeNode<T> node, Stack<T> stack) {
+        List<BTreeNode<T>> children = node.getChildren();
+        if (node.getNumberOfChildren() > 0) {
+            for (BTreeNode<T> child : children) {
+                addNodesToStack(child, stack);
+            }
+        }
+        stack.add(node.getData());
     }
 
     /**
