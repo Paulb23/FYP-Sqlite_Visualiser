@@ -77,6 +77,18 @@ public class DefaultLiveUpdater implements LiveUpdater {
     @Override
     public void update(String path, DatabaseParser databaseParser, DatabaseInterface databaseInterface) throws IOException, InvalidFileException {
         Database newDatabase = databaseParser.parseDatabase(path, new Database(new BTree(), new Metadata()));
+        detectChanges(newDatabase);
+        databaseInterface.addDatabase(newDatabase);
+        if (live) {
+            databaseInterface.nextStep();
+        }
+    }
+
+    /**
+     * Detect changes to the new database, from the previous one
+     * @param newDatabase
+     */
+    private void detectChanges(Database newDatabase) {
         Database previousDatabase = databaseInterface.getCurrent();
 
         if (previousDatabase != null && newDatabase != null) {
@@ -84,41 +96,42 @@ public class DefaultLiveUpdater implements LiveUpdater {
             BTreeNode<BTreeCell> newRoot = newDatabase.getBTree().getRoot();
 
             if (oldRoot != null && newRoot != null) {
-                Stack<BTreeCell> oldTree = new Stack<>();
-                Stack<BTreeCell> newTree = new Stack<>();
+                if (oldRoot.hashCode() == newRoot.hashCode() && oldRoot.getData().hashCode() == newRoot.getData().hashCode()) {
+                    return;
+                } else {
+                    Stack<BTreeCell> oldTree = new Stack<>();
+                    Stack<BTreeCell> newTree = new Stack<>();
 
-                // create stacks
-                addNodesToStack(oldRoot, oldTree);
-                addNodesToStack(newRoot, newTree);
+                    addNodesToStack(oldRoot, oldTree);
+                    addNodesToStack(newRoot, newTree);
 
-                // check current node for changes
-                int numNodes = oldTree.size();
-                for (int i = 0; i < numNodes; i++) {
-                    BTreeCell oldCell = oldTree.pop();
-                    BTreeCell newCell = newTree.pop();
+                    int numNodes = newTree.size();
+                    for (int i = 0; i < numNodes; i++) {
+                        BTreeCell oldCell = oldTree.pop();
+                        BTreeCell newCell = newTree.pop();
 
-                    if (oldCell.hashCode() != newCell.hashCode()) {
-                        newCell.changed = true;
+                        if (oldCell.hashCode() != newCell.hashCode()) {
+                            newCell.changed = true;
+                        }
                     }
                 }
             }
         }
-
-        databaseInterface.addDatabase(newDatabase);
-        if (live) {
-            databaseInterface.nextStep();
-        }
     }
 
+    /**
+     * Takes a tree and turns it into a stack.
+     *
+     * @param node Root node.
+     * @param stack Stack to add the nodes to.
+     */
     private void addNodesToStack(BTreeNode<BTreeCell> node, Stack<BTreeCell> stack) {
-
         List<BTreeNode<BTreeCell>> children = node.getChildren();
         if (node.getNumberOfChildren() > 0) {
             for (BTreeNode<BTreeCell> child : children) {
                 addNodesToStack(child, stack);
             }
         }
-
         stack.add(node.getData());
     }
 
