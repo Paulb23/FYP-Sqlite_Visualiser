@@ -77,7 +77,7 @@ public class DefaultLiveUpdater implements LiveUpdater {
     @Override
     public void update(String path, DatabaseParser databaseParser, DatabaseInterface databaseInterface) throws IOException, InvalidFileException {
         Database newDatabase = databaseParser.parseDatabase(path, new Database(new BTree(), new Metadata()));
-        detectChanges(newDatabase);
+        detectChanges(newDatabase, databaseInterface.getCurrent());
         databaseInterface.addDatabase(newDatabase);
         if (live) {
             databaseInterface.nextStep();
@@ -86,19 +86,17 @@ public class DefaultLiveUpdater implements LiveUpdater {
 
     /**
      * Detect changes to the new database, from the previous one
-     * @param newDatabase
+     *
+     * @param newDatabase new Database object to check.
+     * @param previousDatabase The database to compare too.
      */
-    private void detectChanges(Database newDatabase) {
-        Database previousDatabase = databaseInterface.getCurrent();
-
+    private void detectChanges(Database newDatabase, Database previousDatabase) {
         if (previousDatabase != null && newDatabase != null) {
             BTreeNode<BTreeCell> oldRoot = previousDatabase.getBTree().getRoot();
             BTreeNode<BTreeCell> newRoot = newDatabase.getBTree().getRoot();
 
             if (oldRoot != null && newRoot != null) {
-                if (oldRoot.hashCode() == newRoot.hashCode() && oldRoot.getData().hashCode() == newRoot.getData().hashCode()) {
-                    return;
-                } else {
+                if (oldRoot.hashCode() != newRoot.hashCode() && oldRoot.getData().hashCode() != newRoot.getData().hashCode()) {
                     Stack<BTreeCell> oldTree = new Stack<>();
                     Stack<BTreeCell> newTree = new Stack<>();
 
@@ -144,8 +142,7 @@ public class DefaultLiveUpdater implements LiveUpdater {
             if (path != null && databaseParser != null && databaseInterface != null) {
                 update(path, databaseParser, databaseInterface);
             }
-        } catch (IOException e) {
-        } catch (InvalidFileException e) {
+        } catch (IOException | InvalidFileException ignored) {
         }
     }
 
