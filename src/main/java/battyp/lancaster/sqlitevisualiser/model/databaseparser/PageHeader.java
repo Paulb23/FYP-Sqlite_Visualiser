@@ -78,9 +78,9 @@ public class PageHeader {
      */
     public void parsePageHeader(RandomAccessFile in, long pageNumber, long pageSize) throws IOException {
         this.pageSize = pageSize;
-        this.realPageNumber = pageNumber - 1;
+        this.realPageNumber = pageNumber - 1;               /* take one as Sqlite start count at one rather than zero */
         this.pageOffset = this.realPageNumber * pageSize;
-        if (this.realPageNumber == 0) {
+        if (this.realPageNumber == 0) {                     /* if its the first page skip the header */
             in.seek(SqliteConstants.HEADER_SIZE);
         } else {
             in.seek(this.pageOffset);
@@ -90,8 +90,8 @@ public class PageHeader {
         this.firstFreeBlockOffset = in.readShort();
         this.numberOfCells = in.readShort();
         this.startOfCell = in.readShort();
-        if (this.startOfCell == 0) {
-            this.startOfCell = 65536;
+        if (this.startOfCell == 1) {                        /* see sqlite header taber for more information but */
+            this.startOfCell = 65536;                       /* max size is stored as one                        */
         }
         this.fagmentedFreeBytes = in.readByte();
         this.rightMostPointer = 0;

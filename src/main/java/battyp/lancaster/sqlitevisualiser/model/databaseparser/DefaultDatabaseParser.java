@@ -116,7 +116,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
         metadata.vacuumMode = in.readInt();
         metadata.appID = in.readInt();
 
-        in.skipBytes(SqliteConstants.HEADER_RESEVED_SPACE_SIZE);
+        in.skipBytes(SqliteConstants.HEADER_RESERVED_SPACE_SIZE);
 
         metadata.versionValidNumber = in.readInt();
         metadata.sqliteVersion = in.readInt();
