@@ -29,6 +29,10 @@ jar {
     }
 }
 
+test {
+    exclude '**/ui/**'
+}
+
 dependencies {
     compile 'org.xerial:sqlite-jdbc:3.8.11.2'
 

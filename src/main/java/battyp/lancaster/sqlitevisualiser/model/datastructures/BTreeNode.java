@@ -243,7 +243,7 @@ public class BTreeNode<T> {
 
     /**
      * Compares to object. They are equal if they contain the
-     * same data.
+     * same data and children.
      *
      * @param obj Other node to compare with.
      *
@@ -261,6 +261,15 @@ public class BTreeNode<T> {
             return false;
         }
         BTreeNode<?> node = (BTreeNode<?>) obj;
-        return this.data.equals(node.getData());
+        if (this.data != null && node.getData() != null) {
+            if (!this.data.equals(node.getData())) {
+                return false;
+            }
+        } else if (this.data == null && node.getData() != null) {
+            return false;
+        } else if (this.data != null && node.getData() == null) {
+            return false;
+        }
+        return (this.hashCode() == obj.hashCode());
     }
 }

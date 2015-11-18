@@ -239,4 +239,36 @@ public class BTreeNodeTest {
         Assert.assertEquals(stack.pop(), null);
         Assert.assertEquals(stack.pop(), "Test");
     }
+
+    @Test
+    public void TestEqualsToSelf() {
+        BTreeNode<String> node = new BTreeNode<>();
+        Assert.assertEquals(true, node.equals(node));
+    }
+
+    @Test
+    public void TestEqualsToNull() {
+        BTreeNode<String> node = new BTreeNode<>();
+        Assert.assertEquals(false, node.equals(null));
+    }
+
+    @Test
+    public void TestEqualsToDifferentNode() {
+        BTreeNode<String> node = new BTreeNode<>();
+        Assert.assertEquals(true, node.equals(new BTreeNode<>()));
+    }
+
+    @Test
+    public void TestEqualsToDifferentInvalidNode() {
+        BTreeNode<String> node = new BTreeNode<>();
+        Assert.assertEquals(false, node.equals(new BTreeNode<>("Data")));
+    }
+
+    @Test
+    public void TestEqualsToDifferentInvalidNodeWithChildren() {
+        BTreeNode<String> node = new BTreeNode<>();
+        BTreeNode<String> otherNode = new BTreeNode<>();
+        otherNode.addChild(new BTreeNode<>(""));
+        Assert.assertEquals(false, node.equals(otherNode));
+    }
 }
