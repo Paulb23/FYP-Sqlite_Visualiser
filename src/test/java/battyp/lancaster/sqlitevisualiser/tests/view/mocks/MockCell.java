@@ -39,7 +39,7 @@ import battyp.lancaster.sqlitevisualiser.view.CellType;
  */
 public class MockCell extends Cell {
 
-    public MockCell(CellType type, BTreeCell cell) {
-        super(type, cell);
+    public MockCell(BTreeCell cell) {
+        super(cell);
     }
 }

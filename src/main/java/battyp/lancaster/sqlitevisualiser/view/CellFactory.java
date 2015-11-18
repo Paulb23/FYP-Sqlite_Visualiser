@@ -26,7 +26,6 @@ package battyp.lancaster.sqlitevisualiser.view;
 
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
 import battyp.lancaster.sqlitevisualiser.view.cells.*;
-import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -53,42 +52,36 @@ public class CellFactory {
      * @return Cell of the corresponding type.
      */
     public Cell createCell(CellType type, BTreeCell cell) {
-        Cell cellReturn = new DefaultCell(type, cell);
+        Cell cellReturn = new DefaultCell(cell);
         switch(type) {
             case Default: {
-                cellReturn = new DefaultCell(type, cell);
+                cellReturn = new DefaultCell(cell);
                 break;
             }
             case Table: {
-                cellReturn = new TableCell(type, cell);
+                cellReturn = new TableCell(cell);
                 break;
             }
             case Data: {
-                cellReturn = new DataCell(type, cell);
+                cellReturn = new DataCell(cell);
                 break;
             }
             case Table_Pointer_Internal: {
-                cellReturn = new TablePointerInternalCell(type, cell);
+                cellReturn = new TablePointerInternalCell(cell);
                 break;
             }
             case Index_Leaf: {
-                cellReturn = new IndexLeafCell(type, cell);
+                cellReturn = new IndexLeafCell(cell);
                 break;
             }
             case Index_Pointer_Internal: {
-                cellReturn = new IndexPointerInternalCell(type, cell);
+                cellReturn = new IndexPointerInternalCell(cell);
                 break;
             }
         }
         if (cell.changed) {
-            Rectangle view = new Rectangle( 50,50);
-            view.setStrokeWidth(10);
-            view.setStroke(Color.BLUEVIOLET);
-            view.setFill(Color.TRANSPARENT);
-
-            cellReturn.getChildren().add(1, view);
+           cellReturn.highlight();
         }
-
         return cellReturn;
     }
 }

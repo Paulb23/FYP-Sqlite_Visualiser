@@ -47,11 +47,10 @@ public class TableCell extends Cell {
     /**
      * Constructor.
      *
-     * @param type Type of the cell.
      * @param cell The cell this Cell represents.
      */
-    public TableCell(CellType type, BTreeCell cell) {
-        super(type, cell);
+    public TableCell(BTreeCell cell) {
+        super(cell);
 
         Rectangle view = new Rectangle( 50,50);
         view.setStroke(Color.INDIANRED);

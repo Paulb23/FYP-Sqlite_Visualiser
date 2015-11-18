@@ -48,11 +48,10 @@ public class IndexLeafCell extends Cell {
     /**
      * Constructor.
      *
-     * @param type Type of the cell.
      * @param cell The cell this Cell represents.
      */
-    public IndexLeafCell(CellType type, BTreeCell cell) {
-        super(type, cell);
+    public IndexLeafCell(BTreeCell cell) {
+        super(cell);
 
         Rectangle view = new Rectangle( 50,50);
         view.setStroke(Color.DARKGOLDENROD);

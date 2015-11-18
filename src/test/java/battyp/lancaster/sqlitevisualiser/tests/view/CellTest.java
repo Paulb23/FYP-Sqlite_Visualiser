@@ -41,11 +41,11 @@ public class CellTest {
 
     @Test
     public void TestDefaultCreation() {
-        Cell cell = new MockCell(CellType.Default, new BTreeCell(0,0,0));
+        Cell cell = new MockCell(new BTreeCell(0,0,0));
     }
 
     @Test
     public void TestCreationWithNull() {
-        Cell cell = new MockCell(null, null);
+        Cell cell = new MockCell(null);
     }
 }

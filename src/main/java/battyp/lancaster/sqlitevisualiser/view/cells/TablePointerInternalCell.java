@@ -48,11 +48,10 @@ public class TablePointerInternalCell extends Cell {
     /**
      * Constructor.
      *
-     * @param type Type of the cell.
      * @param cell The cell this Cell represents.
      */
-    public TablePointerInternalCell(CellType type, BTreeCell cell) {
-        super(type, cell);
+    public TablePointerInternalCell(BTreeCell cell) {
+        super(cell);
 
         Rectangle view = new Rectangle( 50,50);
         view.setStroke(Color.DARKORANGE);

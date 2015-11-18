@@ -26,33 +26,43 @@ package battyp.lancaster.sqlitevisualiser.view;
 
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 /**
  * <h1> Cell </h1>
  *
  * <p>
- * This class is used to visualise thedifferentt nodes within the database.
+ * This class is used to visualise the different nodes within the database.
  *
  * @author Paul Batty
  * @since 0.7
  */
 public abstract class Cell extends Pane {
 
-    private CellType type;
-
+    /**
+     * Cell this pane represents.
+     */
     public final BTreeCell cell;
 
     /**
      * Constructor.
      *
-     * @param type Type of the cell.
      * @param cell The cell this Cell represents.
      */
-    public Cell(CellType type, BTreeCell cell) {
-        if (type == null) {
-          type = CellType.Default;
-        }
-        this.type = type;
+    public Cell(BTreeCell cell) {
         this.cell = cell;
+    }
+
+    /**
+     * Adds a outline border to the the cell.
+     */
+    public void highlight() {
+        Rectangle view = new Rectangle( 50,50);
+        view.setStrokeWidth(10);
+        view.setStroke(Color.BLUEVIOLET);
+        view.setFill(Color.TRANSPARENT);
+
+        this.getChildren().add(1, view);
     }
 }

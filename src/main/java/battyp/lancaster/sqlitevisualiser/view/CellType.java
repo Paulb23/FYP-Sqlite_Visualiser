@@ -28,7 +28,7 @@ package battyp.lancaster.sqlitevisualiser.view;
  * <h1> Cell types </h1>
  *
  * <p>
- * Enum of the different cell types used during the vvisualisation
+ * Enum of the different cell types used during the visualisation
  *
  * @author Paul Batty
  * @see Cell

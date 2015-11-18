@@ -47,11 +47,10 @@ public class DataCell extends Cell{
     /**
      * Constructor.
      *
-     * @param type Type of the cell.
      * @param cell The cell this Cell represents.
      */
-    public DataCell(CellType type, BTreeCell cell) {
-        super(type, cell);
+    public DataCell(BTreeCell cell) {
+        super(cell);
 
         Rectangle view = new Rectangle( 50,50);
         view.setStroke(Color.CHARTREUSE);

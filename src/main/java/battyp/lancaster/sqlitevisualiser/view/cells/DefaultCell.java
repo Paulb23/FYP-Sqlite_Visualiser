@@ -46,11 +46,10 @@ public class DefaultCell extends Cell {
     /**
      * Constructor.
      *
-     * @param type Type of the cell.
      * @param cell The cell this Cell represents.
      */
-    public DefaultCell(CellType type, BTreeCell cell) {
-        super(type, cell);
+    public DefaultCell(BTreeCell cell) {
+        super(cell);
 
         Rectangle view = new Rectangle( 50,50);
         view.setStroke(Color.DODGERBLUE);

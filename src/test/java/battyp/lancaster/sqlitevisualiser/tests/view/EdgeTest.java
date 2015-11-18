@@ -41,18 +41,18 @@ public class EdgeTest {
 
     @Test
     public void TestCreationWithValidCells() {
-        new Edge(new MockCell(CellType.Default, null), new MockCell(CellType.Default, null));
+        new Edge(new MockCell(null), new MockCell(null));
     }
 
     @Test
     public void TestCreationWithSameCell() {
-        Cell cell = new MockCell(CellType.Default, null);
+        Cell cell = new MockCell(null);
         new Edge(cell, cell);
     }
 
     @Test(expected = NullPointerException.class)
     public void TestCreationWithSingleNull() {
-        new Edge(new MockCell(CellType.Default, null), null);
+        new Edge(new MockCell(null), null);
     }
 
     @Test(expected = NullPointerException.class)

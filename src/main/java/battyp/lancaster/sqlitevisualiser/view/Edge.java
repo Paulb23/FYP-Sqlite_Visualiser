@@ -42,9 +42,6 @@ import javafx.scene.shape.Line;
  */
 public class Edge extends Group {
 
-    private Cell source;
-    private Cell target;
-
     private Line line;
 
     /**
@@ -54,9 +51,6 @@ public class Edge extends Group {
      * @param target Ending cell.
      */
     public Edge(Cell source, Cell target) {
-        this.source = source;
-        this.target = target;
-
         this.line = new Line();
 
         line.setStartX(source.getLayoutX() + (source.getBoundsInParent().getWidth() / 2));
