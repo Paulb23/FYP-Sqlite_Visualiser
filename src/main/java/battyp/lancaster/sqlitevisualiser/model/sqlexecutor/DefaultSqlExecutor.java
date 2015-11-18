@@ -73,14 +73,16 @@ public class DefaultSqlExecutor implements SqlExecutor {
      */
     @Override
     public void disconnect() {
-        try {
-            if (this.connection.isClosed()) {
-                return;
+        if (this.connection != null) {
+            try {
+                if (this.connection.isClosed()) {
+                    return;
+                }
+                this.connection.commit();
+                this.connection.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            this.connection.commit();
-            this.connection.close();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

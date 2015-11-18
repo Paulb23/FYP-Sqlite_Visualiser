@@ -88,16 +88,6 @@ public class MenubarController extends Controller {
         super(model);
         this.root = root;
 
-        /* Load in the sql executor side bar */
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("view/fxml/sqleditor.fxml"));
-            loader.setController(new SqlEditorController(model));
-            AnchorPane loadedPane = loader.load();
-            root.setRight(loadedPane);
-        } catch (IOException e) {
-            UiUtil.showExceptionError("Error Dialog", "Error Loading Sql pane!", e);
-        }
-
         /* register with the filewatcher so we get updates when the
         * database is modified.                                  */
         this.model.getFileWatcher().addObserver(this);
@@ -168,13 +158,10 @@ public class MenubarController extends Controller {
 
     /**
      * Quits the program safely.
-     *
-     * Injected at the start to handle the exiting.
      */
     @FXML
     public void exit() {
-        this.model.getFileWatcher().terminate();
-        System.exit(0);
+        this.model.exitProgram();
     }
 
     /**

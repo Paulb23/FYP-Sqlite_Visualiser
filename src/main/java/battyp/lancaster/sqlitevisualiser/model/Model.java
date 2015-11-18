@@ -115,4 +115,9 @@ public interface Model {
      * @return true if file is open else false.
      */
     public boolean isFileOpen();
+
+    /**
+     * Exits and closes the program
+     */
+    public void exitProgram();
 }

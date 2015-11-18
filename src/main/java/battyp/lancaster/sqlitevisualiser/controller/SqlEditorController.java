@@ -43,21 +43,12 @@ import java.sql.SQLException;
  * This Class is designed to allow sql to be ran on the currently opened
  * database is does this by interacting with the SqlExecutor class.
  *
- * <p>
- * It currently keeps state by using static variables, to allow query's
- * and results, to stay when switching tabs / views.
  *
  * @author Paul Batty
  * @see battyp.lancaster.sqlitevisualiser.model.sqlexecutor.SqlExecutor
  * @since 0.5
  */
 public class SqlEditorController extends Controller {
-
-    /* To keep statement when tab switching. */
-    private static String saved_statment;
-
-    /* To keep result when tab switching. */
-    private static String saved_result;
 
     @FXML
     private TextArea sqleditor;
@@ -77,26 +68,8 @@ public class SqlEditorController extends Controller {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void notifyObserver() {
-        if (sqleditor.getText().equals("")) {
-            if (saved_statment != null) {
-                sqleditor.appendText(saved_statment);
-            }
-        }
-
-        if (sqleditorreturn.getText().equals("")) {
-            if (saved_result != null) {
-                sqleditorreturn.appendText(saved_result);
-            }
-        }
-    }
-
-    /**
-     * Injected via FXML allows us to save the string every key press.
-     */
-    @FXML
-    private void save() {
-        saved_statment = sqleditor.getText();
     }
 
     /**
@@ -124,7 +97,6 @@ public class SqlEditorController extends Controller {
                     }
                     sqleditorreturn.appendText("\r\n");
                 }
-                saved_result = sqleditorreturn.getText();
                 result.close();
                 model.getSqlExecutor().disconnect();
             } catch (SQLException e) {

@@ -25,11 +25,13 @@
 package battyp.lancaster.sqlitevisualiser.app;
 
 import battyp.lancaster.sqlitevisualiser.controller.MenubarController;
+import battyp.lancaster.sqlitevisualiser.controller.SqlEditorController;
 import battyp.lancaster.sqlitevisualiser.model.DefaultModel;
 import battyp.lancaster.sqlitevisualiser.model.Model;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -99,8 +101,14 @@ public class SqliteVisualiser extends Application {
         BorderPane bar = menubarloader.load();
         root.setTop(bar);
 
+        /* Load and inject the sqlite executor controller */
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("view/fxml/sqleditor.fxml"));
+        loader.setController(new SqlEditorController(MODEL));
+        AnchorPane loadedPane = loader.load();
+        root.setRight(loadedPane);
+
         /* Make sure we use a custom close to exit cleanly */
-        primaryStage.setOnCloseRequest(event -> menubarController.exit());
+        primaryStage.setOnCloseRequest(event -> MODEL.exitProgram());
 
         /* Should move resolution to options / config. */
         Scene scene = new Scene(root, 800, 600);

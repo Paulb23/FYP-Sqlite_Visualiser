@@ -175,4 +175,14 @@ public class DefaultModel implements Model {
     public boolean isFileOpen() {
         return this.isFileOpen;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void exitProgram() {
+        this.getFileWatcher().terminate();
+        this.sqlExecutor.disconnect();
+        System.exit(0);
+    }
 }
