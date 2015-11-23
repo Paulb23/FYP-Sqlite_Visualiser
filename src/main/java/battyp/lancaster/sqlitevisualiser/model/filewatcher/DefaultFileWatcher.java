@@ -50,7 +50,8 @@ public class DefaultFileWatcher implements FileWatcher {
     private volatile String path;
     private volatile String fileName;
 
-    private volatile WatchService watchService;
+    private File file;
+    private long lastTime;
 
     private volatile boolean running;
 
@@ -68,23 +69,10 @@ public class DefaultFileWatcher implements FileWatcher {
     @Override
     public void run() {
         while(running) {
-            if (watchService != null && path != null && fileName != null) {
-                WatchKey key;
-                try {
-                    key = watchService.take();
-                } catch (InterruptedException e) {
-                    key = null;
-                }
-
-                if (key != null) {
-                    for (WatchEvent<?> event : key.pollEvents()) {
-                        WatchEvent<Path> ev = (WatchEvent<Path>) event;
-                        Path fileName = (Path) event.context();
-                        if (event.kind() == StandardWatchEventKinds.ENTRY_MODIFY && fileName.toString().equals(this.fileName)) {
-                            notifyObservers();
-                        }
-                    }
-                    key.reset();
+            if (path != null && fileName != null) {
+                if (file.lastModified() != lastTime) {
+                    notifyObservers();
+                    lastTime = file.lastModified();
                 }
             }
         }
@@ -103,13 +91,11 @@ public class DefaultFileWatcher implements FileWatcher {
      */
     @Override
     public void setFile(String path) throws IOException {
-        File file = FileUtil.openFile(path);
+        this.file = FileUtil.openFile(path);
         this.path = file.getCanonicalPath();
         this.path = this.path.substring(0, this.path.lastIndexOf(File.separator));
         this.fileName = file.getName();
-        this.watchService = FileSystems.getDefault().newWatchService();
-        Path dir = Paths.get(this.path);
-        dir.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
+        this.lastTime = file.lastModified();
     }
 
     /**
