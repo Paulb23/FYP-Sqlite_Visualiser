@@ -96,7 +96,7 @@ public class DefaultLiveUpdater implements LiveUpdater {
             BTreeNode<BTreeCell> newRoot = newDatabase.getBTree().getRoot();
 
             if (oldRoot != null && newRoot != null) {
-                if (!oldRoot.equals(newRoot) && oldRoot.getData().hashCode() != newRoot.getData().hashCode()) {
+              //  if (!oldRoot.equals(newRoot) && oldRoot.getData().hashCode() != newRoot.getData().hashCode()) {
                     Stack<BTreeCell> oldTree = oldRoot.childrenToStack();
                     Stack<BTreeCell> newTree = newRoot.childrenToStack();
 
@@ -109,7 +109,7 @@ public class DefaultLiveUpdater implements LiveUpdater {
                             newCell.changed = true;
                         }
                     }
-                }
+              //  }
             }
         }
     }
