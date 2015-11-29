@@ -366,7 +366,9 @@ public class DefaultDatabaseParser implements DatabaseParser {
 
             cell.leftChildPointers[i] = in.readInt();
             cell.payLoadSize[i] = decodeVarint(in)[0];
-            //cell.data[i] = in.readUTF();
+            byte[] bytes = new byte[(int)cell.payLoadSize[i]];
+            in.read(bytes);
+            cell.data[i] = new String(bytes);
             //cell.overflowPageNumbers[i] = in.readInt();
         }
         return cell;
