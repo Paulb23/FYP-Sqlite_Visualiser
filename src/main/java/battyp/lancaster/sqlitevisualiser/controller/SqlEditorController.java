@@ -88,16 +88,21 @@ public class SqlEditorController extends Controller {
             sqleditorreturn.clear();
             try {
                 model.getSqlExecutor().connect();
-                ResultSet result = model.getSqlExecutor().executeSql(sqleditor.getText());
+                if (sqleditor.getText().startsWith("Select") || sqleditor.getText().startsWith("select")) {
+                    ResultSet result = model.getSqlExecutor().executeSql(sqleditor.getText());
 
-                int cols = result.getMetaData().getColumnCount();
-                while (result.next()) {
-                    for (int i = 1; i < cols; i++) {
-                        sqleditorreturn.appendText(result.getString(i) + "\t");
+                    int cols = result.getMetaData().getColumnCount();
+                    while (result.next()) {
+                        for (int i = 1; i < cols; i++) {
+                            sqleditorreturn.appendText(result.getString(i) + "\t");
+                        }
+                        sqleditorreturn.appendText("\r\n");
                     }
-                    sqleditorreturn.appendText("\r\n");
+                    result.close();
+                } else {
+                    model.getSqlExecutor().performUpdate(sqleditor.getText());
+                    sqleditorreturn.setText("Database updated.\n");
                 }
-                result.close();
                 model.getSqlExecutor().disconnect();
             } catch (SQLException e) {
                 UiUtil.showExceptionError("Error Dialog", "Oooops, Something went wring with that statement", e);
