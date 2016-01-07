@@ -32,8 +32,10 @@ import battyp.lancaster.sqlitevisualiser.util.FileUtil;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -94,10 +96,17 @@ public class SqliteVisualiser extends Application {
             MODEL = new DefaultModel();
         }
         BorderPane root = new BorderPane();
+        SplitPane splitPane = new SplitPane();
+        splitPane.getItems().add(new Pane());
+        splitPane.getItems().add(new Pane());
+        splitPane.getItems().add(new Pane());
+        splitPane.setDividerPositions(0.0f, 0.8f, 0.9f);
+        root.setCenter(splitPane);
+
 
         /* Load and inject the "master "controller so we can load it with the model and root pane */
         FXMLLoader menubarloader = new FXMLLoader(getClass().getClassLoader().getResource("view/fxml/menubar.fxml"));
-        MenubarController menubarController = new MenubarController(MODEL, root);
+        MenubarController menubarController = new MenubarController(MODEL, root, splitPane);
         menubarloader.setController(menubarController);
         BorderPane bar = menubarloader.load();
         root.setTop(bar);
@@ -106,7 +115,7 @@ public class SqliteVisualiser extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("view/fxml/sqleditor.fxml"));
         loader.setController(new SqlEditorController(MODEL));
         AnchorPane loadedPane = loader.load();
-        root.setRight(loadedPane);
+        splitPane.getItems().set(2, loadedPane);
 
         /* Make sure we use a custom close to exit cleanly */
         primaryStage.setOnCloseRequest(event -> MODEL.exitProgram());

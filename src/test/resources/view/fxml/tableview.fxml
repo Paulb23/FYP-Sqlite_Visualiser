@@ -27,7 +27,6 @@
 
 <AnchorPane fx:id="TablePage" prefHeight="480.0" prefWidth="640.0" xmlns:fx="http://javafx.com/fxml">
     <children>
-        <ComboBox AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" fx:id="tableSelect" onAction="#updateView"></ComboBox>
-        <TableView  AnchorPane.leftAnchor="150.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" fx:id="tableView"> </TableView>
+        <TableView  AnchorPane.leftAnchor="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" fx:id="tableView"> </TableView>
     </children>
 </AnchorPane>

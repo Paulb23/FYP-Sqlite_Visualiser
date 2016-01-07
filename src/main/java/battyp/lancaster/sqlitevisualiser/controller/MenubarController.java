@@ -37,8 +37,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -74,6 +76,7 @@ import java.sql.SQLException;
 public class MenubarController extends Controller {
 
     private BorderPane root;
+    private SplitPane splitPane;
     private Controller currentController;
 
     @FXML
@@ -88,9 +91,10 @@ public class MenubarController extends Controller {
      * @param model The model that this controller will use.
      * @param root The root pane of the stage.
      */
-    public MenubarController(Model model, BorderPane root) {
+    public MenubarController(Model model, BorderPane root, SplitPane splitPane) {
         super(model);
         this.root = root;
+        this.splitPane = splitPane;
 
         /* register with the filewatcher so we get updates when the
         * database is modified.                                  */
@@ -175,6 +179,7 @@ public class MenubarController extends Controller {
      */
     @FXML
     private void switchToHeader() {
+        clearLeftPane();
         setCenterPane("view/fxml/header.fxml", new HeaderController(this.model));
     }
 
@@ -183,7 +188,8 @@ public class MenubarController extends Controller {
      */
     @FXML
     private void switchToTableView() {
-        setCenterPane("view/fxml/tableview.fxml", new TableViewController(this.model));
+        clearLeftPane();
+        setPanes("view/fxml/tableviewleftpane.fxml", "view/fxml/tableview.fxml", new TableViewController(this.model));
     }
 
     /**
@@ -191,7 +197,8 @@ public class MenubarController extends Controller {
      */
     @FXML
     private void switchToVisualisation() {
-        setCenterPane("view/fxml/visualisation.fxml", new VisualisationController(this.model));
+        clearLeftPane();
+        setPanes("view/fxml/visulisationleftpane.fxml", "view/fxml/visualisation.fxml", new VisualisationController(this.model));
     }
 
     /**
@@ -199,6 +206,7 @@ public class MenubarController extends Controller {
      */
     @FXML
     private void switchToLog() {
+        clearLeftPane();
         setCenterPane("view/fxml/log.fxml", new LogController(this.model));
     }
 
@@ -226,12 +234,49 @@ public class MenubarController extends Controller {
             loader.setController(controller);
             AnchorPane loadedPane = loader.load();
 
-            root.setCenter(loadedPane);
+            this.splitPane.getItems().set(1, loadedPane);
 
             this.currentController = controller;
             notifyObserver();
         } catch (IOException e) {
             UiUtil.showExceptionError("Error Dialog", "Oooops, Could not load that tab!", e);
         }
+    }
+
+    /**
+     * Switches the current view or Left pane.
+     *
+     * @param fxmlPath Path to the FXML file.
+     * @param controller The controller responsible for the FXML file.
+     */
+    private void setLeftPane(String fxmlPath, Controller controller) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(fxmlPath));
+            loader.setController(controller);
+            AnchorPane loadedPane = loader.load();
+
+            this.splitPane.getItems().set(0, loadedPane);
+
+            this.currentController = controller;
+            notifyObserver();
+        } catch (IOException e) {
+            UiUtil.showExceptionError("Error Dialog", "Oooops, Could not load that tab!", e);
+        }
+    }
+
+    private void clearLeftPane() {
+        this.splitPane.getItems().set(0, new Pane());
+        this.splitPane.getDividers().get(0).setPosition(0.0);
+    }
+
+    /**
+     * Switches the current left and center panes.
+     * @param leftfxmlPath Path to the Left panes FXML file.
+     * @param centerfxmlPath Path to the Center panes FXML file.
+     * @param controller The controller responsible for the FXML files
+     */
+    private void setPanes(String leftfxmlPath, String centerfxmlPath, Controller controller) {
+        setCenterPane(centerfxmlPath, controller);
+        setLeftPane(leftfxmlPath, controller);
     }
 }

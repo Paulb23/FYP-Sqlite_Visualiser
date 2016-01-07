@@ -29,7 +29,9 @@ import battyp.lancaster.sqlitevisualiser.model.DefaultModel;
 import battyp.lancaster.sqlitevisualiser.model.Model;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import org.junit.Test;
 import org.loadui.testfx.GuiTest;
 
@@ -49,8 +51,14 @@ public class UiTest extends GuiTest {
         try {
             Model MODEL = new DefaultModel();
             BorderPane root = new BorderPane();
+            SplitPane splitPane = new SplitPane();
+            splitPane.getItems().add(new Pane());
+            splitPane.getItems().add(new Pane());
+            splitPane.getItems().add(new Pane());
+            splitPane.setDividerPositions(0.0f, 0.6f, 0.9f);
+            root.setCenter(splitPane);
             FXMLLoader menubarloader = new FXMLLoader(getClass().getClassLoader().getResource("view/fxml/menubar.fxml"));
-            MenubarController menubarController = new MenubarController(MODEL, root);
+            MenubarController menubarController = new MenubarController(MODEL, root, splitPane);
             menubarloader.setController(menubarController);
             BorderPane bar = menubarloader.load();
             root.setTop(bar);

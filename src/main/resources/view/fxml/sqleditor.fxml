@@ -26,7 +26,7 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.Button?>
 
-<AnchorPane fx:id="SqlEditorPage" prefWidth="250.0" minWidth="250" xmlns:fx="http://javafx.com/fxml">
+<AnchorPane fx:id="SqlEditorPage" xmlns:fx="http://javafx.com/fxml">
     <children>
         <TextArea layoutY="0" prefHeight="100" AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="20.0" fx:id="sqleditor" ></TextArea>
         <Button layoutY="117.0" layoutX="65" onAction="#executeSql" mnemonicParsing="false" text="ExecuteSql" />
