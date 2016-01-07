@@ -100,7 +100,7 @@ public class SqliteVisualiser extends Application {
         splitPane.getItems().add(new Pane());
         splitPane.getItems().add(new Pane());
         splitPane.getItems().add(new Pane());
-        splitPane.setDividerPositions(0.0f, 0.8f, 0.9f);
+        splitPane.setDividerPositions(0.0f, 0.1f, 0.1f);
         root.setCenter(splitPane);
 
 
