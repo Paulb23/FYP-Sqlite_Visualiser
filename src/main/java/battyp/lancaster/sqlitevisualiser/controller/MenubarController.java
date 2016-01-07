@@ -264,11 +264,6 @@ public class MenubarController extends Controller {
         }
     }
 
-    private void clearLeftPane() {
-        this.splitPane.getItems().set(0, new Pane());
-        this.splitPane.getDividers().get(0).setPosition(0.0);
-    }
-
     /**
      * Switches the current left and center panes.
      * @param leftfxmlPath Path to the Left panes FXML file.
@@ -278,5 +273,13 @@ public class MenubarController extends Controller {
     private void setPanes(String leftfxmlPath, String centerfxmlPath, Controller controller) {
         setCenterPane(centerfxmlPath, controller);
         setLeftPane(leftfxmlPath, controller);
+    }
+
+    /**
+     * Clears and hides the left panel
+     */
+    private void clearLeftPane() {
+        this.splitPane.getItems().set(0, new Pane());
+        this.splitPane.getDividers().get(0).setPosition(0.0);
     }
 }
