@@ -36,6 +36,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
@@ -77,6 +78,9 @@ public class MenubarController extends Controller {
 
     @FXML
     private Button pauseButton;
+
+    @FXML
+    private MenuItem playOrPauseMenuItem;
 
     /**
      * Constructor.
@@ -127,10 +131,12 @@ public class MenubarController extends Controller {
     private void playOrPause() {
         if(this.model.getLiveUpdater().isUpdating()) {
             this.model.getLiveUpdater().stopUpdating();
-            pauseButton.setText("Play");
+            pauseButton.setId("playButton");
+            playOrPauseMenuItem.setText("Play");
         } else {
             this.model.getLiveUpdater().startUpdating();
-            pauseButton.setText("Pause");
+            pauseButton.setId("pauseButton");
+            playOrPauseMenuItem.setText("Pause");
         }
     }
 

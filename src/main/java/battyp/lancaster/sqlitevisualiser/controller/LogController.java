@@ -25,6 +25,10 @@
 package battyp.lancaster.sqlitevisualiser.controller;
 
 import battyp.lancaster.sqlitevisualiser.model.Model;
+import javafx.fxml.FXML;
+import javafx.scene.control.TextArea;
+
+import java.util.List;
 
 /**
  * <h1> Log Controller </h1>
@@ -36,6 +40,9 @@ import battyp.lancaster.sqlitevisualiser.model.Model;
  * @since 0.5
  */
 public class LogController extends Controller {
+
+    @FXML
+    private TextArea logTextArea;
 
     /**
      * Constructor.
@@ -50,5 +57,10 @@ public class LogController extends Controller {
      * {@inheritDoc}
      */
     public void notifyObserver() {
+        logTextArea.clear();
+        List<String> log = model.getLog().getLog();
+        for (String item : log) {
+            logTextArea.appendText(item + "\n");
+        }
     }
 }

@@ -26,17 +26,18 @@
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 
-<BorderPane  xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<?import javafx.scene.input.KeyCodeCombination?>
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <center>
-        <ToolBar>
-            <Button text="Open" onAction="#openDatabase"/>
-            <Button fx:id="pauseButton" text="Pause" onAction="#playOrPause" />
-            <Button text="Previous" onAction="#getPrevious" />
-            <Button text="Next" onAction="#getNext" />
+        <ToolBar fx:id="toolbar">
+            <Button styleClass="toolBarButtons" fx:id="openFileButton" accessibleText="Open..." onAction="#openDatabase"/>
+            <Button styleClass="toolBarButtons" fx:id="pauseButton" accessibleText="Pause" onAction="#playOrPause" />
+            <Button styleClass="toolBarButtons" fx:id="previousButton" accessibleText="Previous" onAction="#getPrevious" />
+            <Button styleClass="toolBarButtons" fx:id="nextButton" accessibleText="Next" onAction="#getNext" />
         </ToolBar>
     </center>
     <bottom>
-      <TabPane prefHeight="40.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+      <TabPane fx:id="tabbar" prefHeight="40.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
           <Tab onSelectionChanged="#switchToHeader" text="Header">
             <content>
@@ -62,14 +63,32 @@
       </TabPane>
    </bottom>
    <top>
-      <MenuBar BorderPane.alignment="CENTER">
+      <MenuBar fx:id="menubar" BorderPane.alignment="CENTER">
         <menus>
-          <Menu mnemonicParsing="false" text="File">
+          <Menu styleClass="menu" mnemonicParsing="false" text="File">
             <items>
-                <MenuItem onAction="#openDatabase" mnemonicParsing="false" text="Open" />
-              <MenuItem onAction="#exit" mnemonicParsing="false" text="Exit" />
+                <MenuItem styleClass="menuItem" onAction="#openDatabase" mnemonicParsing="false" text="Open... " >
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP"  />
+                    </accelerator>
+                </MenuItem>
+              <MenuItem styleClass="menuItem" onAction="#exit" mnemonicParsing="true" text="Quit    ">
+                  <accelerator>
+                      <KeyCodeCombination alt="UP" code="Q" control="DOWN" meta="UP" shift="UP" shortcut="UP"  />
+                  </accelerator>
+              </MenuItem>
             </items>
           </Menu>
+            <Menu styleClass="menu" mnemonicParsing="false" text="Edit">
+                <items>
+                    <MenuItem styleClass="menuItem" fx:id="playOrPauseMenuItem" onAction="#playOrPause" mnemonicParsing="false" text="Pause" >
+                    </MenuItem>
+                    <MenuItem styleClass="menuItem" onAction="#getPrevious" mnemonicParsing="false" text="Previous State">
+                    </MenuItem>
+                    <MenuItem styleClass="menuItem" onAction="#getNext" mnemonicParsing="false" text="Next State">
+                    </MenuItem>
+                </items>
+            </Menu>
         </menus>
       </MenuBar>
    </top>

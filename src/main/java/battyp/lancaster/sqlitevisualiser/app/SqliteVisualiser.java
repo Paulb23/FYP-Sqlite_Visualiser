@@ -28,6 +28,7 @@ import battyp.lancaster.sqlitevisualiser.controller.MenubarController;
 import battyp.lancaster.sqlitevisualiser.controller.SqlEditorController;
 import battyp.lancaster.sqlitevisualiser.model.DefaultModel;
 import battyp.lancaster.sqlitevisualiser.model.Model;
+import battyp.lancaster.sqlitevisualiser.util.FileUtil;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -112,6 +113,8 @@ public class SqliteVisualiser extends Application {
 
         /* Should move resolution to options / config. */
         Scene scene = new Scene(root, 800, 600);
+        scene.getStylesheets().add(getClass().getClassLoader().getResource("view/css/darktheme.css").toExternalForm());
+        primaryStage.setTitle("Sqlite Database Visualiser");
         primaryStage.setScene(scene);
         primaryStage.show();
     }

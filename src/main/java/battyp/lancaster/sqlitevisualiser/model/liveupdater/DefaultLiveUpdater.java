@@ -107,6 +107,14 @@ public class DefaultLiveUpdater implements LiveUpdater {
 
                         if (!oldCell.equals(newCell)) {
                             newCell.changed = true;
+                            String[] oldData = oldCell.data;
+                            String[] newData = newCell.data;
+                            int size = oldCell.cellCount;
+                            for (int j = 0; j < size; j++) {
+                                if (!oldData[j].equals(newData[j])) {
+                                    System.out.println("'" + oldData[j] + "' TO '" + newData[j] + "'");
+                                }
+                            }
                         }
                     }
               //  }

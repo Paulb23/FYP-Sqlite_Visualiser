@@ -28,10 +28,6 @@
 
 <AnchorPane fx:id="LogPage" prefHeight="480.0" prefWidth="640.0" xmlns:fx="http://javafx.com/fxml">
     <children>
-        <Label layoutX="251.0" layoutY="227.0" text="log">
-            <font>
-                <Font size="18.0" />
-            </font>
-        </Label>
+        <TextArea editable="false" fx:id="logTextArea" AnchorPane.topAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.bottomAnchor="10.0" />
     </children>
 </AnchorPane>
