@@ -39,22 +39,22 @@
     <bottom>
       <TabPane fx:id="tabbar" prefHeight="40.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
-          <Tab onSelectionChanged="#switchToHeader" text="Header">
+          <Tab styleClass="tab" onSelectionChanged="#switchToHeader" text="Header">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
             </content>
           </Tab>
-          <Tab onSelectionChanged="#switchToTableView" text="Table View">
+          <Tab styleClass="tab" onSelectionChanged="#switchToTableView" text="Table View">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
             </content>
           </Tab>
-            <Tab onSelectionChanged="#switchToVisualisation" text="Visualisation">
+            <Tab styleClass="tab" onSelectionChanged="#switchToVisualisation" text="Visualisation">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
               </content>
             </Tab>
-            <Tab onSelectionChanged="#switchToLog" text="Log">
+            <Tab styleClass="tab"  onSelectionChanged="#switchToLog" text="Log">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
               </content>
