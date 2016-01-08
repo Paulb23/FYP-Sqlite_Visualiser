@@ -74,6 +74,7 @@ public class DefaultModel implements Model {
         this.liveUpdater.setDatabase(path, this.databaseParser, this.databaseInterface);
         this.fileWatcher.setFile(path);
         this.log.setFile(path);
+        database.getMetadata().fileName = this.fileWatcher.getFileName();
         isFileOpen = true;
     }
 

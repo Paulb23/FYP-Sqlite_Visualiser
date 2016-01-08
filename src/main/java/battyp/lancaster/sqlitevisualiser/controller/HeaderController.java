@@ -79,7 +79,7 @@ public class HeaderController extends Controller {
             headerFlowPane.getChildren().clear();
 
             HeaderInformationPane generic = new HeaderInformationPane("Generic");
-            generic.addItem("Filename", "Name");
+            generic.addItem("Filename", metadata.fileName);
             generic.addItem("ApplicationID", String.valueOf(metadata.appID));
             generic.addItem("Database Size", String.valueOf(metadata.pageSize * metadata.sizeOfDatabaseInPages) + " Bytes");
             generic.addItem("Number of changes", String.valueOf(metadata.fileChangeCounter));

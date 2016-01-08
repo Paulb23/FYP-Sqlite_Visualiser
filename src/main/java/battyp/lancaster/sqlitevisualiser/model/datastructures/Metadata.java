@@ -44,6 +44,11 @@ package battyp.lancaster.sqlitevisualiser.model.datastructures;
 public class Metadata {
 
     /**
+     * The database file name.
+     */
+    public String fileName;
+
+    /**
      * The database Page size in bytes.
      */
     public int pageSize;

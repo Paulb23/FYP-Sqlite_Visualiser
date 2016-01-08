@@ -31,20 +31,9 @@
 
 <AnchorPane fx:id="HeaderPage" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <FlowPane AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0">
-            <GridPane styleClass="headerBackgroundInformationPane">
-                <Label GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="headerTitle" text="Info" />
-                <Label GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="text" text="Filename" />
-                <Label GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="text" text="Undefined" />
-            </GridPane>
-            <GridPane AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" styleClass="headerBackgroundInformationPane">
-                <Label GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="headerTitle" text="Table" />
-                <Label GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="text" text="Table Count" />
-                <Label GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="text" text="Undefined" />
-                <Label GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="text" text="Entry Count" />
-                <Label GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="text" text="Undefined" />
-            </GridPane>
-        </FlowPane>
-      <TextArea cache="false" editable="false" fx:id="headerTextArea" AnchorPane.rightAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.bottomAnchor="10.0" />
+        <ScrollPane fx:id="headerScrollPane" pannable="false" vbarPolicy="AS_NEEDED" hbarPolicy="NEVER" fitToWidth="true" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0">
+            <FlowPane AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0" fx:id="headerFlowPane" orientation="HORIZONTAL" prefWrapLength="300" hgap="10" vgap="10" >
+            </FlowPane>
+        </ScrollPane>
     </children>
 </AnchorPane>
