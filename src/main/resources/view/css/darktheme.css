@@ -172,3 +172,11 @@
    -fx-background-color: #1d1d1d;
    -fx-text-fill: white;
 }
+
+.scroll-bar:vertical {
+    -fx-background-color: #1d1d1d;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: derive(#1d1d1d,20%);
+}
