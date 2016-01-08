@@ -187,7 +187,6 @@ public class MenubarController extends Controller {
      */
     @FXML
     private void switchToTableView() {
-        clearLeftPane();
         setPanes("view/fxml/tableviewleftpane.fxml", "view/fxml/tableview.fxml", new TableViewController(this.model));
     }
 
@@ -196,7 +195,6 @@ public class MenubarController extends Controller {
      */
     @FXML
     private void switchToVisualisation() {
-        clearLeftPane();
         setPanes("view/fxml/visulisationleftpane.fxml", "view/fxml/visualisation.fxml", new VisualisationController(this.model));
     }
 
@@ -258,6 +256,9 @@ public class MenubarController extends Controller {
             SplitPane.setResizableWithParent(loadedPane, false);
             double[] divider = this.splitPane.getDividerPositions();
             this.splitPane.getItems().set(0, loadedPane);
+            if(divider[0] == 0.0) {
+                divider[0] = 0.2;
+            }
             this.splitPane.setDividerPositions(divider);
 
             this.currentController = controller;

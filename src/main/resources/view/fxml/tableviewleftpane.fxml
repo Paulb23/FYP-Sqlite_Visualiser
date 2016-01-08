@@ -25,8 +25,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="TablePageLeft" prefHeight="480.0" prefWidth="640.0" xmlns:fx="http://javafx.com/fxml">
+<AnchorPane fx:id="TablePageLeft" xmlns:fx="http://javafx.com/fxml">
     <children>
-        <ComboBox AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" fx:id="tableSelect" onAction="#updateView"></ComboBox>
+        <ComboBox AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" AnchorPane.rightAnchor="10.0" fx:id="tableSelect" onAction="#updateView"></ComboBox>
     </children>
 </AnchorPane>

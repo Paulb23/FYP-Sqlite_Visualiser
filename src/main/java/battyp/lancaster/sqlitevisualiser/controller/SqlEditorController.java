@@ -105,7 +105,7 @@ public class SqlEditorController extends Controller {
                 }
                 model.getSqlExecutor().disconnect();
             } catch (SQLException e) {
-                UiUtil.showExceptionError("Error Dialog", "Oooops, Something went wring with that statement", e);
+                sqleditorreturn.setText(e.getMessage());
             } catch (ClassNotFoundException e) {
                 UiUtil.showExceptionError("Error Dialog", "Oooops, Something wrong with the class path", e);
             } catch (FileNotFoundException e) {
