@@ -180,3 +180,16 @@
 .scroll-bar:vertical .thumb {
     -fx-background-color: derive(#1d1d1d,20%);
 }
+
+#executeSqlButton.button {
+    -fx-text-fill: white;
+    -fx-background-color: derive(#1d1d1d,20%);
+    -fx-border-style: solid;
+    -fx-border-width: 1px 1px 1px 1px;
+    -fx-border-color: #d35400;
+}
+
+#executeSqlButton.button:hover {
+    -fx-background-color: derive(#1d1d1d,10%);
+    -fx-border-color: #F5AB35;
+}

@@ -29,7 +29,7 @@
 <AnchorPane fx:id="SqlEditorPage" prefWidth="200.0" xmlns:fx="http://javafx.com/fxml">
     <children>
         <TextArea cache="false" prefHeight="100" AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" fx:id="sqleditor" ></TextArea>
-        <Button AnchorPane.topAnchor="117.0" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10" onAction="#executeSql" mnemonicParsing="false" text="ExecuteSql" />
-        <TextArea cache="false" AnchorPane.topAnchor="150.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" editable="false" fx:id="sqleditorreturn"> </TextArea>
+        <Button AnchorPane.topAnchor="117.0" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10" onAction="#executeSql"  fx:id="executeSqlButton" mnemonicParsing="false" text="Execute Sql" />
+        <TextArea cache="false" AnchorPane.topAnchor="155.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" editable="false" fx:id="sqleditorreturn"> </TextArea>
     </children>
 </AnchorPane>
