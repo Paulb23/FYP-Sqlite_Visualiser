@@ -100,7 +100,7 @@ public class SqliteVisualiser extends Application {
         splitPane.getItems().add(new Pane());
         splitPane.getItems().add(new Pane());
         splitPane.getItems().add(new Pane());
-        splitPane.setDividerPositions(0.0f, 0.1f, 0.1f);
+        splitPane.setDividerPositions(0.0f, 0.8f, 1.0f);
         root.setCenter(splitPane);
 
 
@@ -115,6 +115,7 @@ public class SqliteVisualiser extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("view/fxml/sqleditor.fxml"));
         loader.setController(new SqlEditorController(MODEL));
         AnchorPane loadedPane = loader.load();
+        SplitPane.setResizableWithParent(loadedPane, false);
         splitPane.getItems().set(2, loadedPane);
 
         /* Make sure we use a custom close to exit cleanly */

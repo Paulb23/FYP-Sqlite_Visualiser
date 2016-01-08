@@ -1,13 +1,12 @@
 .root {
-    -fx-font-family: Tahoma;
+  -fx-font-family: Tahoma;
 }
 
 #menubar {
-    -fx-background-color: #323232;
+    -fx-background-color: derive(#1d1d1d,20%);
 }
 
 .menu {
-    -fx-padding: 5px 20px 5px 20px;
     -fx-color: #000000;
     -fx-font-size: 14px;
 }
@@ -17,8 +16,9 @@
 }
 
 .menuItem {
-    -fx-background-color: #323232;
+    -fx-background-color: derive(#1d1d1d,20%);
     -fx-padding: 10px 5px 10px 5px;
+    -fx-font-size: 14px;
 }
 
 .menuItem:focused {
@@ -28,14 +28,14 @@
 .context-menu {
     -fx-skin: "com.sun.javafx.scene.control.skin.ContextMenuSkin";
     -fx-color: #000000;
-    -fx-background-color: #323232;
+    -fx-background-color: derive(#1d1d1d,20%);
     -fx-background-insets: 0, 1, 2;
     -fx-background-radius: 0 6 6 6, 0 5 5 5, 0 4 4 4;
     -fx-padding: 0.333333em 0.083333em 0.666667em 0.083333em; /* 4 1 8 1 */
 }
 
 #toolbar {
-    -fx-background-color:#323232;
+    -fx-background-color:derive(#1d1d1d,20%);
     -fx-padding: 5px 10px 5px 10px;
 }
 
@@ -75,11 +75,11 @@
 }
 
 #tabbar {
-    -fx-background-color:#323232;
+    -fx-background-color: derive(#1d1d1d,20%);
 }
 
 .tab-pane .tab-header-area .tab-header-background {
-    -fx-background-color:  #323232;
+    -fx-background-color: derive(#1d1d1d,20%);
 }
 
 .tab-pane .tab-header-area .tab-header-background {
@@ -88,7 +88,7 @@
 }
 
 .tab {
-    -fx-background-color: #323232;
+    -fx-background-color: derive(#1d1d1d,20%);
     -fx-padding: 5px 10px 5px 10px;
     -fx-color: #000000;
     -fx-background-insets: 0, 1, 2;
@@ -106,15 +106,41 @@
 }
 
 .split-pane {
-    -fx-background-color: #424242/* #34495E*/;
+    -fx-background-color: #1d1d1d/* #34495E*/;
     -fx-control-inner-background: transparent;
     -fx-background-insets: 0;
     -fx-padding: 0;
+    -fx-border-style: solid;
+    -fx-border-width: 2px 0px 0px 0px;
+    -fx-border-color: derive(#1d1d1d,50%);
 }
 
 .split-pane-divider {
-    -fx-background-color: #424242;
+    -fx-background-color: derive(#1d1d1d,50%);
+    -fx-padding: 0 0.15em 0 0.15em;
 }
 
 #SqlEditorPage {
+}
+
+.text-area {
+    -fx-background-color: derive(#1d1d1d,30%);
+    -fx-color: derive(#1d1d1d,50%);
+    -fx-font-size:12px;
+    -fx-border-style: solid;
+    -fx-border-width: 2px 2px 2px 2px;
+    -fx-border-color: derive(#1d1d1d,20%);
+}
+
+.text-area .scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.text-area .scroll-pane .viewport{
+    -fx-background-color: transparent;
+}
+
+
+.text-area .scroll-pane .content{
+    -fx-background-color: transparent;
 }

@@ -24,7 +24,6 @@
 
 package battyp.lancaster.sqlitevisualiser.controller;
 
-import battyp.lancaster.sqlitevisualiser.util.FileUtil;
 import battyp.lancaster.sqlitevisualiser.util.UiUtil;
 import battyp.lancaster.sqlitevisualiser.model.Model;
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
@@ -233,8 +232,10 @@ public class MenubarController extends Controller {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(fxmlPath));
             loader.setController(controller);
             AnchorPane loadedPane = loader.load();
-
+            SplitPane.setResizableWithParent(loadedPane, false);
+            double[] divider = this.splitPane.getDividerPositions();
             this.splitPane.getItems().set(1, loadedPane);
+            this.splitPane.setDividerPositions(divider);
 
             this.currentController = controller;
             notifyObserver();
@@ -254,8 +255,10 @@ public class MenubarController extends Controller {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(fxmlPath));
             loader.setController(controller);
             AnchorPane loadedPane = loader.load();
-
+            SplitPane.setResizableWithParent(loadedPane, false);
+            double[] divider = this.splitPane.getDividerPositions();
             this.splitPane.getItems().set(0, loadedPane);
+            this.splitPane.setDividerPositions(divider);
 
             this.currentController = controller;
             notifyObserver();
@@ -279,7 +282,9 @@ public class MenubarController extends Controller {
      * Clears and hides the left panel
      */
     private void clearLeftPane() {
-        this.splitPane.getItems().set(0, new Pane());
+        Pane pane = new Pane();
+        SplitPane.setResizableWithParent(pane, false);
+        this.splitPane.getItems().set(0, pane);
         this.splitPane.getDividers().get(0).setPosition(0.0);
     }
 }

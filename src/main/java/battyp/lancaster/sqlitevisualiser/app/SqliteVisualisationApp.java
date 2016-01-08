@@ -51,6 +51,10 @@ public class SqliteVisualisationApp {
      */
     public static void main(String args[]) {
 
+        // help fix blurry font..
+        System.setProperty("prism.lcdtext", "false");
+        System.setProperty("prism.text", "t2k");
+
         /* Use the static calls to start javaFx else
          * it wont launch properly.               */
         SqliteVisualiser.setModel(new DefaultModel());
