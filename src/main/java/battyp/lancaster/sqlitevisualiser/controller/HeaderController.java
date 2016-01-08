@@ -26,9 +26,11 @@ package battyp.lancaster.sqlitevisualiser.controller;
 
 import battyp.lancaster.sqlitevisualiser.model.Model;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
+import battyp.lancaster.sqlitevisualiser.view.HeaderInformationPane;
+import javafx.beans.binding.StringBinding;
 import javafx.fxml.FXML;
 
-import javafx.scene.control.TextArea;
+import javafx.scene.layout.FlowPane;
 
 /**
  * <h1> Header Controller </h1>
@@ -47,7 +49,7 @@ import javafx.scene.control.TextArea;
 public class HeaderController extends Controller {
 
     @FXML
-    private TextArea headerTextArea;
+    private FlowPane headerFlowPane;
 
     /**
      * Constructor.
@@ -74,28 +76,48 @@ public class HeaderController extends Controller {
     private void reload() {
         if (model.isFileOpen()) {
             Metadata metadata = this.model.getDatabase().getMetadata();
-            this.headerTextArea.setText(
-                            "Page Size: "        + metadata.pageSize                     + "\n" +
-                            "write Version:"     + metadata.writeVersion                 + "\n" +
-                            "read Version:"      + metadata.readVersion                  + "\n" +
-                            "Unused Space page:" + metadata.unusedSpaceAtEndOfEachPage   + "\n" +
-                            "Max Embed Payload:" + metadata.maxEmbeddedPayload           + "\n" +
-                            "Min Embed Payload:" + metadata.minEmbeddedPayload           + "\n" +
-                            "Leaf Payload:"      + metadata.leafPayloadFraction          + "\n" +
-                            "Change Counter:"    + metadata.fileChangeCounter + "\n" +
-                            "Size in pages:"     + metadata.sizeOfDatabaseInPages        + "\n" +
-                            "Freelist Pages:"    + metadata.totalFreeListPages           + "\n" +
-                            "Schema cookie:"     + metadata.schemaCookie                 + "\n" +
-                            "Schema Format:"     + metadata.schemaFormat                 + "\n" +
-                            "Cache Size:"        + metadata.defaultPageCacheSize + "\n" +
-                            "Page Large Tree:"   + metadata.pageNumberToLargestBTreePage + "\n" +
-                            "text encoding:"     + metadata.textEncoding                 + "\n" +
-                            "User Version:"      + metadata.userVersion                  + "\n" +
-                            "Vacuum Mode:"       + metadata.vacuumMode + "\n" +
-                            "Application ID:"    + metadata.appID                        + "\n" +
-                            "Valid Number"       + metadata.versionValidNumber           + "\n" +
-                            "Sqlite version:"   + metadata.sqliteVersion                 + "\n"
-            );
+            headerFlowPane.getChildren().clear();
+
+            HeaderInformationPane generic = new HeaderInformationPane("Generic");
+            generic.addItem("Filename", "Name");
+            generic.addItem("ApplicationID", String.valueOf(metadata.appID));
+            generic.addItem("Database Size", String.valueOf(metadata.pageSize * metadata.sizeOfDatabaseInPages) + " Bytes");
+            generic.addItem("Number of changes", String.valueOf(metadata.fileChangeCounter));
+            headerFlowPane.getChildren().add(generic);
+
+
+            HeaderInformationPane type = new HeaderInformationPane("Type");
+            type.addItem("Schema Cookie", String.valueOf(metadata.schemaCookie));
+            type.addItem("Schema Format", String.valueOf(metadata.schemaFormat));
+            type.addItem("Text Encoding", String.valueOf(metadata.textEncoding));
+            headerFlowPane.getChildren().add(type);
+
+
+            HeaderInformationPane version = new HeaderInformationPane("Version");
+            version.addItem("User Version", String.valueOf(metadata.userVersion));
+            version.addItem("Write Version", String.valueOf(metadata.writeVersion));
+            version.addItem("Read Version", String.valueOf(metadata.readVersion));
+            version.addItem("Valid Version", String.valueOf(metadata.versionValidNumber));
+            version.addItem("Sqlite Version", String.valueOf(metadata.sqliteVersion));
+            headerFlowPane.getChildren().add(version);
+
+
+            HeaderInformationPane pageInfo = new HeaderInformationPane("Page Information");
+            pageInfo.addItem("Page Size", String.valueOf(metadata.pageSize));
+            pageInfo.addItem("Page Count", String.valueOf(metadata.sizeOfDatabaseInPages));
+            pageInfo.addItem("Freelist count", String.valueOf(metadata.totalFreeListPages));
+            pageInfo.addItem("Unused space", String.valueOf(metadata.unusedSpaceAtEndOfEachPage));
+            pageInfo.addItem("Max Payload", String.valueOf(metadata.maxEmbeddedPayload));
+            pageInfo.addItem("Min Payload", String.valueOf(metadata.minEmbeddedPayload));
+            pageInfo.addItem("Leaf Payload", String.valueOf(metadata.leafPayloadFraction));
+            pageInfo.addItem("Page of Largest Tree", String.valueOf(metadata.pageNumberToLargestBTreePage));
+            headerFlowPane.getChildren().add(pageInfo);
+
+
+            HeaderInformationPane misc = new HeaderInformationPane("Misc");
+            misc.addItem("Cache Size", String.valueOf(metadata.defaultPageCacheSize));
+            misc.addItem("Vacuum Mode", String.valueOf(metadata.vacuumMode));
+            headerFlowPane.getChildren().add(misc);
         }
     }
 }

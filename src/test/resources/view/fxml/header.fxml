@@ -19,7 +19,7 @@
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHE RWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
 -->
@@ -31,6 +31,20 @@
 
 <AnchorPane fx:id="HeaderPage" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-      <TextArea cache="false" editable="false" fx:id="headerTextArea" AnchorPane.topAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.bottomAnchor="10.0" />
+        <FlowPane AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0">
+            <GridPane styleClass="headerBackgroundInformationPane">
+                <Label GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="headerTitle" text="Info" />
+                <Label GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="text" text="Filename" />
+                <Label GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="text" text="Undefined" />
+            </GridPane>
+            <GridPane AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" styleClass="headerBackgroundInformationPane">
+                <Label GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="headerTitle" text="Table" />
+                <Label GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="text" text="Table Count" />
+                <Label GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="text" text="Undefined" />
+                <Label GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="text" text="Entry Count" />
+                <Label GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="text" text="Undefined" />
+            </GridPane>
+        </FlowPane>
+      <TextArea cache="false" editable="false" fx:id="headerTextArea" AnchorPane.rightAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.bottomAnchor="10.0" />
     </children>
 </AnchorPane>

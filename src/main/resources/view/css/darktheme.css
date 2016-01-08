@@ -144,3 +144,31 @@
 .text-area .scroll-pane .content{
     -fx-background-color: transparent;
 }
+
+.headerBackgroundInformationPane {
+    -fx-background-color: derive(#1d1d1d,30%);
+    -fx-border-style: solid;
+    -fx-border-width: 2px 2px 2px 2px;
+    -fx-border-color: derive(#1d1d1d,20%);
+    -fx-padding: 5px 5px 5px 5px;
+    -fx-text-fill: white;
+}
+
+.headerTitle {
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-padding: 5px 10px 5px 10px;
+}
+
+.text {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 5px 10px 5px 10px;
+}
+
+#headerScrollPane {
+   -fx-background: #1d1d1d;
+   -fx-background-color: #1d1d1d;
+   -fx-text-fill: white;
+}
