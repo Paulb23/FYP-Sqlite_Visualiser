@@ -31,8 +31,8 @@
 
 <AnchorPane fx:id="HeaderPage" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <ScrollPane fx:id="headerScrollPane" pannable="false" vbarPolicy="AS_NEEDED" hbarPolicy="NEVER" fitToWidth="true" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0">
-            <FlowPane AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0" fx:id="headerFlowPane" orientation="HORIZONTAL" prefWrapLength="300" hgap="10" vgap="10" >
+        <ScrollPane cache="true" fx:id="headerScrollPane" pannable="false" vbarPolicy="AS_NEEDED" hbarPolicy="NEVER" fitToWidth="true" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0">
+            <FlowPane cache="true" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0" fx:id="headerFlowPane" orientation="HORIZONTAL" prefWrapLength="300" hgap="10" vgap="10" >
             </FlowPane>
         </ScrollPane>
     </children>

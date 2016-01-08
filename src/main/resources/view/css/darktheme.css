@@ -287,3 +287,21 @@
      -fx-background: derive(#1d1d1d,25%);
  }
 
+.celltextHeader {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+}
+
+.celltext {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}
+
+.zommablepane {
+     -fx-background-color: derive(#1d1d1d,30%);
+     -fx-background: derive(#1d1d1d,30%);
+     -fx-border-style: solid;
+     -fx-border-width: 2px 2px 2px 2px;
+     -fx-border-color: derive(#1d1d1d,20%);
+}
