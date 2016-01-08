@@ -33,6 +33,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -125,6 +126,7 @@ public class SqliteVisualiser extends Application {
         Scene scene = new Scene(root, 800, 600);
         scene.getStylesheets().add(getClass().getClassLoader().getResource("view/css/darktheme.css").toExternalForm());
         primaryStage.setTitle("Sqlite Database Visualiser");
+        primaryStage.getIcons().add(new Image(getClass().getClassLoader().getResource("view/images/icons/icon24.png").toExternalForm()));
         primaryStage.setScene(scene);
         primaryStage.show();
     }
