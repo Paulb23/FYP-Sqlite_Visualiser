@@ -76,48 +76,58 @@ public class HeaderController extends Controller {
     private void reload() {
         if (model.isFileOpen()) {
             Metadata metadata = this.model.getDatabase().getMetadata();
-            headerFlowPane.getChildren().clear();
-
-            HeaderInformationPane generic = new HeaderInformationPane("Generic");
-            generic.addItem("Filename", metadata.fileName);
-            generic.addItem("ApplicationID", String.valueOf(metadata.appID));
-            generic.addItem("Database Size", String.valueOf(metadata.pageSize * metadata.sizeOfDatabaseInPages) + " Bytes");
-            generic.addItem("Number of changes", String.valueOf(metadata.fileChangeCounter));
-            headerFlowPane.getChildren().add(generic);
-
-
-            HeaderInformationPane type = new HeaderInformationPane("Type");
-            type.addItem("Schema Cookie", String.valueOf(metadata.schemaCookie));
-            type.addItem("Schema Format", String.valueOf(metadata.schemaFormat));
-            type.addItem("Text Encoding", String.valueOf(metadata.textEncoding));
-            headerFlowPane.getChildren().add(type);
-
-
-            HeaderInformationPane version = new HeaderInformationPane("Version");
-            version.addItem("User Version", String.valueOf(metadata.userVersion));
-            version.addItem("Write Version", String.valueOf(metadata.writeVersion));
-            version.addItem("Read Version", String.valueOf(metadata.readVersion));
-            version.addItem("Valid Version", String.valueOf(metadata.versionValidNumber));
-            version.addItem("Sqlite Version", String.valueOf(metadata.sqliteVersion));
-            headerFlowPane.getChildren().add(version);
-
-
-            HeaderInformationPane pageInfo = new HeaderInformationPane("Page Information");
-            pageInfo.addItem("Page Size", String.valueOf(metadata.pageSize));
-            pageInfo.addItem("Page Count", String.valueOf(metadata.sizeOfDatabaseInPages));
-            pageInfo.addItem("Freelist count", String.valueOf(metadata.totalFreeListPages));
-            pageInfo.addItem("Unused space", String.valueOf(metadata.unusedSpaceAtEndOfEachPage));
-            pageInfo.addItem("Max Payload", String.valueOf(metadata.maxEmbeddedPayload));
-            pageInfo.addItem("Min Payload", String.valueOf(metadata.minEmbeddedPayload));
-            pageInfo.addItem("Leaf Payload", String.valueOf(metadata.leafPayloadFraction));
-            pageInfo.addItem("Page of Largest Tree", String.valueOf(metadata.pageNumberToLargestBTreePage));
-            headerFlowPane.getChildren().add(pageInfo);
-
-
-            HeaderInformationPane misc = new HeaderInformationPane("Misc");
-            misc.addItem("Cache Size", String.valueOf(metadata.defaultPageCacheSize));
-            misc.addItem("Vacuum Mode", String.valueOf(metadata.vacuumMode));
-            headerFlowPane.getChildren().add(misc);
+            headerFlowPane.getChildren().setAll(createGenericPanel(metadata),
+                                                createTypePanel(metadata),
+                                                createVersionPanel(metadata),
+                                                createPagePanel(metadata),
+                                                createMiscPanel(metadata));
         }
+    }
+
+    private HeaderInformationPane createGenericPanel(Metadata metadata) {
+        HeaderInformationPane panel = new HeaderInformationPane("Generic");
+        panel.addItem("Filename", metadata.fileName);
+        panel.addItem("ApplicationID", String.valueOf(metadata.appID));
+        panel.addItem("Database Size", String.valueOf(metadata.pageSize * metadata.sizeOfDatabaseInPages) + " Bytes");
+        panel.addItem("Number of changes", String.valueOf(metadata.fileChangeCounter));
+        return panel;
+    }
+
+    private HeaderInformationPane createTypePanel(Metadata metadata) {
+        HeaderInformationPane panel = new HeaderInformationPane("Type");
+        panel.addItem("Schema Cookie", String.valueOf(metadata.schemaCookie));
+        panel.addItem("Schema Format", String.valueOf(metadata.schemaFormat));
+        panel.addItem("Text Encoding", String.valueOf(metadata.textEncoding));
+        return panel;
+    }
+
+    private HeaderInformationPane createVersionPanel(Metadata metadata) {
+        HeaderInformationPane panel = new HeaderInformationPane("Version");
+        panel.addItem("User Version", String.valueOf(metadata.userVersion));
+        panel.addItem("Write Version", String.valueOf(metadata.writeVersion));
+        panel.addItem("Read Version", String.valueOf(metadata.readVersion));
+        panel.addItem("Valid Version", String.valueOf(metadata.versionValidNumber));
+        panel.addItem("Sqlite Version", String.valueOf(metadata.sqliteVersion));
+        return panel;
+    }
+
+    private HeaderInformationPane createPagePanel(Metadata metadata) {
+        HeaderInformationPane panel = new HeaderInformationPane("Page Information");
+        panel.addItem("Page Size", String.valueOf(metadata.pageSize));
+        panel.addItem("Page Count", String.valueOf(metadata.sizeOfDatabaseInPages));
+        panel.addItem("Freelist count", String.valueOf(metadata.totalFreeListPages));
+        panel.addItem("Unused space", String.valueOf(metadata.unusedSpaceAtEndOfEachPage));
+        panel.addItem("Max Payload", String.valueOf(metadata.maxEmbeddedPayload));
+        panel.addItem("Min Payload", String.valueOf(metadata.minEmbeddedPayload));
+        panel.addItem("Leaf Payload", String.valueOf(metadata.leafPayloadFraction));
+        panel.addItem("Page of Largest Tree", String.valueOf(metadata.pageNumberToLargestBTreePage));
+        return panel;
+    }
+
+    private HeaderInformationPane createMiscPanel(Metadata metadata) {
+        HeaderInformationPane panel = new HeaderInformationPane("Misc");
+        panel.addItem("Cache Size", String.valueOf(metadata.defaultPageCacheSize));
+        panel.addItem("Vacuum Mode", String.valueOf(metadata.vacuumMode));
+        return panel;
     }
 }
