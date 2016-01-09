@@ -140,11 +140,12 @@ public class SqliteVisualiser extends Application {
 
     @SuppressWarnings("ConstantConditions")
     private void loadIcons(Stage stage) {
-        stage.getIcons().add(new Image(getClass().getClassLoader().getResource(ICON_16_PATH).toExternalForm()));
-        stage.getIcons().add(new Image(getClass().getClassLoader().getResource(ICON_24_PATH).toExternalForm()));
-        stage.getIcons().add(new Image(getClass().getClassLoader().getResource(ICON_32_PATH).toExternalForm()));
-        stage.getIcons().add(new Image(getClass().getClassLoader().getResource(ICON_64_PATH).toExternalForm()));
-        stage.getIcons().add(new Image(getClass().getClassLoader().getResource(ICON_128_PATH).toExternalForm()));
+        ClassLoader classLoader = getClass().getClassLoader();
+        stage.getIcons().addAll(new Image(classLoader.getResource(ICON_16_PATH).toExternalForm()),
+                                new Image(classLoader.getResource(ICON_24_PATH).toExternalForm()),
+                                new Image(classLoader.getResource(ICON_32_PATH).toExternalForm()),
+                                new Image(classLoader.getResource(ICON_64_PATH).toExternalForm()),
+                                new Image(classLoader.getResource(ICON_128_PATH).toExternalForm()));
     }
 
     @SuppressWarnings("ConstantConditions")
