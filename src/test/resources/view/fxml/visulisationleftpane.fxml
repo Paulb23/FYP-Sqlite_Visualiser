@@ -30,13 +30,13 @@
 <?import javafx.scene.control.TextArea?>
 <AnchorPane fx:id="VisualisationPage" xmlns:fx="http://javafx.com/fxml">
     <children>
-        <Label layoutX="20" layoutY="10" style="-fx-font-weight: bold" text="Cell Info"/>
-        <Label fx:id="cellDataPage" layoutX="20" layoutY="40" text="Page Number: " />
-        <Label fx:id="cellDataCount" layoutX="20" layoutY="60" text="Cell Count: " />
-        <Label fx:id="cellDataType" layoutX="20" layoutY="80" text="Cell Type: " />
-        <Label fx:id="cellRightPointer" layoutX="20" layoutY="100" text="Right Pointer: " />
-        <Label layoutX="20" layoutY="140" text="Select Cell: " />
-        <ComboBox fx:id="cellDataCombo" layoutX="20" layoutY="160" onAction="#updateCellData" />
-        <TextArea fx:id="cellDataData" editable="false"  AnchorPane.bottomAnchor="10.0" AnchorPane.topAnchor="195.0" AnchorPane.rightAnchor="10.0" AnchorPane.leftAnchor="20.0" layoutY="160" prefWidth="200" />
+        <Label styleClass="celltextHeader" layoutX="10" layoutY="10" style="-fx-font-weight: bold" text="Cell Info"/>
+        <Label styleClass="celltext"  fx:id="cellDataPage" layoutX="10" layoutY="40" text="Page Number: " />
+        <Label styleClass="celltext"  fx:id="cellDataCount" layoutX="10" layoutY="60" text="Cell Count: " />
+        <Label styleClass="celltext"  fx:id="cellDataType" layoutX="10" layoutY="80" text="Cell Type: " />
+        <Label styleClass="celltext"  fx:id="cellRightPointer" layoutX="10" layoutY="100" text="Right Pointer: " />
+        <Label styleClass="celltext"  layoutX="10" layoutY="140" text="Select Cell: " />
+        <ComboBox fx:id="cellDataCombo" AnchorPane.rightAnchor="10.0" AnchorPane.leftAnchor="10.0" layoutY="160" onAction="#updateCellData" />
+        <TextArea fx:id="cellDataData" editable="false"  AnchorPane.bottomAnchor="10.0" AnchorPane.topAnchor="200.0" AnchorPane.rightAnchor="10.0" AnchorPane.leftAnchor="10.0" layoutY="160" prefWidth="200" />
     </children>
 </AnchorPane>

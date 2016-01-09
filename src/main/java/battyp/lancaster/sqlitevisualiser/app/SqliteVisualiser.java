@@ -24,17 +24,16 @@
 
 package battyp.lancaster.sqlitevisualiser.app;
 
+import battyp.lancaster.sqlitevisualiser.controller.Controller;
 import battyp.lancaster.sqlitevisualiser.controller.MenubarController;
 import battyp.lancaster.sqlitevisualiser.controller.SqlEditorController;
 import battyp.lancaster.sqlitevisualiser.model.DefaultModel;
 import battyp.lancaster.sqlitevisualiser.model.Model;
-import battyp.lancaster.sqlitevisualiser.util.FileUtil;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -72,6 +71,28 @@ import java.io.IOException;
  */
 public class SqliteVisualiser extends Application {
 
+    private static final String FRAME_TITLE = "Sqlite Database Visualiser";
+
+    private static final String ICON_16_PATH = "view/images/icons/icon16.png";
+    private static final String ICON_24_PATH = "view/images/icons/icon24.png";
+    private static final String ICON_32_PATH = "view/images/icons/icon32.png";
+    private static final String ICON_64_PATH = "view/images/icons/icon64.png";
+    private static final String ICON_128_PATH = "view/images/icons/icon128.png";
+
+    private static final int FRAME_WIDTH = 800;
+    private static final int FRAME_HEIGHT = 600;
+
+    private static final String MENUBAR_FXML_PATH = "view/fxml/menubar.fxml";
+    private static final String SQLEXECUTOR_FXML_PATH = "view/fxml/sqleditor.fxml";
+
+    private static final String CSS_PATH = "view/css/darktheme.css";
+
+    private static final double LEFT_PANE_PERCENTAGE = 0.0f;
+    private static final double CENTER_PANE_PERCENTAGE = 0.8f;
+    private static final double RIGHT_PANE_PERCENTAGE = 1.0f;
+
+    private static final int SQLEXECUTOR_PANE_NUMBER = 2;
+
     /* Has to be static else javafx wont be able to use it */
     private static Model MODEL;
 
@@ -89,45 +110,81 @@ public class SqliteVisualiser extends Application {
     }
 
     /**
+     * Constructor.
+     */
+    public SqliteVisualiser() {
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     public void start(Stage primaryStage) throws IOException {
+        makeSureWeHaveAModel();
+        setUpStage(primaryStage);
+        primaryStage.show();
+    }
+
+    private void makeSureWeHaveAModel() {
         if (MODEL == null) {
             MODEL = new DefaultModel();
         }
+    }
+
+    public void setUpStage(Stage stage) throws IOException {
+        stage.setOnCloseRequest(event -> MODEL.exitProgram()); /* Make sure we use a custom close to exit cleanly */
+        stage.setTitle(FRAME_TITLE);
+        loadIcons(stage);
+        stage.setScene(createScene());
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private void loadIcons(Stage stage) {
+        stage.getIcons().add(new Image(getClass().getClassLoader().getResource(ICON_16_PATH).toExternalForm()));
+        stage.getIcons().add(new Image(getClass().getClassLoader().getResource(ICON_24_PATH).toExternalForm()));
+        stage.getIcons().add(new Image(getClass().getClassLoader().getResource(ICON_32_PATH).toExternalForm()));
+        stage.getIcons().add(new Image(getClass().getClassLoader().getResource(ICON_64_PATH).toExternalForm()));
+        stage.getIcons().add(new Image(getClass().getClassLoader().getResource(ICON_128_PATH).toExternalForm()));
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private Scene createScene() throws IOException {
+        Scene scene = new Scene(createPanes(), FRAME_WIDTH, FRAME_HEIGHT);
+        scene.getStylesheets().add(getClass().getClassLoader().getResource(CSS_PATH).toExternalForm());
+        return scene;
+    }
+
+    private BorderPane createPanes() throws IOException {
+        SplitPane splitPane = createSplitPanes();
         BorderPane root = new BorderPane();
-        SplitPane splitPane = new SplitPane();
-        splitPane.getItems().add(new Pane());
-        splitPane.getItems().add(new Pane());
-        splitPane.getItems().add(new Pane());
-        splitPane.setDividerPositions(0.0f, 0.8f, 1.0f);
+
+        root.setTop(loadMenuBar(root, splitPane));
         root.setCenter(splitPane);
 
+        Pane sqlExecutorPane = loadSqlExecutorPane();
+        SplitPane.setResizableWithParent(sqlExecutorPane, false);
+        splitPane.getItems().set(SQLEXECUTOR_PANE_NUMBER, sqlExecutorPane);
 
-        /* Load and inject the "master "controller so we can load it with the model and root pane */
-        FXMLLoader menubarloader = new FXMLLoader(getClass().getClassLoader().getResource("view/fxml/menubar.fxml"));
-        MenubarController menubarController = new MenubarController(MODEL, root, splitPane);
-        menubarloader.setController(menubarController);
-        BorderPane bar = menubarloader.load();
-        root.setTop(bar);
+        return root;
+    }
 
-        /* Load and inject the sqlite executor controller */
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("view/fxml/sqleditor.fxml"));
-        loader.setController(new SqlEditorController(MODEL));
-        AnchorPane loadedPane = loader.load();
-        SplitPane.setResizableWithParent(loadedPane, false);
-        splitPane.getItems().set(2, loadedPane);
+    private SplitPane createSplitPanes() {
+        SplitPane splitPane = new SplitPane(new Pane(), new Pane(), new Pane());
+        splitPane.setDividerPositions(LEFT_PANE_PERCENTAGE, CENTER_PANE_PERCENTAGE, RIGHT_PANE_PERCENTAGE);
+        return splitPane;
+    }
 
-        /* Make sure we use a custom close to exit cleanly */
-        primaryStage.setOnCloseRequest(event -> MODEL.exitProgram());
+    private Pane loadMenuBar(BorderPane root, SplitPane splitPane) throws IOException {
+        return loadFxmlAndController(new MenubarController(MODEL, root, splitPane), MENUBAR_FXML_PATH);
+    }
 
-        /* Should move resolution to options / config. */
-        Scene scene = new Scene(root, 800, 600);
-        scene.getStylesheets().add(getClass().getClassLoader().getResource("view/css/darktheme.css").toExternalForm());
-        primaryStage.setTitle("Sqlite Database Visualiser");
-        primaryStage.getIcons().add(new Image(getClass().getClassLoader().getResource("view/images/icons/icon24.png").toExternalForm()));
-        primaryStage.setScene(scene);
-        primaryStage.show();
+    private Pane loadSqlExecutorPane() throws IOException {
+        return loadFxmlAndController(new SqlEditorController(MODEL), SQLEXECUTOR_FXML_PATH);
+    }
+
+    private Pane loadFxmlAndController(Controller controller, String fxmlPath) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(fxmlPath));
+        loader.setController(controller);
+        return loader.load();
     }
 }
