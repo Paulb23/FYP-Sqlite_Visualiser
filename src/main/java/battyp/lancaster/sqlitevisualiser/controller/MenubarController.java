@@ -37,7 +37,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
@@ -73,6 +72,22 @@ import java.sql.SQLException;
  * @since 0.5
  */
 public class MenubarController extends Controller {
+
+    private static final int LEFT_PANE_NUMBER = 0;
+    private static final int CENTER_PANE_NUMBER = 1;
+
+    private static final double LEFT_DIVIDER_HIDDEN_VALUE = 0.0;
+    private static final double LEFT_DIVIDER_SHOWN_VALUE = 0.2;
+
+    private static final String HEADER_FXML_PATH = "view/fxml/header.fxml";
+
+    private static final String TABLE_VIEW_LEFT_FXML_PATH = "view/fxml/tableviewleftpane.fxml";
+    private static final String TABLE_VIEW_CENTER_FXML_PATH = "view/fxml/tableview.fxml";
+
+    private static final String VISUALISATION_LEFT_FXML_PATH = "view/fxml/visulisationleftpane.fxml";
+    private static final String VISUALISATION_CENTER_FXML_PATH = "view/fxml/visualisation.fxml";
+
+    private static final String LOG_FXML_PATH = "view/fxml/log.fxml";
 
     private BorderPane root;
     private SplitPane splitPane;
@@ -179,7 +194,7 @@ public class MenubarController extends Controller {
     @FXML
     private void switchToHeader() {
         clearLeftPane();
-        setCenterPane("view/fxml/header.fxml", new HeaderController(this.model));
+        setPane(HEADER_FXML_PATH, new HeaderController(this.model), CENTER_PANE_NUMBER);
     }
 
     /**
@@ -187,7 +202,9 @@ public class MenubarController extends Controller {
      */
     @FXML
     private void switchToTableView() {
-        setPanes("view/fxml/tableviewleftpane.fxml", "view/fxml/tableview.fxml", new TableViewController(this.model));
+        TableViewController controller = new TableViewController(this.model);
+        setPane(TABLE_VIEW_LEFT_FXML_PATH, controller, LEFT_PANE_NUMBER);
+        setPane(TABLE_VIEW_CENTER_FXML_PATH, controller, CENTER_PANE_NUMBER);
     }
 
     /**
@@ -195,7 +212,9 @@ public class MenubarController extends Controller {
      */
     @FXML
     private void switchToVisualisation() {
-        setPanes("view/fxml/visulisationleftpane.fxml", "view/fxml/visualisation.fxml", new VisualisationController(this.model));
+        VisualisationController controller = new VisualisationController(this.model);
+        setPane(VISUALISATION_LEFT_FXML_PATH, controller, LEFT_PANE_NUMBER);
+        setPane(VISUALISATION_CENTER_FXML_PATH, controller, CENTER_PANE_NUMBER);
     }
 
     /**
@@ -204,88 +223,49 @@ public class MenubarController extends Controller {
     @FXML
     private void switchToLog() {
         clearLeftPane();
-        setCenterPane("view/fxml/log.fxml", new LogController(this.model));
+        setPane(LOG_FXML_PATH, new LogController(this.model), CENTER_PANE_NUMBER);
     }
 
     /**
      * {@inheritDoc}
      */
     public void notifyObserver() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                currentController.notifyObserver();
-            }
-        });
+        Platform.runLater(() -> currentController.notifyObserver());
     }
 
-    /**
-     * Switches the current view or Center pane.
-     *
-     * @param fxmlPath Path to the FXML file.
-     * @param controller The controller responsible for the FXML file.
-     */
-    private void setCenterPane(String fxmlPath, Controller controller) {
+    private void setPane(String fxmlPath, Controller controller, int paneNumber) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(fxmlPath));
-            loader.setController(controller);
-            AnchorPane loadedPane = loader.load();
-            SplitPane.setResizableWithParent(loadedPane, false);
-            double[] divider = this.splitPane.getDividerPositions();
-            this.splitPane.getItems().set(1, loadedPane);
-            this.splitPane.setDividerPositions(divider);
-
+            showPane(loadFXMLFile(fxmlPath, controller), paneNumber);
             this.currentController = controller;
-            notifyObserver();
         } catch (IOException e) {
             UiUtil.showExceptionError("Error Dialog", "Oooops, Could not load that tab!", e);
         }
     }
 
-    /**
-     * Switches the current view or Left pane.
-     *
-     * @param fxmlPath Path to the FXML file.
-     * @param controller The controller responsible for the FXML file.
-     */
-    private void setLeftPane(String fxmlPath, Controller controller) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(fxmlPath));
-            loader.setController(controller);
-            AnchorPane loadedPane = loader.load();
-            SplitPane.setResizableWithParent(loadedPane, false);
-            double[] divider = this.splitPane.getDividerPositions();
-            this.splitPane.getItems().set(0, loadedPane);
-            if(divider[0] == 0.0) {
-                divider[0] = 0.2;
+    private Pane loadFXMLFile(String fxmlPath, Controller controller) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(fxmlPath));
+        loader.setController(controller);
+        return loader.load();
+    }
+
+    private void showPane(Pane pane, int paneNumber) {
+        SplitPane.setResizableWithParent(pane, false);
+        double[] divider = this.splitPane.getDividerPositions();
+        this.splitPane.getItems().set(paneNumber, pane);
+        if (paneNumber == LEFT_PANE_NUMBER) {
+            if(divider[LEFT_PANE_NUMBER] <= LEFT_DIVIDER_HIDDEN_VALUE) {
+                divider[LEFT_PANE_NUMBER] = LEFT_DIVIDER_SHOWN_VALUE;
             }
             this.splitPane.setDividerPositions(divider);
-
-            this.currentController = controller;
-            notifyObserver();
-        } catch (IOException e) {
-            UiUtil.showExceptionError("Error Dialog", "Oooops, Could not load that tab!", e);
         }
+        this.splitPane.setDividerPositions(divider);
+        notifyObserver();
     }
 
-    /**
-     * Switches the current left and center panes.
-     * @param leftfxmlPath Path to the Left panes FXML file.
-     * @param centerfxmlPath Path to the Center panes FXML file.
-     * @param controller The controller responsible for the FXML files
-     */
-    private void setPanes(String leftfxmlPath, String centerfxmlPath, Controller controller) {
-        setCenterPane(centerfxmlPath, controller);
-        setLeftPane(leftfxmlPath, controller);
-    }
-
-    /**
-     * Clears and hides the left panel
-     */
     private void clearLeftPane() {
         Pane pane = new Pane();
         SplitPane.setResizableWithParent(pane, false);
-        this.splitPane.getItems().set(0, pane);
-        this.splitPane.getDividers().get(0).setPosition(0.0);
+        this.splitPane.getItems().set(LEFT_PANE_NUMBER, pane);
+        this.splitPane.getDividers().get(LEFT_PANE_NUMBER).setPosition(LEFT_DIVIDER_HIDDEN_VALUE);
     }
 }
