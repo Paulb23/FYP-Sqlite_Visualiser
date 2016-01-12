@@ -83,9 +83,10 @@ public class TableViewController extends Controller {
                 this.model.getSqlExecutor().connect();
                     ResultSet rs = model.getSqlExecutor().executeSql("SELECT * FROM " + tableSelect.getValue());
                         addColumnsToTable(rs);
-                        showSchema(rs);
                         addDataToTable(rs);
                     rs.close();
+
+                    showSchema();
                 this.model.getSqlExecutor().disconnect();
 
             } catch (SQLException e) {
@@ -123,9 +124,10 @@ public class TableViewController extends Controller {
         tableView.setItems(data);
     }
 
-    private void showSchema(ResultSet rs) throws SQLException {
+    private void showSchema() throws SQLException {
         DatabaseMetaData databaseMetaData = this.model.getSqlExecutor().getDatabaseMetaData();
-
+        ResultSet rs = model.getSqlExecutor().executeSql("SELECT * FROM sqlite_master WHERE tbl_name='" + tableSelect.getValue() +"'");
+        schemaTextArea.appendText(rs.getString("sql"));
     }
 
     /**
