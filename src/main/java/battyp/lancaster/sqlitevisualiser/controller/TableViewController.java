@@ -125,9 +125,9 @@ public class TableViewController extends Controller {
     }
 
     private void showSchema() throws SQLException {
-        DatabaseMetaData databaseMetaData = this.model.getSqlExecutor().getDatabaseMetaData();
         ResultSet rs = model.getSqlExecutor().executeSql("SELECT * FROM sqlite_master WHERE tbl_name='" + tableSelect.getValue() +"'");
         schemaTextArea.appendText(rs.getString("sql"));
+        rs.close();
     }
 
     /**
