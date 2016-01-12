@@ -44,20 +44,20 @@ public class DefaultLiveUpdaterTest {
 
     @Test
     public void TestLiveUpdatingIsTrueOnCreation() {
-        DefaultLiveUpdater liveUpdater = new DefaultLiveUpdater();
+        DefaultLiveUpdater liveUpdater = new DefaultLiveUpdater(null);
         Assert.assertEquals(true, liveUpdater.isUpdating());
     }
 
     @Test
     public void TestStopUpdating() {
-        DefaultLiveUpdater liveUpdater = new DefaultLiveUpdater();
+        DefaultLiveUpdater liveUpdater = new DefaultLiveUpdater(null);
         liveUpdater.stopUpdating();
         Assert.assertEquals(false, liveUpdater.isUpdating());
     }
 
     @Test
     public void TestStartUpdating() {
-        DefaultLiveUpdater liveUpdater = new DefaultLiveUpdater();
+        DefaultLiveUpdater liveUpdater = new DefaultLiveUpdater(null);
         liveUpdater.stopUpdating();
         liveUpdater.startUpdating();
         Assert.assertEquals(true, liveUpdater.isUpdating());
@@ -65,13 +65,13 @@ public class DefaultLiveUpdaterTest {
 
     @Test
     public void TestNotifyObserverWithoutSettingUp() {
-        DefaultLiveUpdater liveUpdater = new DefaultLiveUpdater();
+        DefaultLiveUpdater liveUpdater = new DefaultLiveUpdater(null);
         liveUpdater.notifyObserver();
     }
 
     @Test
     public void TestUpdateDatabase() throws IOException, InvalidFileException {
-        DefaultLiveUpdater liveUpdater = new DefaultLiveUpdater();
+        DefaultLiveUpdater liveUpdater = new DefaultLiveUpdater(null);
         liveUpdater.update("LiveTestDatabase", new MockDatabaseParser(), new MockDatabaseInterface());
     }
 }

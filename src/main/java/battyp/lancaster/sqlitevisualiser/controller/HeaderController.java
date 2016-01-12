@@ -80,6 +80,7 @@ public class HeaderController extends Controller {
                                                 createTypePanel(metadata),
                                                 createVersionPanel(metadata),
                                                 createPagePanel(metadata),
+                                                createTablePanel(metadata),
                                                 createMiscPanel(metadata));
         }
     }
@@ -121,6 +122,15 @@ public class HeaderController extends Controller {
         panel.addItem("Min Payload", String.valueOf(metadata.minEmbeddedPayload));
         panel.addItem("Leaf Payload", String.valueOf(metadata.leafPayloadFraction));
         panel.addItem("Page of Largest Tree", String.valueOf(metadata.pageNumberToLargestBTreePage));
+        return panel;
+    }
+
+    private HeaderInformationPane createTablePanel(Metadata metadata) {
+        HeaderInformationPane panel = new HeaderInformationPane("Table Information");
+        panel.addItem("Table Count", String.valueOf(metadata.numberOfTables));
+        panel.addItem("Entry Count", String.valueOf(metadata.numberOfEntries));
+        panel.addItem("Primary Key Count", String.valueOf(metadata.numberOfPrimaryKeys));
+        panel.addItem("Foreign Key Count", String.valueOf(metadata.numberOfForeignKeys));
         return panel;
     }
 

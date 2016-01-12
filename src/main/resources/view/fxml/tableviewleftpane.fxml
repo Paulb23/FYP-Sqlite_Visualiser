@@ -28,5 +28,6 @@
 <AnchorPane fx:id="TablePageLeft" xmlns:fx="http://javafx.com/fxml">
     <children>
         <ComboBox AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" AnchorPane.rightAnchor="10.0" fx:id="tableSelect" onAction="#updateView"></ComboBox>
+        <TextArea cache="true" editable="false" AnchorPane.topAnchor="50.0" AnchorPane.leftAnchor="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" fx:id="schemaTextArea" ></TextArea>
     </children>
 </AnchorPane>

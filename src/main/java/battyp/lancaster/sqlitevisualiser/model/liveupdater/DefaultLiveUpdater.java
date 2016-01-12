@@ -24,6 +24,7 @@
 
 package battyp.lancaster.sqlitevisualiser.model.liveupdater;
 
+import battyp.lancaster.sqlitevisualiser.model.Model;
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
 import battyp.lancaster.sqlitevisualiser.model.databaseinterface.DatabaseInterface;
 import battyp.lancaster.sqlitevisualiser.model.databaseparser.DatabaseParser;
@@ -33,7 +34,11 @@ import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeNode;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
 import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Stack;
 
@@ -49,26 +54,24 @@ import java.util.Stack;
  */
 public class DefaultLiveUpdater implements LiveUpdater {
 
+    private Model model;
     private boolean live;
     private String path;
-    private DatabaseParser databaseParser;
-    private DatabaseInterface databaseInterface;
 
     /**
      * Constructor.
      */
-    public DefaultLiveUpdater() {
+    public DefaultLiveUpdater(Model model) {
         live = true;
+        this.model = model;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void setDatabase(String path, DatabaseParser databaseParser, DatabaseInterface databaseInterface) {
+    public void setDatabase(String path) {
         this.path = path;
-        this.databaseParser = databaseParser;
-        this.databaseInterface = databaseInterface;
     }
 
     /**
@@ -77,11 +80,72 @@ public class DefaultLiveUpdater implements LiveUpdater {
     @Override
     public void update(String path, DatabaseParser databaseParser, DatabaseInterface databaseInterface) throws IOException, InvalidFileException {
         Database newDatabase = databaseParser.parseDatabase(path, new Database(new BTree(), new Metadata()));
+        updateMetaData(newDatabase);
         detectChanges(newDatabase, databaseInterface.getCurrent());
         databaseInterface.addDatabase(newDatabase);
         if (live) {
             databaseInterface.nextStep();
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void updateMetaData(Database database) {
+        if (database == null) {
+            return;
+        }
+
+        Metadata metadata = database.getMetadata();
+        metadata.fileName = this.model.getFileWatcher().getFileName();
+        try {
+            this.model.getSqlExecutor().connect();
+
+            DatabaseMetaData databaseMetaData = this.model.getSqlExecutor().getDatabaseMetaData();
+            String catalog = databaseMetaData.getConnection().getCatalog();
+
+            metadata.numberOfTables = 0;
+            metadata.numberOfPrimaryKeys = 0;
+            metadata.numberOfForeignKeys = 0;
+            metadata.numberOfEntries = 0;
+
+            ResultSet count = databaseMetaData.getTables(catalog, null, null, null);
+
+            while(count.next()) {
+                String table = count.getString("TABLE_NAME");
+                metadata.numberOfTables += 1;
+
+                ResultSet pkeys = databaseMetaData.getPrimaryKeys(catalog, null, table);
+                metadata.numberOfPrimaryKeys += getRowCount(pkeys);
+                pkeys.close();
+
+                ResultSet fkeys = databaseMetaData.getImportedKeys(catalog, null, table);
+                metadata.numberOfForeignKeys += getRowCount(fkeys);
+                fkeys.close();
+
+                ResultSet entries = this.model.getSqlExecutor().executeSql("Select * from " + table);
+                metadata.numberOfEntries += getRowCount(entries);
+                entries.close();
+            }
+            count.close();
+
+            this.model.getSqlExecutor().disconnect();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private int getRowCount(ResultSet set) throws SQLException {
+        int rowCount = 0;
+        while(set.next()) {
+            rowCount++;
+        }
+        return rowCount;
     }
 
     /**
@@ -128,8 +192,8 @@ public class DefaultLiveUpdater implements LiveUpdater {
     @Override
     public void notifyObserver() {
         try {
-            if (path != null && databaseParser != null && databaseInterface != null) {
-                update(path, databaseParser, databaseInterface);
+            if (path != null) {
+                update(path, this.model.getDatabaseParser(), this.model.getDatabaseInterface());
             }
         } catch (IOException | InvalidFileException ignored) {
         }
@@ -140,7 +204,7 @@ public class DefaultLiveUpdater implements LiveUpdater {
      */
     @Override
     public void nextStep() {
-        this.databaseInterface.nextStep();
+        this.model.getDatabaseInterface().nextStep();
     }
 
     /**
@@ -148,7 +212,7 @@ public class DefaultLiveUpdater implements LiveUpdater {
      */
     @Override
     public void previousStep() {
-        this.databaseInterface.previousStep();
+        this.model.getDatabaseInterface().previousStep();
     }
 
     /**

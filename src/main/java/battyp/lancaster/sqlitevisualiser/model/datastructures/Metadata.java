@@ -159,4 +159,24 @@ public class Metadata {
      * The sqlite version.
      */
     public int sqliteVersion;
+
+    /**
+     * Number of tables in the database.
+     */
+    public int numberOfTables;
+
+    /**
+     * Number of entries / rows in the database.
+     */
+    public int numberOfEntries;
+
+    /**
+     * Number of primary keys in the database.
+     */
+    public int numberOfPrimaryKeys;
+
+    /**
+     * Number of foreign keys in the database.
+     */
+    public int numberOfForeignKeys;
 }

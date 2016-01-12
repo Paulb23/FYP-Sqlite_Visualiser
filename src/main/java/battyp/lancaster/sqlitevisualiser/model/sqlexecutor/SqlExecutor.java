@@ -25,6 +25,7 @@
 package battyp.lancaster.sqlitevisualiser.model.sqlexecutor;
 
 import java.io.FileNotFoundException;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -74,4 +75,13 @@ public interface SqlExecutor {
      * @return Result Set containing the result.
      */
     public void performUpdate(String sql) throws SQLException;
+
+    /**
+     * Gets the database Metadata.
+     *
+     * @return Database Metadata.
+     *
+     * @throws SQLException On Sql Error.
+     */
+    public DatabaseMetaData getDatabaseMetaData() throws SQLException;
 }

@@ -71,10 +71,10 @@ public class DefaultModel implements Model {
         this.databaseInterface.clear();
         this.databaseInterface.addDatabase(database);
         this.sqlExecutor.setDatabaseFile(path);
-        this.liveUpdater.setDatabase(path, this.databaseParser, this.databaseInterface);
+        this.liveUpdater.setDatabase(path);
         this.fileWatcher.setFile(path);
         this.log.setFile(path);
-        database.getMetadata().fileName = this.fileWatcher.getFileName();
+        this.liveUpdater.updateMetaData(database);
         isFileOpen = true;
     }
 
@@ -85,7 +85,7 @@ public class DefaultModel implements Model {
         databaseInterface = new DefaultDatabaseInterface();
         databaseParser = new DefaultDatabaseParser();
         sqlExecutor = new DefaultSqlExecutor();
-        liveUpdater = new DefaultLiveUpdater();
+        liveUpdater = new DefaultLiveUpdater(this);
         fileWatcher = new DefaultFileWatcher();
         log = new DefaultLog();
         Thread thread = new Thread(fileWatcher, "FileWatcher");

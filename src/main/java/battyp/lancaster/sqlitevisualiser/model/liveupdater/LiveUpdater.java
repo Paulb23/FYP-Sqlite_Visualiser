@@ -24,6 +24,7 @@
 
 package battyp.lancaster.sqlitevisualiser.model.liveupdater;
 
+import battyp.lancaster.sqlitevisualiser.model.database.Database;
 import battyp.lancaster.sqlitevisualiser.model.databaseinterface.DatabaseInterface;
 import battyp.lancaster.sqlitevisualiser.model.databaseparser.DatabaseParser;
 import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
@@ -58,13 +59,18 @@ public interface LiveUpdater extends Observer {
     public void update(String path, DatabaseParser databaseParser, DatabaseInterface databaseInterface) throws IOException, InvalidFileException;
 
     /**
+     * Updates the Metadata for the database.
+     *
+     * @param database Database with the metadata object to update.
+     */
+    public void updateMetaData(Database database);
+
+    /**
      * Sets up the updater for the incoming requests
      *
      * @param path Path to the database
-     * @param databaseParser Parser to parse the database with
-     * @param databaseInterface Interface to store the database
      */
-    public void setDatabase(String path, DatabaseParser databaseParser, DatabaseInterface databaseInterface);
+    public void setDatabase(String path);
 
     /**
      * Starts the updating

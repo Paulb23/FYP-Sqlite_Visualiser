@@ -27,7 +27,9 @@ package battyp.lancaster.sqlitevisualiser.tests.model.mocks;
 
 import battyp.lancaster.sqlitevisualiser.model.sqlexecutor.SqlExecutor;
 
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * Mock implementation of the sqlexecutor
@@ -57,5 +59,10 @@ public class MockSqlExecutor implements SqlExecutor {
 
     @Override
     public void performUpdate(String sql) {
+    }
+
+    @Override
+    public DatabaseMetaData getDatabaseMetaData() throws SQLException {
+        return null;
     }
 }

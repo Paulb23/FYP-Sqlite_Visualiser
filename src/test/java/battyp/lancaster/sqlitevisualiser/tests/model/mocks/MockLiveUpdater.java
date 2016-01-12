@@ -24,6 +24,7 @@
 
 package battyp.lancaster.sqlitevisualiser.tests.model.mocks;
 
+import battyp.lancaster.sqlitevisualiser.model.database.Database;
 import battyp.lancaster.sqlitevisualiser.model.databaseinterface.DatabaseInterface;
 import battyp.lancaster.sqlitevisualiser.model.databaseparser.DatabaseParser;
 import battyp.lancaster.sqlitevisualiser.model.exceptions.InvalidFileException;
@@ -44,7 +45,11 @@ public class MockLiveUpdater implements LiveUpdater {
     }
 
     @Override
-    public void setDatabase(String path, DatabaseParser databaseParser, DatabaseInterface databaseInterface) {
+    public void updateMetaData(Database database) {
+    }
+
+    @Override
+    public void setDatabase(String path) {
     }
 
     @Override

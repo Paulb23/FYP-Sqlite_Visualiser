@@ -109,4 +109,12 @@ public class DefaultSqlExecutor implements SqlExecutor {
         Statement statement = connection.createStatement();
         statement.executeUpdate(sql);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public DatabaseMetaData getDatabaseMetaData() throws SQLException {
+        return this.connection.getMetaData();
+    }
 }
