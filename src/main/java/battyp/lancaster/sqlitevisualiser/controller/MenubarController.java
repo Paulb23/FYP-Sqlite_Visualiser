@@ -104,6 +104,7 @@ public class MenubarController extends Controller {
      *
      * @param model The model that this controller will use.
      * @param root The root pane of the stage.
+     * @param splitPane The Splitpane in the center of the root.
      */
     public MenubarController(Model model, BorderPane root, SplitPane splitPane) {
         super(model);
@@ -116,10 +117,12 @@ public class MenubarController extends Controller {
     }
 
     /**
-     * Opens a database file.
-     *
-     * If a error is detected during the process a dialog is displayed to user.
+     * {@inheritDoc}
      */
+    public void notifyObserver() {
+        Platform.runLater(() -> currentController.notifyObserver());
+    }
+
     @FXML
     private void openDatabase() {
         try {
@@ -142,11 +145,13 @@ public class MenubarController extends Controller {
         }
     }
 
-    /**
-     * Pauses or plays the live updater.
-     */
     @FXML
-    private void playOrPause() {
+    private void exit() {
+        this.model.exitProgram();
+    }
+
+    @FXML
+    private void playOrPauseLiveUpdater() {
         if(this.model.getLiveUpdater().isUpdating()) {
             this.model.getLiveUpdater().stopUpdating();
             pauseButton.setId("playButton");
@@ -158,48 +163,28 @@ public class MenubarController extends Controller {
         }
     }
 
-    /**
-     * Gets the previous database.
-     */
     @FXML
-    private void getPrevious() {
+    private void getPreviousDatabase() {
         if (this.model.isFileOpen()) {
             this.model.getLiveUpdater().previousStep();
             notifyObserver();
         }
     }
 
-    /**
-     * Gets the previous database.
-     */
     @FXML
-    private void getNext() {
+    private void getNextDatabase() {
         if (this.model.isFileOpen()) {
             this.model.getLiveUpdater().nextStep();
             notifyObserver();
         }
     }
 
-    /**
-     * Quits the program safely.
-     */
-    @FXML
-    public void exit() {
-        this.model.exitProgram();
-    }
-
-    /**
-     * switches the center pane to the header view
-     */
     @FXML
     private void switchToHeader() {
         clearLeftPane();
         setPane(HEADER_FXML_PATH, new HeaderController(this.model), CENTER_PANE_NUMBER);
     }
 
-    /**
-     * switches the center pane to the table view
-     */
     @FXML
     private void switchToTableView() {
         TableViewController controller = new TableViewController(this.model);
@@ -207,9 +192,6 @@ public class MenubarController extends Controller {
         setPane(TABLE_VIEW_CENTER_FXML_PATH, controller, CENTER_PANE_NUMBER);
     }
 
-    /**
-     * switches the center pane to the visualisation view
-     */
     @FXML
     private void switchToVisualisation() {
         VisualisationController controller = new VisualisationController(this.model);
@@ -217,20 +199,10 @@ public class MenubarController extends Controller {
         setPane(VISUALISATION_CENTER_FXML_PATH, controller, CENTER_PANE_NUMBER);
     }
 
-    /**
-     * switches the center pane to the log view
-     */
     @FXML
     private void switchToLog() {
         clearLeftPane();
         setPane(LOG_FXML_PATH, new LogController(this.model), CENTER_PANE_NUMBER);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void notifyObserver() {
-        Platform.runLater(() -> currentController.notifyObserver());
     }
 
     private void setPane(String fxmlPath, Controller controller, int paneNumber) {

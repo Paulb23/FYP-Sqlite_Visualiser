@@ -72,37 +72,16 @@ public class SqlEditorController extends Controller {
     public void notifyObserver() {
     }
 
-    /**
-     * Executes SQl on the database, and prints out the results.
-     * Currency only supports, Selects.
-     *
-     * TODO: Switch between updates and queries
-     */
     @FXML
     private void executeSql() {
         if (this.model.isFileOpen()) {
             if (sqleditor.getText().equals("")) {
                 return;
             }
-
             sqleditorreturn.clear();
             try {
                 model.getSqlExecutor().connect();
-                if (sqleditor.getText().startsWith("Select") || sqleditor.getText().startsWith("select")) {
-                    ResultSet result = model.getSqlExecutor().executeSql(sqleditor.getText());
-
-                    int cols = result.getMetaData().getColumnCount();
-                    while (result.next()) {
-                        for (int i = 1; i < cols; i++) {
-                            sqleditorreturn.appendText(result.getString(i) + "\t");
-                        }
-                        sqleditorreturn.appendText("\r\n");
-                    }
-                    result.close();
-                } else {
-                    model.getSqlExecutor().performUpdate(sqleditor.getText());
-                    sqleditorreturn.setText("Database updated.\n");
-                }
+                sqleditorreturn.setText(performSQl());
                 model.getSqlExecutor().disconnect();
             } catch (SQLException e) {
                 sqleditorreturn.setText(e.getMessage());
@@ -112,5 +91,30 @@ public class SqlEditorController extends Controller {
                 UiUtil.showExceptionError("Error Dialog", "Oooops, Could not find the database", e);
             }
         }
+    }
+
+    private String performSQl() throws SQLException {
+        return (sqleditor.getText().startsWith("Select") || sqleditor.getText().startsWith("select")) ? performSelect() : performUpdate();
+    }
+
+    private String performSelect() throws SQLException {
+        ResultSet result = model.getSqlExecutor().executeSql(sqleditor.getText());
+        String output = "";
+
+        int cols = result.getMetaData().getColumnCount();
+        while (result.next()) {
+            for (int i = 1; i < cols; i++) {
+                output += (result.getString(i) + "\t");
+            }
+            output += ("\r\n");
+        }
+
+        result.close();
+        return output;
+    }
+
+    private String performUpdate() throws SQLException {
+        model.getSqlExecutor().performUpdate(sqleditor.getText());
+        return "Database updated.\n";
     }
 }

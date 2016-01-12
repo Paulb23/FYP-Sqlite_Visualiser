@@ -31,9 +31,9 @@
     <center>
         <ToolBar fx:id="toolbar">
             <Button styleClass="toolBarButtons" fx:id="openFileButton" accessibleText="Open..." onAction="#openDatabase"/>
-            <Button styleClass="toolBarButtons" fx:id="pauseButton" accessibleText="Pause" onAction="#playOrPause" />
-            <Button styleClass="toolBarButtons" fx:id="previousButton" accessibleText="Previous" onAction="#getPrevious" />
-            <Button styleClass="toolBarButtons" fx:id="nextButton" accessibleText="Next" onAction="#getNext" />
+            <Button styleClass="toolBarButtons" fx:id="pauseButton" accessibleText="Pause" onAction="#playOrPauseLiveUpdater" />
+            <Button styleClass="toolBarButtons" fx:id="previousButton" accessibleText="Previous" onAction="#getPreviousDatabase" />
+            <Button styleClass="toolBarButtons" fx:id="nextButton" accessibleText="Next" onAction="#getNextDatabase" />
         </ToolBar>
     </center>
     <bottom>
@@ -81,11 +81,11 @@
           </Menu>
             <Menu styleClass="menu" mnemonicParsing="false" text="Edit">
                 <items>
-                    <MenuItem styleClass="menuItem" fx:id="playOrPauseMenuItem" onAction="#playOrPause" mnemonicParsing="false" text="Pause" >
+                    <MenuItem styleClass="menuItem" fx:id="playOrPauseMenuItem" onAction="#playOrPauseLiveUpdater" mnemonicParsing="false" text="Pause" >
                     </MenuItem>
-                    <MenuItem styleClass="menuItem" onAction="#getPrevious" mnemonicParsing="false" text="Previous State">
+                    <MenuItem styleClass="menuItem" onAction="#getPreviousDatabase" mnemonicParsing="false" text="Previous State">
                     </MenuItem>
-                    <MenuItem styleClass="menuItem" onAction="#getNext" mnemonicParsing="false" text="Next State">
+                    <MenuItem styleClass="menuItem" onAction="#getNextDatabase" mnemonicParsing="false" text="Next State">
                     </MenuItem>
                 </items>
             </Menu>
