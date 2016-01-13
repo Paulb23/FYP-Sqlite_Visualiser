@@ -82,7 +82,6 @@ public class SqlEditorController extends Controller {
             try {
                 model.getSqlExecutor().connect();
                 sqleditorreturn.setText(performSQl());
-                model.getSqlExecutor().disconnect();
             } catch (SQLException e) {
                 sqleditorreturn.setText(e.getMessage());
             } catch (ClassNotFoundException e) {
@@ -110,11 +109,13 @@ public class SqlEditorController extends Controller {
         }
 
         result.close();
+        model.getSqlExecutor().disconnect(); // close connection as only select
         return output;
     }
 
     private String performUpdate() throws SQLException {
         model.getSqlExecutor().performUpdate(sqleditor.getText());
+        this.model.getSqlExecutor().getDatabaseMetaData().getConnection().commit(); // leave connection open as updater will close it
         return "Database updated.\n";
     }
 }
