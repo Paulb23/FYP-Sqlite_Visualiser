@@ -79,9 +79,13 @@ public class DefaultLiveUpdater implements LiveUpdater {
      */
     @Override
     public void update(String path, DatabaseParser databaseParser, DatabaseInterface databaseInterface) throws IOException, InvalidFileException {
+        if (model == null) {
+            return;
+        }
+
         Database newDatabase = databaseParser.parseDatabase(path, new Database(new BTree(), new Metadata()));
         updateMetaData(newDatabase);
-        detectChanges(newDatabase, databaseInterface.getCurrent());
+        this.model.getLog().detectChanges(newDatabase, databaseInterface.getCurrent());
         databaseInterface.addDatabase(newDatabase);
         if (live) {
             databaseInterface.nextStep();
@@ -93,7 +97,7 @@ public class DefaultLiveUpdater implements LiveUpdater {
      */
     @Override
     public void updateMetaData(Database database) {
-        if (database == null) {
+        if (database == null || model == null) {
             return;
         }
 
@@ -148,43 +152,6 @@ public class DefaultLiveUpdater implements LiveUpdater {
         return rowCount;
     }
 
-    /**
-     * Detect changes to the new database, from the previous one
-     *
-     * @param newDatabase new Database object to check.
-     * @param previousDatabase The database to compare too.
-     */
-    private void detectChanges(Database newDatabase, Database previousDatabase) {
-        if (previousDatabase != null && newDatabase != null) {
-            BTreeNode<BTreeCell> oldRoot = previousDatabase.getBTree().getRoot();
-            BTreeNode<BTreeCell> newRoot = newDatabase.getBTree().getRoot();
-
-            if (oldRoot != null && newRoot != null) {
-              //  if (!oldRoot.equals(newRoot) && oldRoot.getData().hashCode() != newRoot.getData().hashCode()) {
-                    Stack<BTreeCell> oldTree = oldRoot.childrenToStack();
-                    Stack<BTreeCell> newTree = newRoot.childrenToStack();
-
-                    int numNodes = newTree.size();
-                    for (int i = 0; i < numNodes; i++) {
-                        BTreeCell oldCell = oldTree.pop();
-                        BTreeCell newCell = newTree.pop();
-
-                        if (!oldCell.equals(newCell)) {
-                            newCell.changed = true;
-                            String[] oldData = oldCell.data;
-                            String[] newData = newCell.data;
-                            int size = oldCell.cellCount;
-                            for (int j = 0; j < size; j++) {
-                                if (!oldData[j].equals(newData[j])) {
-                                    System.out.println("'" + oldData[j] + "' TO '" + newData[j] + "'");
-                                }
-                            }
-                        }
-                    }
-              //  }
-            }
-        }
-    }
 
     /**
      * {@inheritDoc}

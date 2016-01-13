@@ -24,8 +24,13 @@
 
 package battyp.lancaster.sqlitevisualiser.model.log;
 
+import battyp.lancaster.sqlitevisualiser.model.database.Database;
+import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
+import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeNode;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * <h1> Default Log </h1>
@@ -48,6 +53,42 @@ public class DefaultLog implements Log {
      */
     public DefaultLog() {
         this.sqlLog = new ArrayList<>();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void detectChanges(Database newDatabase, Database previousDatabase) {
+        if (previousDatabase != null && newDatabase != null) {
+            BTreeNode<BTreeCell> oldRoot = previousDatabase.getBTree().getRoot();
+            BTreeNode<BTreeCell> newRoot = newDatabase.getBTree().getRoot();
+
+            if (oldRoot != null && newRoot != null) {
+                //  if (!oldRoot.equals(newRoot) && oldRoot.getData().hashCode() != newRoot.getData().hashCode()) {
+                Stack<BTreeCell> oldTree = oldRoot.childrenToStack();
+                Stack<BTreeCell> newTree = newRoot.childrenToStack();
+
+                int numNodes = newTree.size();
+                for (int i = 0; i < numNodes; i++) {
+                    BTreeCell oldCell = oldTree.pop();
+                    BTreeCell newCell = newTree.pop();
+
+                    if (!oldCell.equals(newCell)) {
+                        newCell.changed = true;
+                        String[] oldData = oldCell.data;
+                        String[] newData = newCell.data;
+                        int size = oldCell.cellCount;
+                        for (int j = 0; j < size; j++) {
+                            if (!oldData[j].equals(newData[j])) {
+                                System.out.println("'" + oldData[j] + "' TO '" + newData[j] + "'");
+                            }
+                        }
+                    }
+                }
+                //  }
+            }
+        }
     }
 
     /**
