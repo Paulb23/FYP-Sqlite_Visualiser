@@ -67,86 +67,87 @@ public class DefaultLog implements Log {
             BTreeNode<BTreeCell> newRoot = newDatabase.getBTree().getRoot();
 
             if (oldRoot != null && newRoot != null) {
-                //  if (!oldRoot.equals(newRoot) && oldRoot.getData().hashCode() != newRoot.getData().hashCode()) {
                 Stack<BTreeCell> oldTree = oldRoot.childrenToStack();
                 Stack<BTreeCell> newTree = newRoot.childrenToStack();
 
-                int newNumNodes = newTree.size();
-                int oldNumNodes = oldTree.size();
+                detectTreeChanges(newTree, oldTree);
+                detectDataChanges(newTree, oldTree);
+            }
+        }
+    }
 
-                Stack<BTreeCell> largeTree = newTree;
-                Stack<BTreeCell> smallTree = oldTree;
+    private void detectTreeChanges(Stack<BTreeCell> newTree, Stack<BTreeCell> oldTree) {
+        int newNumNodes = newTree.size();
+        int oldNumNodes = oldTree.size();
 
-                if (newNumNodes > oldNumNodes) {
-                    Stack<BTreeCell> newNodes = new Stack<>();
-                    for (BTreeCell n : newTree) {
-                        for (BTreeCell nn : oldTree) {
-                            if (nn.pageNumber != n.pageNumber) {
-                                newNodes.add(n);
-                                break;
-                            }
-                        }
-                    }
-                    for (BTreeCell n : newNodes) {
-                        sqlLog.add("ADDED PAGE '" + n.pageNumber + "'");
-                        n.changed = true;
-                    }
-                } else if (newNumNodes < oldNumNodes) {
-                    Stack<BTreeCell> newNodes = new Stack<>();
-                    for (BTreeCell n : oldTree) {
-                        for (BTreeCell nn : newTree) {
-                            if (nn.pageNumber != n.pageNumber) {
-                                newNodes.add(n);
-                                break;
-                            }
-                        }
-                    }
-                    for (BTreeCell n : newNodes) {
-                        sqlLog.add("REMOVED PAGE '" + n.pageNumber + "'");
-                        n.changed = true;
-                    }
-                    largeTree = oldTree;
-                    smallTree = newTree;
+        if (newNumNodes > oldNumNodes) {
+            detectAddedPages(newTree, oldTree);
+        } else if (newNumNodes < oldNumNodes) {
+            detectRemovedPages(newTree, oldTree);
+        }
+    }
+
+    private void detectAddedPages(Stack<BTreeCell> newTree, Stack<BTreeCell> oldTree) {
+        detectPageChanges(newTree, oldTree, "ADDED PAGE ");
+    }
+
+    private void detectRemovedPages(Stack<BTreeCell> newTree, Stack<BTreeCell> oldTree) {
+        detectPageChanges(oldTree, newTree, "REMOVED PAGE ");
+    }
+
+    private void detectPageChanges(Stack<BTreeCell> newTree, Stack<BTreeCell> oldTree, String message) {
+        for (BTreeCell n : newTree) {
+            for (BTreeCell nn : oldTree) {
+                if (nn.pageNumber != n.pageNumber) {
+                    sqlLog.add(message + "'" + n.pageNumber + "'");
                 }
-                for (BTreeCell ln : largeTree) {
-                    for (BTreeCell sn : smallTree) {
-                        if (ln.pageNumber == sn.pageNumber) {
+            }
+        }
+    }
 
-                            BTreeCell newCell = sn;
-                            BTreeCell oldCell = ln;
+    private void detectDataChanges(Stack<BTreeCell> newTree, Stack<BTreeCell> oldTree) {
+        for (BTreeCell newTreeCell : newTree) {
+            for (BTreeCell oldTreeCell : oldTree) {
+                if (newTreeCell.pageNumber == oldTreeCell.pageNumber) {
 
-                            if (largeTree.equals(newTree)) {
-                                newCell = ln;
-                                oldCell = sn;
-                            }
-                            int newCellSize = newCell.cellCount;
-                            int oldCellSize = oldCell.cellCount;
+                    int newCellCount = newTreeCell.cellCount;
+                    int oldCellCount = oldTreeCell.cellCount;
 
-                            if (newCellSize > oldCellSize) {
-                                newCell.changed = true;
-                                List<String> newCellData = new ArrayList<>(Arrays.asList(newCell.data));
-                                newCellData.removeAll(new ArrayList<>(Arrays.asList(oldCell.data)));
-                                sqlLog.addAll(newCellData.stream().map(s -> "ADDED '" + s + "'").collect(Collectors.toList()));
-                            } else if (newCellSize < oldCellSize) {
-                                newCell.changed = true;
-                                List<String> newCellData = new ArrayList<>(Arrays.asList(oldCell.data));
-                                newCellData.removeAll(new ArrayList<>(Arrays.asList(newCell.data)));
-                                sqlLog.addAll(newCellData.stream().map(s -> "REMOVED '" + s + "'").collect(Collectors.toList()));
-                            } else if (!oldCell.equals(newCell)) {
-                                newCell.changed = true;
-                                String[] oldData = oldCell.data;
-                                String[] newData = newCell.data;
-                                int size = oldCell.cellCount;
-                                for (int j = 0; j < size; j++) {
-                                    if (!oldData[j].equals(newData[j])) {
-                                        sqlLog.add("'" + oldData[j] + "' TO '" + newData[j] + "'");
-                                    }
-                                }
-                            }
-                        }
+                    if (newCellCount > oldCellCount) {
+                        detectAddedRows(newTreeCell, oldTreeCell);
+                    } else if (newCellCount < oldCellCount) {
+                        detectRemovedRows(newTreeCell, oldTreeCell);
+                    } else if (!oldTreeCell.equals(newTreeCell)) {
+                        detectUpdatedRows(newTreeCell, oldTreeCell);
                     }
                 }
-                //  }
+            }
+        }
+    }
+
+    private void detectAddedRows(BTreeCell newCell, BTreeCell oldCell) {
+        detectRowChanges(newCell, oldCell, "ADDED ");
+    }
+
+    private void detectRemovedRows(BTreeCell newCell, BTreeCell oldCell) {
+        detectRowChanges(oldCell, newCell, "REMOVED ");
+    }
+
+    private void detectRowChanges(BTreeCell mainCell, BTreeCell comparisonCell, String message) {
+        mainCell.changed = true;
+        List<String> newCellData = new ArrayList<>(Arrays.asList(mainCell.data));
+        newCellData.removeAll(new ArrayList<>(Arrays.asList(comparisonCell.data)));
+        sqlLog.addAll(newCellData.stream().map(s -> message + "'" + s + "'").collect(Collectors.toList()));
+    }
+
+    private void detectUpdatedRows(BTreeCell newCell, BTreeCell oldCell) {
+        newCell.changed = true;
+        String[] oldData = oldCell.data;
+        String[] newData = newCell.data;
+        int size = oldCell.cellCount;
+        for (int j = 0; j < size; j++) {
+            if (!oldData[j].equals(newData[j])) {
+                sqlLog.add("'" + oldData[j] + "' TO '" + newData[j] + "'");
             }
         }
     }
