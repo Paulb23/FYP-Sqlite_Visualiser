@@ -28,10 +28,8 @@ import battyp.lancaster.sqlitevisualiser.model.database.Database;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeNode;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Stack;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -70,8 +68,10 @@ public class DefaultLog implements Log {
                 Stack<BTreeCell> oldTree = oldRoot.childrenToStack();
                 Stack<BTreeCell> newTree = newRoot.childrenToStack();
 
+                sqlLog.add(new SimpleDateFormat("HH:mm:ss dd/MM/yyyy").format(Calendar.getInstance().getTime()));
                 detectTreeChanges(newTree, oldTree);
                 detectDataChanges(newTree, oldTree);
+                sqlLog.set(sqlLog.size() - 1, sqlLog.get(sqlLog.size() - 1) + "\n");
             }
         }
     }

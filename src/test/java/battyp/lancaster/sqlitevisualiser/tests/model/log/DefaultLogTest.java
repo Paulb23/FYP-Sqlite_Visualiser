@@ -60,7 +60,7 @@ public class DefaultLogTest {
 
         DefaultLog log = new DefaultLog();
         log.detectChanges(database, database);
-        Assert.assertEquals(0, log.getLog().size());
+        Assert.assertEquals(1, log.getLog().size());
     }
 
     @Test
@@ -83,8 +83,8 @@ public class DefaultLogTest {
 
         DefaultLog log = new DefaultLog();
         log.detectChanges(newDatabase, database);
-        Assert.assertEquals(1, log.getLog().size());
-        Assert.assertEquals("'testData' TO 'newTestData'", log.getLog().get(0));
+        Assert.assertEquals(2, log.getLog().size());
+        Assert.assertEquals("'testData' TO 'newTestData'\n", log.getLog().get(1));
     }
 
 
@@ -112,9 +112,9 @@ public class DefaultLogTest {
 
         DefaultLog log = new DefaultLog();
         log.detectChanges(newDatabase, database);
-        Assert.assertEquals(2, log.getLog().size());
-        Assert.assertEquals("'testData1' TO 'newTestData1'", log.getLog().get(0));
-        Assert.assertEquals("'testData3' TO 'newTestData3'", log.getLog().get(1));
+        Assert.assertEquals(3, log.getLog().size());
+        Assert.assertEquals("'testData1' TO 'newTestData1'", log.getLog().get(1));
+        Assert.assertEquals("'testData3' TO 'newTestData3'\n", log.getLog().get(2));
     }
 
     @Test
@@ -138,8 +138,8 @@ public class DefaultLogTest {
 
         DefaultLog log = new DefaultLog();
         log.detectChanges(newDatabase, database);
-        Assert.assertEquals(1, log.getLog().size());
-        Assert.assertEquals("ADDED 'testData2'", log.getLog().get(0));
+        Assert.assertEquals(2, log.getLog().size());
+        Assert.assertEquals("ADDED 'testData2'\n", log.getLog().get(1));
     }
 
     @Test
@@ -164,9 +164,9 @@ public class DefaultLogTest {
 
         DefaultLog log = new DefaultLog();
         log.detectChanges(newDatabase, database);
-        Assert.assertEquals(2, log.getLog().size());
-        Assert.assertEquals("ADDED 'testData2'", log.getLog().get(0));
-        Assert.assertEquals("ADDED 'testData3'", log.getLog().get(1));
+        Assert.assertEquals(3, log.getLog().size());
+        Assert.assertEquals("ADDED 'testData2'", log.getLog().get(1));
+        Assert.assertEquals("ADDED 'testData3'\n", log.getLog().get(2));
     }
 
     @Test
@@ -190,8 +190,8 @@ public class DefaultLogTest {
 
         DefaultLog log = new DefaultLog();
         log.detectChanges(newDatabase, database);
-        Assert.assertEquals(1, log.getLog().size());
-        Assert.assertEquals("REMOVED 'testData2'", log.getLog().get(0));
+        Assert.assertEquals(2, log.getLog().size());
+        Assert.assertEquals("REMOVED 'testData2'\n", log.getLog().get(1));
     }
 
     @Test
@@ -216,9 +216,9 @@ public class DefaultLogTest {
 
         DefaultLog log = new DefaultLog();
         log.detectChanges(newDatabase, database);
-        Assert.assertEquals(2, log.getLog().size());
-        Assert.assertEquals("REMOVED 'testData2'", log.getLog().get(0));
-        Assert.assertEquals("REMOVED 'testData3'", log.getLog().get(1));
+        Assert.assertEquals(3, log.getLog().size());
+        Assert.assertEquals("REMOVED 'testData2'", log.getLog().get(1));
+        Assert.assertEquals("REMOVED 'testData3'\n", log.getLog().get(2));
     }
 
     @Test
@@ -244,8 +244,8 @@ public class DefaultLogTest {
 
         DefaultLog log = new DefaultLog();
         log.detectChanges(newDatabase, database);
-        Assert.assertEquals(1, log.getLog().size());
-        Assert.assertEquals("ADDED PAGE '2'", log.getLog().get(0));
+        Assert.assertEquals(2, log.getLog().size());
+        Assert.assertEquals("ADDED PAGE '2'\n", log.getLog().get(1));
     }
 
 
@@ -276,9 +276,9 @@ public class DefaultLogTest {
 
         DefaultLog log = new DefaultLog();
         log.detectChanges(newDatabase, database);
-        Assert.assertEquals(2, log.getLog().size());
-        Assert.assertEquals("ADDED PAGE '2'", log.getLog().get(0));
-        Assert.assertEquals("ADDED PAGE '3'", log.getLog().get(1));
+        Assert.assertEquals(3, log.getLog().size());
+        Assert.assertEquals("ADDED PAGE '2'", log.getLog().get(1));
+        Assert.assertEquals("ADDED PAGE '3'\n", log.getLog().get(2));
     }
 
     @Test
@@ -304,8 +304,8 @@ public class DefaultLogTest {
 
         DefaultLog log = new DefaultLog();
         log.detectChanges(newDatabase, database);
-        Assert.assertEquals(1, log.getLog().size());
-        Assert.assertEquals("REMOVED PAGE '2'", log.getLog().get(0));
+        Assert.assertEquals(2, log.getLog().size());
+        Assert.assertEquals("REMOVED PAGE '2'\n", log.getLog().get(1));
     }
 
     @Test
@@ -335,9 +335,9 @@ public class DefaultLogTest {
 
         DefaultLog log = new DefaultLog();
         log.detectChanges(newDatabase, database);
-        Assert.assertEquals(2, log.getLog().size());
-        Assert.assertEquals("REMOVED PAGE '2'", log.getLog().get(0));
-        Assert.assertEquals("REMOVED PAGE '3'", log.getLog().get(1));
+        Assert.assertEquals(3, log.getLog().size());
+        Assert.assertEquals("REMOVED PAGE '2'", log.getLog().get(1));
+        Assert.assertEquals("REMOVED PAGE '3'\n", log.getLog().get(2));
     }
 
     @Test
@@ -365,9 +365,9 @@ public class DefaultLogTest {
 
         DefaultLog log = new DefaultLog();
         log.detectChanges(newDatabase, database);
-        Assert.assertEquals(2, log.getLog().size());
-        Assert.assertEquals("ADDED PAGE '2'", log.getLog().get(0));
-        Assert.assertEquals("'testData1' TO 'testData2'", log.getLog().get(1));
+        Assert.assertEquals(3, log.getLog().size());
+        Assert.assertEquals("ADDED PAGE '2'", log.getLog().get(1));
+        Assert.assertEquals("'testData1' TO 'testData2'\n", log.getLog().get(2));
     }
 
     @Test
@@ -396,8 +396,8 @@ public class DefaultLogTest {
 
         DefaultLog log = new DefaultLog();
         log.detectChanges(newDatabase, database);
-        Assert.assertEquals(2, log.getLog().size());
-        Assert.assertEquals("REMOVED PAGE '2'", log.getLog().get(0));
-        Assert.assertEquals("'testData1' TO 'testData2'", log.getLog().get(1));
+        Assert.assertEquals(3, log.getLog().size());
+        Assert.assertEquals("REMOVED PAGE '2'", log.getLog().get(1));
+        Assert.assertEquals("'testData1' TO 'testData2'\n", log.getLog().get(2));
     }
 }
