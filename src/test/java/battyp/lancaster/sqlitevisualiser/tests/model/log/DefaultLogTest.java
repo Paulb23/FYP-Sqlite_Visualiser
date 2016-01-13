@@ -369,4 +369,35 @@ public class DefaultLogTest {
         Assert.assertEquals("ADDED PAGE '2'", log.getLog().get(0));
         Assert.assertEquals("'testData1' TO 'testData2'", log.getLog().get(1));
     }
+
+    @Test
+    public void TestDetectChangesRemovePageAndChangeData() {
+        BTree tree = new BTree();
+
+        BTreeCell cell = new BTreeCell(5, 1, 1);
+        cell.data[0] = "testData1";
+        BTreeCell cell2 = new BTreeCell(5, 1, 2);
+        cell2.data[0] = "testData1";
+
+        BTreeNode root = new BTreeNode(cell);
+        BTreeNode node = new BTreeNode(cell2);
+        root.addChild(node);
+        tree.setRoot(root);
+        Database database = new Database(tree, new Metadata());
+
+        BTree newTree = new BTree();
+
+        BTreeCell changedCell = new BTreeCell(5, 1, 1);
+        changedCell.data[0] = "testData2";
+        BTreeNode newRoot = new BTreeNode(changedCell);
+
+        newTree.setRoot(newRoot);
+        Database newDatabase = new Database(newTree, new Metadata());
+
+        DefaultLog log = new DefaultLog();
+        log.detectChanges(newDatabase, database);
+        Assert.assertEquals(2, log.getLog().size());
+        Assert.assertEquals("REMOVED PAGE '2'", log.getLog().get(0));
+        Assert.assertEquals("'testData1' TO 'testData2'", log.getLog().get(1));
+    }
 }
