@@ -29,8 +29,10 @@ import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeNode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 /**
  * <h1> Default Log </h1>
@@ -69,19 +71,65 @@ public class DefaultLog implements Log {
                 Stack<BTreeCell> oldTree = oldRoot.childrenToStack();
                 Stack<BTreeCell> newTree = newRoot.childrenToStack();
 
-                int numNodes = newTree.size();
+                int newNumNodes = newTree.size();
+                int oldNumNodes = oldTree.size();
+                int numNodes = newNumNodes;
+
+                if (newNumNodes > oldNumNodes) {
+                    Stack<BTreeCell> newNodes = new Stack<>();
+                    for (BTreeCell n : newTree) {
+                        for (BTreeCell nn : oldTree) {
+                            if (nn.pageNumber != n.pageNumber) {
+                                newNodes.add(n);
+                                break;
+                            }
+                        }
+                    }
+                    for (BTreeCell n : newNodes) {
+                        sqlLog.add("ADDED PAGE '" + n.pageNumber + "'");
+                        n.changed = true;
+                    }
+                    numNodes = oldNumNodes;
+                } else if (newNumNodes < oldNumNodes) {
+                    Stack<BTreeCell> newNodes = new Stack<>();
+                    for (BTreeCell n : oldTree) {
+                        for (BTreeCell nn : newTree) {
+                            if (nn.pageNumber != n.pageNumber) {
+                                newNodes.add(n);
+                                break;
+                            }
+                        }
+                    }
+                    for (BTreeCell n : newNodes) {
+                        sqlLog.add("REMOVED PAGE '" + n.pageNumber + "'");
+                        n.changed = true;
+                    }
+                }
                 for (int i = 0; i < numNodes; i++) {
                     BTreeCell oldCell = oldTree.pop();
                     BTreeCell newCell = newTree.pop();
 
-                    if (!oldCell.equals(newCell)) {
+                    int newCellSize = newCell.cellCount;
+                    int oldCellSize = oldCell.cellCount;
+
+                    if (newCellSize > oldCellSize) {
+                        newCell.changed = true;
+                        List<String> newCellData = new ArrayList<>(Arrays.asList(newCell.data));
+                        newCellData.removeAll(new ArrayList<>(Arrays.asList(oldCell.data)));
+                        sqlLog.addAll(newCellData.stream().map(s -> "ADDED '" + s + "'").collect(Collectors.toList()));
+                    } else if (newCellSize < oldCellSize) {
+                        newCell.changed = true;
+                        List<String> newCellData = new ArrayList<>(Arrays.asList(oldCell.data));
+                        newCellData.removeAll(new ArrayList<>(Arrays.asList(newCell.data)));
+                        sqlLog.addAll(newCellData.stream().map(s -> "REMOVED '" + s + "'").collect(Collectors.toList()));
+                    } else if (!oldCell.equals(newCell)) {
                         newCell.changed = true;
                         String[] oldData = oldCell.data;
                         String[] newData = newCell.data;
                         int size = oldCell.cellCount;
                         for (int j = 0; j < size; j++) {
                             if (!oldData[j].equals(newData[j])) {
-                                System.out.println("'" + oldData[j] + "' TO '" + newData[j] + "'");
+                                sqlLog.add("'" + oldData[j] + "' TO '" + newData[j] + "'");
                             }
                         }
                     }

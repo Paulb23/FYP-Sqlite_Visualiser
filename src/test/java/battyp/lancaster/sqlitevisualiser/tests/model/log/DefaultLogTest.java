@@ -24,6 +24,11 @@
 
 package battyp.lancaster.sqlitevisualiser.tests.model.log;
 
+import battyp.lancaster.sqlitevisualiser.model.database.Database;
+import battyp.lancaster.sqlitevisualiser.model.datastructures.BTree;
+import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
+import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeNode;
+import battyp.lancaster.sqlitevisualiser.model.datastructures.Metadata;
 import battyp.lancaster.sqlitevisualiser.model.log.DefaultLog;
 import org.junit.Assert;
 import org.junit.Test;
@@ -41,5 +46,327 @@ public class DefaultLogTest {
     public void TestGetLogIsEmptyOnCreation() {
         DefaultLog log = new DefaultLog();
         Assert.assertEquals(0, log.getLog().size());
+    }
+
+    @Test
+    public void TestDetectChangesNoChangesDoesNothing() {
+        BTree tree = new BTree();
+
+        BTreeCell cell = new BTreeCell(5, 1, 1);
+        cell.data[0] = "testData";
+        BTreeNode root = new BTreeNode(cell);
+        tree.setRoot(root);
+        Database database = new Database(tree, new Metadata());
+
+        DefaultLog log = new DefaultLog();
+        log.detectChanges(database, database);
+        Assert.assertEquals(0, log.getLog().size());
+    }
+
+    @Test
+    public void TestDetectChangesUpdateSingleRow() {
+        BTree tree = new BTree();
+
+        BTreeCell cell = new BTreeCell(5, 1, 1);
+        cell.data[0] = "testData";
+        BTreeNode root = new BTreeNode(cell);
+        tree.setRoot(root);
+        Database database = new Database(tree, new Metadata());
+
+        BTree newTree = new BTree();
+
+        BTreeCell newCell = new BTreeCell(5, 1, 1);
+        newCell.data[0] = "newTestData";
+        BTreeNode newRoot = new BTreeNode(newCell);
+        newTree.setRoot(newRoot);
+        Database newDatabase = new Database(newTree, new Metadata());
+
+        DefaultLog log = new DefaultLog();
+        log.detectChanges(newDatabase, database);
+        Assert.assertEquals(1, log.getLog().size());
+        Assert.assertEquals("'testData' TO 'newTestData'", log.getLog().get(0));
+    }
+
+
+    @Test
+    public void TestDetectChangesUpdateMultipleRows() {
+        BTree tree = new BTree();
+
+        BTreeCell cell = new BTreeCell(5, 3, 1);
+        cell.data[0] = "testData1";
+        cell.data[1] = "testData2";
+        cell.data[2] = "testData3";
+        BTreeNode root = new BTreeNode(cell);
+        tree.setRoot(root);
+        Database database = new Database(tree, new Metadata());
+
+        BTree newTree = new BTree();
+
+        BTreeCell newCell = new BTreeCell(5, 3, 1);
+        newCell.data[0] = "newTestData1";
+        newCell.data[1] = "testData2";
+        newCell.data[2] = "newTestData3";
+        BTreeNode newRoot = new BTreeNode(newCell);
+        newTree.setRoot(newRoot);
+        Database newDatabase = new Database(newTree, new Metadata());
+
+        DefaultLog log = new DefaultLog();
+        log.detectChanges(newDatabase, database);
+        Assert.assertEquals(2, log.getLog().size());
+        Assert.assertEquals("'testData1' TO 'newTestData1'", log.getLog().get(0));
+        Assert.assertEquals("'testData3' TO 'newTestData3'", log.getLog().get(1));
+    }
+
+    @Test
+    public void TestDetectChangesAddNewRow() {
+        BTree tree = new BTree();
+
+        BTreeCell cell = new BTreeCell(5, 1, 1);
+        cell.data[0] = "testData1";
+        BTreeNode root = new BTreeNode(cell);
+        tree.setRoot(root);
+        Database database = new Database(tree, new Metadata());
+
+        BTree newTree = new BTree();
+
+        BTreeCell newCell = new BTreeCell(5, 2, 1);
+        newCell.data[0] = "testData1";
+        newCell.data[1] = "testData2";
+        BTreeNode newRoot = new BTreeNode(newCell);
+        newTree.setRoot(newRoot);
+        Database newDatabase = new Database(newTree, new Metadata());
+
+        DefaultLog log = new DefaultLog();
+        log.detectChanges(newDatabase, database);
+        Assert.assertEquals(1, log.getLog().size());
+        Assert.assertEquals("ADDED 'testData2'", log.getLog().get(0));
+    }
+
+    @Test
+    public void TestDetectChangesAddMultipleNewRows() {
+        BTree tree = new BTree();
+
+        BTreeCell cell = new BTreeCell(5, 1, 1);
+        cell.data[0] = "testData1";
+        BTreeNode root = new BTreeNode(cell);
+        tree.setRoot(root);
+        Database database = new Database(tree, new Metadata());
+
+        BTree newTree = new BTree();
+
+        BTreeCell newCell = new BTreeCell(5, 3, 1);
+        newCell.data[0] = "testData1";
+        newCell.data[1] = "testData2";
+        newCell.data[2] = "testData3";
+        BTreeNode newRoot = new BTreeNode(newCell);
+        newTree.setRoot(newRoot);
+        Database newDatabase = new Database(newTree, new Metadata());
+
+        DefaultLog log = new DefaultLog();
+        log.detectChanges(newDatabase, database);
+        Assert.assertEquals(2, log.getLog().size());
+        Assert.assertEquals("ADDED 'testData2'", log.getLog().get(0));
+        Assert.assertEquals("ADDED 'testData3'", log.getLog().get(1));
+    }
+
+    @Test
+    public void TestDetectChangesRemoveRow() {
+        BTree tree = new BTree();
+
+        BTreeCell cell = new BTreeCell(5, 2, 1);
+        cell.data[0] = "testData1";
+        cell.data[1] = "testData2";
+        BTreeNode root = new BTreeNode(cell);
+        tree.setRoot(root);
+        Database database = new Database(tree, new Metadata());
+
+        BTree newTree = new BTree();
+
+        BTreeCell newCell = new BTreeCell(5, 1, 1);
+        newCell.data[0] = "testData1";
+        BTreeNode newRoot = new BTreeNode(newCell);
+        newTree.setRoot(newRoot);
+        Database newDatabase = new Database(newTree, new Metadata());
+
+        DefaultLog log = new DefaultLog();
+        log.detectChanges(newDatabase, database);
+        Assert.assertEquals(1, log.getLog().size());
+        Assert.assertEquals("REMOVED 'testData2'", log.getLog().get(0));
+    }
+
+    @Test
+    public void TestDetectChangesRemoveMultipleRows() {
+        BTree tree = new BTree();
+
+        BTreeCell cell = new BTreeCell(5, 3, 1);
+        cell.data[0] = "testData1";
+        cell.data[1] = "testData2";
+        cell.data[2] = "testData3";
+        BTreeNode root = new BTreeNode(cell);
+        tree.setRoot(root);
+        Database database = new Database(tree, new Metadata());
+
+        BTree newTree = new BTree();
+
+        BTreeCell newCell = new BTreeCell(5, 1, 1);
+        newCell.data[0] = "testData1";
+        BTreeNode newRoot = new BTreeNode(newCell);
+        newTree.setRoot(newRoot);
+        Database newDatabase = new Database(newTree, new Metadata());
+
+        DefaultLog log = new DefaultLog();
+        log.detectChanges(newDatabase, database);
+        Assert.assertEquals(2, log.getLog().size());
+        Assert.assertEquals("REMOVED 'testData2'", log.getLog().get(0));
+        Assert.assertEquals("REMOVED 'testData3'", log.getLog().get(1));
+    }
+
+    @Test
+    public void TestDetectChangesAddPage() {
+        BTree tree = new BTree();
+
+        BTreeCell cell = new BTreeCell(5, 1, 1);
+        cell.data[0] = "testData1";
+        BTreeNode root = new BTreeNode(cell);
+        tree.setRoot(root);
+        Database database = new Database(tree, new Metadata());
+
+        BTree newTree = new BTree();
+
+        BTreeCell newCell = new BTreeCell(5, 1, 2);
+        newCell.data[0] = "testData1";
+        BTreeNode newRoot = new BTreeNode(cell);
+        BTreeNode newNode = new BTreeNode(newCell);
+        newRoot.addChild(newNode);
+
+        newTree.setRoot(newRoot);
+        Database newDatabase = new Database(newTree, new Metadata());
+
+        DefaultLog log = new DefaultLog();
+        log.detectChanges(newDatabase, database);
+        Assert.assertEquals(1, log.getLog().size());
+        Assert.assertEquals("ADDED PAGE '2'", log.getLog().get(0));
+    }
+
+
+    @Test
+    public void TestDetectChangesAddMultiplePage() {
+        BTree tree = new BTree();
+
+        BTreeCell cell = new BTreeCell(5, 1, 1);
+        cell.data[0] = "testData1";
+        BTreeNode root = new BTreeNode(cell);
+        tree.setRoot(root);
+        Database database = new Database(tree, new Metadata());
+
+        BTree newTree = new BTree();
+
+        BTreeCell newCell = new BTreeCell(5, 1, 2);
+        newCell.data[0] = "testData1";
+        BTreeCell otherNewCell = new BTreeCell(5, 1, 3);
+        otherNewCell.data[0] = "testData1";
+        BTreeNode newRoot = new BTreeNode(cell);
+        BTreeNode newNode = new BTreeNode(newCell);
+        BTreeNode otherNewNode = new BTreeNode(otherNewCell);
+        newRoot.addChild(newNode);
+        newRoot.addChild(otherNewNode);
+
+        newTree.setRoot(newRoot);
+        Database newDatabase = new Database(newTree, new Metadata());
+
+        DefaultLog log = new DefaultLog();
+        log.detectChanges(newDatabase, database);
+        Assert.assertEquals(2, log.getLog().size());
+        Assert.assertEquals("ADDED PAGE '2'", log.getLog().get(0));
+        Assert.assertEquals("ADDED PAGE '3'", log.getLog().get(1));
+    }
+
+    @Test
+    public void TestDetectChangesRemovePage() {
+        BTree tree = new BTree();
+
+        BTreeCell cell = new BTreeCell(5, 1, 1);
+        cell.data[0] = "testData1";
+        BTreeCell newCell = new BTreeCell(5, 1, 2);
+        newCell.data[0] = "testData1";
+        BTreeNode root = new BTreeNode(cell);
+        BTreeNode node = new BTreeNode(newCell);
+        root.addChild(node);
+        tree.setRoot(root);
+        Database database = new Database(tree, new Metadata());
+
+        BTree newTree = new BTree();
+
+        BTreeNode newRoot = new BTreeNode(cell);
+
+        newTree.setRoot(newRoot);
+        Database newDatabase = new Database(newTree, new Metadata());
+
+        DefaultLog log = new DefaultLog();
+        log.detectChanges(newDatabase, database);
+        Assert.assertEquals(1, log.getLog().size());
+        Assert.assertEquals("REMOVED PAGE '2'", log.getLog().get(0));
+    }
+
+    @Test
+    public void TestDetectChangesRemoveMultiplePages() {
+        BTree tree = new BTree();
+
+        BTreeCell cell = new BTreeCell(5, 1, 1);
+        cell.data[0] = "testData1";
+        BTreeCell newCell = new BTreeCell(5, 1, 2);
+        newCell.data[0] = "testData1";
+        BTreeCell otherNewCell = new BTreeCell(5, 1, 3);
+        otherNewCell.data[0] = "testData1";
+        BTreeNode root = new BTreeNode(cell);
+        BTreeNode node = new BTreeNode(newCell);
+        BTreeNode otherNode = new BTreeNode(otherNewCell);
+        root.addChild(node);
+        root.addChild(otherNode);
+        tree.setRoot(root);
+        Database database = new Database(tree, new Metadata());
+
+        BTree newTree = new BTree();
+
+        BTreeNode newRoot = new BTreeNode(cell);
+
+        newTree.setRoot(newRoot);
+        Database newDatabase = new Database(newTree, new Metadata());
+
+        DefaultLog log = new DefaultLog();
+        log.detectChanges(newDatabase, database);
+        Assert.assertEquals(2, log.getLog().size());
+        Assert.assertEquals("REMOVED PAGE '2'", log.getLog().get(0));
+        Assert.assertEquals("REMOVED PAGE '3'", log.getLog().get(1));
+    }
+
+    @Test
+    public void TestDetectChangesAddPageAndChangeData() {
+        BTree tree = new BTree();
+
+        BTreeCell cell = new BTreeCell(5, 1, 1);
+        cell.data[0] = "testData1";
+        BTreeNode root = new BTreeNode(cell);
+        tree.setRoot(root);
+        Database database = new Database(tree, new Metadata());
+
+        BTree newTree = new BTree();
+
+        BTreeCell changedCell = new BTreeCell(5, 1, 1);
+        cell.data[0] = "testData2";
+        BTreeCell newCell = new BTreeCell(5, 1, 2);
+        newCell.data[0] = "testData1";
+        BTreeNode newRoot = new BTreeNode(changedCell);
+        BTreeNode newNode = new BTreeNode(newCell);
+        newRoot.addChild(newNode);
+
+        newTree.setRoot(newRoot);
+        Database newDatabase = new Database(newTree, new Metadata());
+
+        DefaultLog log = new DefaultLog();
+        log.detectChanges(newDatabase, database);
+        Assert.assertEquals(2, log.getLog().size());
+        Assert.assertEquals("ADDED PAGE '2'", log.getLog().get(0));
+        Assert.assertEquals("'testData1' TO 'testData2'", log.getLog().get(1));
     }
 }
