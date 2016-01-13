@@ -73,7 +73,9 @@ public class DefaultLog implements Log {
 
                 int newNumNodes = newTree.size();
                 int oldNumNodes = oldTree.size();
-                int numNodes = newNumNodes;
+
+                Stack<BTreeCell> largeTree = newTree;
+                Stack<BTreeCell> smallTree = oldTree;
 
                 if (newNumNodes > oldNumNodes) {
                     Stack<BTreeCell> newNodes = new Stack<>();
@@ -89,7 +91,6 @@ public class DefaultLog implements Log {
                         sqlLog.add("ADDED PAGE '" + n.pageNumber + "'");
                         n.changed = true;
                     }
-                    numNodes = oldNumNodes;
                 } else if (newNumNodes < oldNumNodes) {
                     Stack<BTreeCell> newNodes = new Stack<>();
                     for (BTreeCell n : oldTree) {
@@ -104,32 +105,43 @@ public class DefaultLog implements Log {
                         sqlLog.add("REMOVED PAGE '" + n.pageNumber + "'");
                         n.changed = true;
                     }
+                    largeTree = oldTree;
+                    smallTree = newTree;
                 }
-                for (int i = 0; i < numNodes; i++) {
-                    BTreeCell oldCell = oldTree.pop();
-                    BTreeCell newCell = newTree.pop();
+                for (BTreeCell ln : largeTree) {
+                    for (BTreeCell sn : smallTree) {
+                        if (ln.pageNumber == sn.pageNumber) {
 
-                    int newCellSize = newCell.cellCount;
-                    int oldCellSize = oldCell.cellCount;
+                            BTreeCell newCell = sn;
+                            BTreeCell oldCell = ln;
 
-                    if (newCellSize > oldCellSize) {
-                        newCell.changed = true;
-                        List<String> newCellData = new ArrayList<>(Arrays.asList(newCell.data));
-                        newCellData.removeAll(new ArrayList<>(Arrays.asList(oldCell.data)));
-                        sqlLog.addAll(newCellData.stream().map(s -> "ADDED '" + s + "'").collect(Collectors.toList()));
-                    } else if (newCellSize < oldCellSize) {
-                        newCell.changed = true;
-                        List<String> newCellData = new ArrayList<>(Arrays.asList(oldCell.data));
-                        newCellData.removeAll(new ArrayList<>(Arrays.asList(newCell.data)));
-                        sqlLog.addAll(newCellData.stream().map(s -> "REMOVED '" + s + "'").collect(Collectors.toList()));
-                    } else if (!oldCell.equals(newCell)) {
-                        newCell.changed = true;
-                        String[] oldData = oldCell.data;
-                        String[] newData = newCell.data;
-                        int size = oldCell.cellCount;
-                        for (int j = 0; j < size; j++) {
-                            if (!oldData[j].equals(newData[j])) {
-                                sqlLog.add("'" + oldData[j] + "' TO '" + newData[j] + "'");
+                            if (largeTree.equals(newTree)) {
+                                newCell = ln;
+                                oldCell = sn;
+                            }
+                            int newCellSize = newCell.cellCount;
+                            int oldCellSize = oldCell.cellCount;
+
+                            if (newCellSize > oldCellSize) {
+                                newCell.changed = true;
+                                List<String> newCellData = new ArrayList<>(Arrays.asList(newCell.data));
+                                newCellData.removeAll(new ArrayList<>(Arrays.asList(oldCell.data)));
+                                sqlLog.addAll(newCellData.stream().map(s -> "ADDED '" + s + "'").collect(Collectors.toList()));
+                            } else if (newCellSize < oldCellSize) {
+                                newCell.changed = true;
+                                List<String> newCellData = new ArrayList<>(Arrays.asList(oldCell.data));
+                                newCellData.removeAll(new ArrayList<>(Arrays.asList(newCell.data)));
+                                sqlLog.addAll(newCellData.stream().map(s -> "REMOVED '" + s + "'").collect(Collectors.toList()));
+                            } else if (!oldCell.equals(newCell)) {
+                                newCell.changed = true;
+                                String[] oldData = oldCell.data;
+                                String[] newData = newCell.data;
+                                int size = oldCell.cellCount;
+                                for (int j = 0; j < size; j++) {
+                                    if (!oldData[j].equals(newData[j])) {
+                                        sqlLog.add("'" + oldData[j] + "' TO '" + newData[j] + "'");
+                                    }
+                                }
                             }
                         }
                     }

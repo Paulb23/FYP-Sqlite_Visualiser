@@ -353,7 +353,7 @@ public class DefaultLogTest {
         BTree newTree = new BTree();
 
         BTreeCell changedCell = new BTreeCell(5, 1, 1);
-        cell.data[0] = "testData2";
+        changedCell.data[0] = "testData2";
         BTreeCell newCell = new BTreeCell(5, 1, 2);
         newCell.data[0] = "testData1";
         BTreeNode newRoot = new BTreeNode(changedCell);
