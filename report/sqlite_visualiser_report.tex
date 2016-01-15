@@ -1,8 +1,19 @@
 \documentclass[a4paper,12pt]{article}
 
+\usepackage{fancyhdr}
 \usepackage{mathptmx}
 \usepackage{listings}
 \usepackage{color}
+
+\hyphenpenalty 10000
+\exhyphenpenalty 10000
+
+\pagestyle{fancy}
+\fancyhead{}
+\fancyfoot[CE,CO]{\leftmark}
+\fancyfoot[LE,RO]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.4pt}
 
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
@@ -31,13 +42,23 @@
   tabsize=4
 }
 
+
 \input{glyphtounicode}
 \pdfgentounicode=1
 
 \begin{document}
-\include{chapters/title_page}
-\include{chapters/abstract}
-
+	\include{chapters/title_page}
+	\include{chapters/abstract}
+	\include{chapters/introduction}
+	\include{chapters/background}
+	\include{chapters/design}
+	\include{chapters/implementation}
+	\include{chapters/system_operation}
+	\include{chapters/testing}
+	\include{chapters/evaluation}
+	\include{chapters/conclusion}
+	\include{chapters/references}
+	\include{chapters/appendix}
 
 \section{Code}
 \subsection{More code}

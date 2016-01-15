@@ -2,3 +2,7 @@
 .idea/
 .gradle
 /build
+*.aux
+*.log
+*.gz
+*.dvi
