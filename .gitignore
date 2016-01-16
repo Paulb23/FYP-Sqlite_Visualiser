@@ -6,3 +6,11 @@
 *.log
 *.gz
 *.dvi
+*.bib
+*.bbl
+*.bcf
+*.blg
+*.ps
+report/*.xml
+
+!/report/sqlite_visualiser_report.bib

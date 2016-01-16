@@ -4,7 +4,7 @@
 \subsection{The Problem}
 \label{subsec:the_problem}
 
-The Problem..
+Throughout Sqlite's history many tests, papers, and tools have been developed in order to understand, and modify the future direction of Sqlite. However, when a user wants to understand at a deeper level how Sqlite is working or finding obscure bugs, they are stuck with manually trawling through a Hex editor. This paper aims to solve this by providing a visualisation of the internal structure, as well as a update log that is updated in real time, when the database is modified.
 
 
 \subsection{Sqlite}
@@ -13,7 +13,9 @@ The Problem..
 \subsubsection{What is Sqlite}
 \label{subsubsec:what_is_sqlite}
 
-Sqlite is..
+Sqlite is a single self-contained, serverless SQL database engine. Started on 29 May 2000 by D. Richard Hipp \citep{sqlite} from gathered inspiration while working on software for guided missiles on a battleship where they needed a self-contained portable database. \citep{sqlitedefguide} He joined up with Joe Mistachkin followed by Dan Kennedy in 2002. Version 1.0 was released in August 2000, then in just over year on the 28 November 2001 2.0 which introduced, brining the BTrees and many of the features seen in 3.0. Which came a lot later containing a full rewrite and improvement over 2.0, with the first public release on 18 June 2004. At the time of writing this paper we are currently sitting at version 3.10.4 \citep{sqlite}.
+\\\\
+Sqlite is open source within the public domain making it accessible to everyone. The entire library size can be 350Kib, with some option features omitted it could be reduced to around 300Kib making it incredibly small compared to what it does. In addition to this the runtime usage is minimal with 4Kib stack space and 100Kib heap, allowing it to run on almost anything. Sqlite's main strength is that the entire database in encoded into a single portable file, that can be read, on any system whether 32 or 64 bit, big or small endian. It is often seen as a replacement for storage files rather then a database system \citep{sqlite}.
 
 \subsubsection{Where is Sqlite used}
 \label{subsubsec:where_is_sqlite}
