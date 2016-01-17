@@ -150,7 +150,7 @@ As mentioned in section~\ref{subsubsec:sqlite_page_system} the file is split int
 	\label{fig:sqlite_file_format}
 \end{figure}
 
-The cells start and the end of the page and work backwards towards the top.
+The cells start at the end of the page and work backwards towards the top.
 \\\\
 There are two main types of B-Trees. Table and Index, both of which uses a key-value system in order to organise them. The Table B-Trees use 64 bit integers also known as row-id or primary key. The Index B-Trees uses database records as keys. This can be seen in the following example taken from \cite{sqliteray}:
 
@@ -192,9 +192,15 @@ Overall the four type of B-Trees found inside Sqlite are:
 \end{itemize} 
 
 
-In the case of index B-Trees, the interior trees contains N number of children and N-1 number of database records where N is two or greater. Whereas a leaf will always contain M database records where M is a one or greater. The database records stored inside a Index B-Tree are the same quantity as the associated database table, with the same fields and columns. As can be seen in figure~\ref{fig:sqlite_key_pair}.
+In the case of index B-Trees, the interior trees contains N number of children and N-1 number of database records where N is two or greater. Whereas a leaf will always contain M database records where M is a one or greater. The database records stored inside a Index B-Tree are of the same quantity as the associated database table, with the same fields and columns. As can be seen in figure~\ref{fig:sqlite_key_pair}.
 \\\\
-The Table B-Trees are a little different as they store most of the data. Unlike index B-Trees the interior trees contain no data but only pointers to children B-Trees, as all the data is stored on the leaf nodes. The interior trees contain at least one pointer, and the leaf node contain at least one record. For each table that exists in the database, one corresponding Table B-Tree also exists, and that B-Tree contains one entry per row, appearing in the same order as the logical database.  
+The Table B-Trees are a little different as they store most of the data. Unlike index B-Trees the interior trees contain no data but only pointers to children B-Trees, as all the data is stored on the leaf nodes. The interior trees contain at least one pointer, and the leaf node contains at least one record. For each table that exists in the database, one corresponding Table B-Tree also exists, and that B-Tree contains one entry per row, appearing in the same order as the logical database. Figure~\ref{fig:sqlite_table_btree} show the physical layout of the Table B-Tree. 
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{images/sqlite_table_btree.png}
+	\caption{Physical layout of table B-Trees \citep{chibd}}
+	\label{fig:sqlite_table_btree}
+\end{figure}
 
 \subsubsection{Encoding of the data}
 \label{subsubsec:sqlite_data_encoding}
@@ -247,7 +253,42 @@ With this in mind the following pseudo code is needed to decode the varint.
 \subsubsection{B-Tree header}
 \label{subsubsec:btree_header}
 
-As mentioned in section~\ref{subsubsec:sqlite_trees_and_cells} the header for each type of B-Tree does not vary that much.
+As mentioned in section~\ref{subsubsec:sqlite_trees_and_cells} the header for each type of B-Tree does not vary that much. Table~\ref{tbl:btree_header} shows the header for the B-Trees.
+
+\begin{longtable}[h]{| c | c | p{10cm} |}
+		\hline
+			\textbf{Byte Offset} & \textbf{Byte Size} & \textbf{Description} \\ 
+		\hline
+		\endhead
+			0 & 1 & The type of of B-Tree. \newline
+			Value of 2 is a interior index B-tree. \newline
+			Value of 5 is a interior table B-tree. \newline
+			Value of 10 is a Leaf index B-tree. \newline
+			Value of 13 is a Leaf table B-tree. \\
+		\hline
+			1 & 2 & Offset of first freeblock on the page. \\
+		\hline
+			3 & 2 & Number of cells on page. \\
+		\hline
+			5 & 2 & Start of content area. A zero is seen as 65536. \\
+		\hline
+			7 & 1 & Number of fragmented free bytes within the cells. \\
+		\hline
+			8 & 4 & Interior B-Tree Pages only. The right most pointer. \\ 
+		\hline
+	\caption{Sqlite B-Tree Header, modified from \cite{sqlite}}
+	\label{tbl:btree_header}
+\end{longtable}
+
+Immediately following the header is the array of cell pointers, the number of cells is read at offset 3. Each cell pointer is 2 bytes in size. It is worth noting at this point that the pointer and offsets start at the page offset rather then the start of the file, keeping each page self contained. Therefore in order to follow the cell pointers or the other offsets the following sum is needed to calculate its position in the file: 
+
+\begin{lstlisting}	
+	cell = ((pageNumer - 1) * pageSize) + offset;
+\end{lstlisting}
+
+\subsubsection{B-Tree Cells}
+\label{subsubsec:btree_cells}
+
 
 
 \subsection{Similar Programs}
