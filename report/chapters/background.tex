@@ -250,6 +250,8 @@ With this in mind the following pseudo code is needed to decode the varint.
 	}
 \end{lstlisting}
 
+The reasoning for the two for loops to count the size of the varint will become more apparent in the later section~\ref{subsubsec:record_format}.
+
 \subsubsection{B-Tree header}
 \label{subsubsec:btree_header}
 
@@ -341,10 +343,95 @@ if(record-size > max-local) {
 }
 \end{lstlisting}
 
-\subsubsection{Page B-Tree cell}
-\label{subsubsec:page_btree_cell}
+\subsubsection{Table B-Tree cell}
+\label{subsubsec:table_btree_cell}
+
+The Table B-Trees as mentioned in section~\ref{subsubsec:sqlite_trees_and_cells} hold most of the data, they also use row id's or primary keys as the keys to the records. Firstly the interior type only has two fields and no need for overflow. They follow the following format in Table~\ref{tbl:table_btree_cell_interior}: 
+
+\begin{longtable}[h]{| c | p{5cm} |}
+		\hline
+			\textbf{Data type} & \textbf{Description} \\ 
+		\hline
+		\endhead
+			4 byte integer & Page number of child \\
+		\hline
+			Varint & Row id. \\
+		\hline
+	\caption{Page B-Tree interior cell}
+	\label{tbl:table_btree_cell_interior}
+\end{longtable}
+
+Much like the right child pointer mentioned in section~\ref{subsubsec:btree_header} this is the page number of the child not a pointer. 
+\\\\
+The Leaf type is a little more complex, this can be seen the Table~\ref{tbl:table_btree_cell_leaf} below:
+
+\begin{longtable}[h]{| c | p{5cm} |}
+		\hline
+			\textbf{Data type} & \textbf{Description} \\ 
+		\hline
+		\endhead
+			Varint & Size of payload. \\
+		\hline
+			Varint & Row id. \\
+		\hline
+			byte array & Payload. \\
+		\hline
+			4 byte integer & Page number of overflow \newline
+							  Only if payload is to large.\\
+		\hline
+	\caption{Page B-Tree leaf cell}
+	\label{tbl:table_btree_cell_leaf}
+\end{longtable}
+
+In order to determine if there is a overflow page the following calculation is used:
+
+\begin{lstlisting}	
+usable-size = page-size - bytes-of-unused-space;
+max-local := usable-size - 35;
+
+if (payload-size > max-local) {
+	we have a overflow page.
+}
+\end{lstlisting}
+
+Where bytes-of-unused-space is read in the Sqlite header at offset 20 and \newline max-embedded-fraction at offset 12 ( see section~\ref{subsubsec:sqlite_page_hader} for more info ). Once we know there is an offset we can use the following calculation to work out the size of the record in this part of the cell before jumping over to the overflow page:  
+
+\begin{lstlisting}	
+usable-size = page-size - bytes-of-unused-space;
+
+min-local = (usable-size - 12) * min-embedded-fraction / 255 - 23;
+max-local = usable-size - 35;
+
+local-size = min-local + (record-size - min-local) %
+			  (usable-size - 4);
+
+if( record-size > max-local );
+	record-size = min-local
+\end{lstlisting}
 
 
+\subsubsection{Overflow Page}
+\label{subsubsec:overflow_page}
+
+Overflow pages as mentioned in section~\ref{subsubsec:sqlite_page_system} are used to store the payload when it is to large to fit in a single cell. overflow pages form a link list with the first four bytes point to the next page number in the chain or zero if it's the last. Following the four bytes through to the last bytes is the payload content. Table~\ref{tbl:overflow_page} show the layout of an overflow page.
+
+\begin{longtable}[h]{| c | p{5cm} |}
+		\hline
+			\textbf{Data type} & \textbf{Description} \\ 
+		\hline
+		\endhead
+			4 byte integer & Page number of next page in chain, or zero if last. \\
+		\hline
+			byte array & Payload. \\
+		\hline
+	\caption{Overflow page}
+	\label{tbl:overflow_page}
+\end{longtable}
+
+\subsubsection{Payload / Record format / Byte array}
+\label{subsubsec:record_format}
+
+Throughout the previous sections the payload has been called the data type byte array or database record. The payload follows a very specific pattern, and is used to store the schema as well as rows or records. It is split up in to two parts the cell header and cell content.
 
 \subsection{Similar Programs}
 \label{subsec:similar_programs}
