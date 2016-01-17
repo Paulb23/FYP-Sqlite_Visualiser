@@ -6,6 +6,14 @@
 
 Throughout Sqlite's history many tests, papers, and tools have been developed in order to understand, and modify the future direction of Sqlite. However, when a user wants to understand at a deeper level how Sqlite is working or finding obscure bugs, they are stuck with manually trawling through a Hex editor. This paper aims to solve this by providing a visualisation of the internal structure, as well as a update log that is updated in real time, when the database is modified.
 
+\subsection{Similar Programs}
+\label{subsec:similar_programs}
+
+\subsubsection{Sqlite browser}
+\label{subsubsec:sqlite_browser}
+
+One Similar program...
+
 
 \subsection{Sqlite}
 \label{subsec:sqlite}
@@ -72,7 +80,7 @@ The basic idea is that the file is made up of chunks or pages, each page is the 
 \subsubsection{The Header}
 \label{subsubsec:sqlite_page_hader}
 
-The first page before the root B-Tree contains a 100 byte header. This is what makes Sqlite have zero configuration as all the database settings are stored within this header, all multibyte fields are stored in a big-endian format. The header follows the following format: 
+The first page before the root B-Tree header ( section~\ref{subsec:schema_table} ) contains a 100 Sqlite byte header. This is what makes Sqlite have zero configuration as all the database settings are stored within this header, all multibyte fields are stored in a big-endian format. The header follows the following format: 
 
 \begin{longtable}[h]{| c | c | p{10cm} |}
 		\hline
@@ -431,12 +439,82 @@ Overflow pages as mentioned in section~\ref{subsubsec:sqlite_page_system} are us
 \subsubsection{Payload / Record format / Byte array}
 \label{subsubsec:record_format}
 
-Throughout the previous sections the payload has been called the data type byte array or database record. The payload follows a very specific pattern, and is used to store the schema as well as rows or records. It is split up in to two parts the cell header and cell content.
+Throughout the previous sections the payload has been called the data type byte array or database record. The payload follows a very specific pattern, and is used to store the schema as well as rows or records. It is split up in to two parts the cell header and cell content. The full record format can be seen in figure~\ref{fig:sqlite_record_format}.
 
-\subsection{Similar Programs}
-\label{subsec:similar_programs}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.7]{images/recordformat.png}
+	\caption{Database record format \citep{sqliteray}}
+	\label{fig:sqlite_record_format}
+\end{figure}
 
-\subsubsection{Sqlite browser}
-\label{subsubsec:sqlite_browser}
+The cell header is made up of N + 1 varints where N is the number of values in the record. The first varint is the number of bytes in the header. As varints can be between 1 - 9 bytes it is important to keep track of each of fhe following N varints size to count the number of values, as briefly mentioned in section~\ref{subsubsec:sqlite_data_encoding}. They contain the values types. The different value types can be seem below in Table~\ref{tbl:cell_header_record_types} 
 
-One Similar program...
+\begin{longtable}[h]{| c | c| p{5cm} |}
+		\hline
+			\textbf{Header Value} & \textbf{Byte Size} & \textbf{Description} \\ 
+		\hline
+		\endhead
+			0 & 0 & Null \\
+		\hline
+			1 & 1 & 1 byte signed integer \\
+		\hline
+			2 & 2 & 2 byte signed integer \\
+		\hline
+			3 & 3 & 3 byte signed integer \\
+		\hline
+			4 & 4 & 4 byte signed integer \\
+		\hline
+			5 & 6 & 6 byte signed integer \\
+		\hline
+			6 & 8 & 8 byte signed integer \\
+		\hline
+			7 & 8 & 8 byte IEEE floating point \\
+		\hline
+			8 & 0 & Value 0, Schema 4 or greater only \\
+		\hline
+			9 & 0 & Value 1, Schema 4 or greater only \\
+		\hline
+			10,11 & 0 & Reserved for expansion \\
+		\hline
+			$\geq$ 12 and even & (N-12)/2 & BLOB of size (N-12/2) long \\
+		\hline
+			$\geq$ 13 and odd & (N-13)/2 & String of size (N-13/2) long \\
+		\hline
+	\caption{Database record cell types}
+	\label{tbl:cell_header_record_types}
+\end{longtable}
+
+The cell content as shown in figure~\ref{fig:sqlite_record_format} follows the same format layout in the header, with the content size and type specified in table~\ref{tbl:cell_header_record_types}. Where the size is 0 there is no varint to read from the data section and should be skipped.
+
+\subsubsection{ B-Tree and Schema Table}
+\label{subsubsec:schema_table}
+
+As mentioned in section~\ref{subsubsec:sqlite_page_hader} following the Sqlite header is root B-Tree. The root B-Tree is one of the Table B-Trees with a defined payload format ( section~\ref{subsubsec:record_format}). This B-Tree payload contains pointer / page number to all the other pages in the file. It is referred to as the "sqlite\verb|_|master" table. Without parsing it properly you will only be able to access the "sqlite\verb|_|master" table. An example of why can be seen in figure~\ref{fig:sqlite_table_btree}. The Table~\ref{tbl:schema_table} below shows the layout of the "sqlite\verb|_|master" table.
+
+\begin{longtable}[h]{| c | c| p{10cm} |}
+		\hline
+			\textbf{Field type} & \textbf{Field} & \textbf{Description} \\ 
+		\hline
+		\endhead
+			Text & Type & The type of link: 'table', 'index', 'view', or 'trigger' \\
+		\hline
+			Text & Name & Name of the object / table, including constraints \\
+		\hline
+			Text & Table Name & Table Name \\
+		\hline
+			Integer & Root page & Root page number of this item \\
+		\hline
+			Text & SQL & Sql command used to create this object. \\
+		\hline
+	\caption{Schema table layout}
+	\label{tbl:schema_table}
+\end{longtable}
+
+Much like the right child pointer mentioned in section~\ref{subsubsec:btree_header} this is the page number of the child not a pointer. Following it will take you to it's root page.
+
+
+\subsubsection{Parsing the file}
+\label{subsubsec:parsing the file}
+
+In order to parse the file, First thing would be to read in the header (section~\ref{subsubsec:sqlite_page_hader} ) then read in the root page(s) ( section~\ref{subsubsec:schema_table} ), and follow the page numbers to all the other table root pages, then start parsing them until all paths have been followed. This format learns towards recursion rather than iteration although both are possible.
