@@ -286,8 +286,63 @@ Immediately following the header is the array of cell pointers, the number of ce
 	cell = ((pageNumer - 1) * pageSize) + offset;
 \end{lstlisting}
 
-\subsubsection{B-Tree Cells}
-\label{subsubsec:btree_cells}
+The right most pointer within interior B-Tree pages is the childs page number not offset therefore to calculate the page offset the following sum is used:
+
+\begin{lstlisting}	
+	pageOffset = ((pageNumer - 1) * pageSize);
+\end{lstlisting}
+
+\subsubsection{Index B-Tree cell}
+\label{subsubsec:index_btree_cell}
+
+As mentioned in section~\ref{subsubsec:sqlite_trees_and_cells} Index B-Tree use the database records as keys. their content also reflects this. Table~\ref{tbl:index_btree_cell} show the layout of the cell:
+
+\begin{longtable}[h]{| c | p{5cm} |}
+		\hline
+			\textbf{Data type} & \textbf{Description} \\ 
+		\hline
+		\endhead
+			4 byte integer & Page number of child. \newline 
+							 Not on leaf cells.\\
+		\hline
+			Varint & Payload size. \\
+		\hline
+			byte array & Payload \\
+		\hline
+			4 byte integer & Page number of overflow \newline
+							  Only if payload is to large.\\
+		\hline
+	\caption{Index B-Tree cell}
+	\label{tbl:index_btree_cell}
+\end{longtable}
+
+Much like the right child pointer mentioned in section~\ref{subsubsec:btree_header} this is the page number of the child not a pointer. In order to determine if there is a overflow page the following calculation is used:
+
+\begin{lstlisting}	
+usable-size = page-size - bytes-of-unused-space;
+max-local = (usable-size - 12) * max-embedded-fraction / 255 - 23;
+
+if (payload-size > max-local) {
+	we have a overflow page.
+}
+\end{lstlisting}
+
+Where bytes-of-unused-space is read in the Sqlite header at offset 20 and \newline max-embedded-fraction at offset 12 ( see section~\ref{subsubsec:sqlite_page_hader} for more info ). Once we know there is an offset we can use the following calculation to work out the size of the record in this part of the cell before jumping over to the overflow page:  
+
+\begin{lstlisting}	
+usable-size = page-size - bytes-of-unused-space;
+
+min-local = (usable-size - 12) * min-embedded-fraction / 255 - 23;
+record-size = min-local + (record-size - min-local) % 
+			  (usable-size - 4);
+
+if(record-size > max-local) {
+	record-size = min-local;
+}
+\end{lstlisting}
+
+\subsubsection{Page B-Tree cell}
+\label{subsubsec:page_btree_cell}
 
 
 
