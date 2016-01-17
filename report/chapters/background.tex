@@ -152,7 +152,7 @@ As mentioned in section~\ref{subsubsec:sqlite_page_system} the file is split int
 
 The cells start and the end of the page and work backwards towards the top.
 \\\\
-There are two main types of B-Trees Table and Index, both of which uses a key - value system in order to organise them. The Table B-Trees use 64 bit integers also known as row-id or primary key. The Index B-Trees uses database records as keys. This can be seen in the following example taken from \cite{sqliteray}:
+There are two main types of B-Trees. Table and Index, both of which uses a key-value system in order to organise them. The Table B-Trees use 64 bit integers also known as row-id or primary key. The Index B-Trees uses database records as keys. This can be seen in the following example taken from \cite{sqliteray}:
 
 \begin{lstlisting}
  CREATE TABLE t1(a INTEGER PRIMARY KEY, b, c, d);
@@ -192,14 +192,63 @@ Overall the four type of B-Trees found inside Sqlite are:
 \end{itemize} 
 
 
-In the case of index B-Trees, the interior trees contains N number of children and N-1 number of database records where N is two or greater. Whereas a leaf will always contain M database records where M is a one or greater. The database records stored inside a Index B-Tree are the same quantity as the associated database table, with the same fields and columns.
+In the case of index B-Trees, the interior trees contains N number of children and N-1 number of database records where N is two or greater. Whereas a leaf will always contain M database records where M is a one or greater. The database records stored inside a Index B-Tree are the same quantity as the associated database table, with the same fields and columns. As can be seen in figure~\ref{fig:sqlite_key_pair}.
 \\\\
-The Table B-Trees are a little different as they store most of the data. 
+The Table B-Trees are a little different as they store most of the data. Unlike index B-Trees the interior trees contain no data but only pointers to children B-Trees, as all the data is stored on the leaf nodes. The interior trees contain at least one pointer, and the leaf node contain at least one record. For each table that exists in the database, one corresponding Table B-Tree also exists, and that B-Tree contains one entry per row, appearing in the same order as the logical database.  
 
 \subsubsection{Encoding of the data}
 \label{subsubsec:sqlite_data_encoding}
 
-The Data is...
+Sqlite uses a variable length integer or 'varint' in order encode some of the values inside the database, since they use up less space for small positive values. A varint is a static Huffman encoding of a 64-bit two complements integer. A varint is between and 1 - 9 bytes in size. The maximum number a byte can hold is 127 as the most significant bit is needed as a flag unless we are in the ninth byte where all the bits are used. If the most significant bit is set then we need the next byte. So if it is set in byte 1 then we need byte 2 and so on.
+\\\\
+If we have the following value in hex 5B and convert this to binary we have 01011011 as we can see the the most significance bit is not set leaving us with the value 91. However, if we have the value in hex 84 and convert this to binary we have the value 10000100, the most significant bit is set this means we need the next byte which has a value in hex of 60 converting this to binary leaves us with  01100000 meaning that this varint is two byes long. In order to create the final value we need to concatenate them together leaving out the most significant bit. creating the value 00001001100000 giving us a total value of 608 in decimal \citep{sausagefactory}. Table~\ref{tbl:varints} show the all combinations of varints. 
+
+\begin{longtable}[h]{| c | c | p{10cm} |}
+		\hline
+			\textbf{Bytes} & \textbf{Value Range} & \textbf{Bit pattern} \\ 
+		\hline
+		\endhead
+			1 & 7 &  0xxxxxxx \\ \hline
+			2 & 14 & 1xxxxxxx 0xxxxxxx\\ \hline
+			3 & 21 & 1xxxxxxx 1xxxxxxx 0xxxxxxx\\ \hline
+			4 & 28 & 1xxxxxxx 1xxxxxxx 1xxxxxxx 0xxxxxxx\\ \hline
+			5 & 35 & 1xxxxxxx 1xxxxxxx 1xxxxxxx 1xxxxxxx 0xxxxxxx\\ \hline
+			6 & 42 & 1xxxxxxx 1xxxxxxx 1xxxxxxx 1xxxxxxx 1xxxxxxx 0xxxxxxx\\ \hline
+			7 & 49 & 1xxxxxxx 1xxxxxxx 1xxxxxxx 1xxxxxxx 1xxxxxxx 1xxxxxxx 0xxxxxxx\\ \hline
+			8 & 56 & 1xxxxxxx 1xxxxxxx 1xxxxxxx 1xxxxxxx 1xxxxxxx 1xxxxxxx 1xxxxxxx 0xxxxxxx\\ \hline
+			9 & 64 & 1xxxxxxx 1xxxxxxx 1xxxxxxx 1xxxxxxx 1xxxxxxx 1xxxxxxx 1xxxxxxx 1xxxxxxx xxxxxxxx\\
+		\hline
+	\caption{Varint combinations \cite{sqliteray}}
+	\label{tbl:varints}
+\end{longtable}
+
+With this in mind the following pseudo code is needed to decode the varint.
+
+\begin{lstlisting}
+	byte[] varints = new byte[9];	// array to store the varints
+
+	for (i = 1 to 9) {	// count the number of bytes
+		varints[i] = byte;
+		if (bytes most significant is not set) {
+			break;
+		}
+	}
+	
+	if (number of bytes is 0) {  // check it is a varint.
+		return 0;
+	} else {
+		for (i = 0 to number of bytes) {   // remove significant bit
+			varints[i] = varints[i] << 1;
+		}
+		return concatenation of varints[]; // get the real value
+	}
+\end{lstlisting}
+
+\subsubsection{B-Tree header}
+\label{subsubsec:btree_header}
+
+As mentioned in section~\ref{subsubsec:sqlite_trees_and_cells} the header for each type of B-Tree does not vary that much.
+
 
 \subsection{Similar Programs}
 \label{subsec:similar_programs}
