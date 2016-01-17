@@ -27,7 +27,7 @@ As Sqlite is a minimal portable database engine it has primarily two uses, The f
 
 Sqlite consist of three main parts, the backend, core and the SQL compiler. Figure~\ref{fig:sqlite_arch} shows the architectural digram of Sqlite.
 
-\begin{figure}[h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.5]{images/sqlite_arch.png}
 	\caption{Sqlite architectural diagram \citep{sqlite}}
@@ -69,7 +69,7 @@ The basic idea is that the file is made up of chunks or pages, each page is the 
 		Pointer map pages are inserted to make the vacuum modes faster. And are the reverse B-Tree going child to parent rather then parent to child. They exist in databases that have a non-zero value largest root B-Tree within the header. The first instance of these pages are at page 2. 
 \end{itemize} 
 
-\subsubsection{The header}
+\subsubsection{The Header}
 \label{subsubsec:sqlite_page_hader}
 
 The first page before the root B-Tree contains a 100 byte header. This is what makes Sqlite have zero configuration as all the database settings are stored within this header, all multibyte fields are stored in a big-endian format. The header follows the following format: 
@@ -141,7 +141,60 @@ Immediately following the header is the root B-Tree which we will cover the the 
 \subsubsection{The Trees and Cells}
 \label{subsubsec:sqlite_trees_and_cells}
 
-The Trees and cells...
+As mentioned in section~\ref{subsubsec:sqlite_page_system} the file is split into pages and each page contains one of four types of B-Tree. Each B-Tree type is slightly different but follow the same pattern. At the start of each page there is the B-Tree / page header. Following the header is a array of pointers to their cells. The cell layouts are where the main difference in B-Tree types become more apparent, as they store the payload. Figure~\ref{fig:sqlite_file_format} shows the full layout of the SQlite file.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{images/sqlite_file_format.png}
+	\caption{Sqlite file format, modified from \cite{sausagefactory}}
+	\label{fig:sqlite_file_format}
+\end{figure}
+
+The cells start and the end of the page and work backwards towards the top.
+\\\\
+There are two main types of B-Trees Table and Index, both of which uses a key - value system in order to organise them. The Table B-Trees use 64 bit integers also known as row-id or primary key. The Index B-Trees uses database records as keys. This can be seen in the following example taken from \cite{sqliteray}:
+
+\begin{lstlisting}
+ CREATE TABLE t1(a INTEGER PRIMARY KEY, b, c, d);
+ CREATE INDEX i1 ON t1(d, c);
+
+ INSERT INTO t1 VALUES(1, 'triangle', 3, 180, 'green');
+ INSERT INTO t1 VALUES(2, 'square',   4, 360, 'gold');
+ INSERT INTO t1 VALUES(3, 'pentagon', 5, 540, 'grey');
+\end{lstlisting}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{images/examplepop.png}
+	\caption{Example key pair database \citep{sqliteray}}
+	\label{fig:sqlite_key_pair}
+\end{figure}
+
+Those two types of B-Trees are broken down into Leaf and Interior. The leafs are located at the end of the tree and contain no children. Whereas the interior will always have at least one single child. In addition to this all database records / values within the B-Trees are sorted using the following rules written by \cite{sqliteray}:
+
+\begin{enumerate} 
+	\item If both values are NULL, then they are considered equal.
+	\item If one value is a NULL and the other is not, it is considered the lesser of the two.
+	\item If both values are either real or integer values, then the comparison is done numerically.
+	\item If one value is a real or integer value, and the other is a text or blob value, then the numeric value is considered lesser
+	\item If both values are text, then the collation function is used to compare them. The collation function is a property of the index column in which the values are found
+	\item If one value is text and the other a blob, the text value is considered lesser.
+	\item If both values are blobs, memcmp() is used to determine the results of the comparison function. If one blob is a prefix of the other, the shorter blob is considered lesser.
+\end{enumerate}  
+
+Overall the four type of B-Trees found inside Sqlite are:
+
+\begin{itemize} 
+	\item Index B-Tree Interior
+	\item Index B-Tree leaf
+	\item Table B-Tree Interior
+	\item Table B-Tree leaf 
+\end{itemize} 
+
+
+In the case of index B-Trees, the interior trees contains N number of children and N-1 number of database records where N is two or greater. Whereas a leaf will always contain M database records where M is a one or greater. The database records stored inside a Index B-Tree are the same quantity as the associated database table, with the same fields and columns.
+\\\\
+The Table B-Trees are a little different as they store most of the data. 
 
 \subsubsection{Encoding of the data}
 \label{subsubsec:sqlite_data_encoding}

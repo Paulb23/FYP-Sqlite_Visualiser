@@ -6,14 +6,25 @@
 \usepackage{listings}						% for code sections.
 \usepackage{color}							% for colouring the code sections.	
 \usepackage{graphicx}						% for images.
-\usepackage{longtable}						% support for large tables.
+\usepackage{longtable}						% for large tables.
+\usepackage{float}							% for floting points.
+\usepackage{chngcntr}						% for numbering scheme
 \usepackage[authoryear]{natbib}			% for refrencing.
 
 \bibliographystyle{apalike}					% set refencing style
 \bibpunct{(}{)}{;}{a}{,}{,}
 
+\counterwithin{table}{section}				% set section number to caption for tables
+\counterwithin{figure}{section}			% set section number to caption for figures
+
 \hyphenpenalty 10000						% remove hyphenation at page width
 \exhyphenpenalty 10000
+
+\newlength{\wideitemsep}					% reduce the gap in lists
+\setlength{\wideitemsep}{.5\itemsep}
+\addtolength{\wideitemsep}{-7pt}
+\let\olditem\item
+\renewcommand{\item}{\setlength{\itemsep}{\wideitemsep}\olditem}
 
 \makeatletter								% remove Refrence Title buit into biblatex.
 \renewenvironment{thebibliography}[1]{
@@ -89,19 +100,4 @@
 	\include{chapters/conclusion}
 	\include{chapters/references}
 	\include{chapters/appendix}
-
-\section{Code}
-\subsection{More code}
-\subsubsection{Even more code}
-This is some very important code.
-This is a very long sentance in order to see hoow latex copes with very very long lines of non stop text.
-\begin{lstlisting}
-	// main
-	public static void main(String args[]) {
-		System.out.println("Hello World");
-	}
-\end{lstlisting}
-
-And so on..
-
 \end{document}
