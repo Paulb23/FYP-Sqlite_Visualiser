@@ -1,55 +1,57 @@
-\section{Background}
-\label{sec:background}
+\section{SQlite}
+\label{sec:sqlite_intro}
 
-This section covers, the problem and what this paper aims to solve, go over Sqlite beginnings and where it is used. It also looks at the Sqlite file format in great depth, to under it inside out, and how to parse it. To set the scene for the rest of the paper where it looks at the various design choices and implementations that were made through the project.
-
-\subsection{The Problem}
-\label{subsec:the_problem}
-
-Throughout Sqlite's history many tests, papers, and tools have been developed in order to understand, and modify the future direction of Sqlite. However, when a user wants to understand at a deeper level how Sqlite is working or finding obscure bugs, they are stuck with manually trawling through a Hex editor. This paper aims to solve this by providing a visualisation of the internal structure, as well as a update log that is updated in real time, when the database is modified.
-
-\subsection{Similar Programs}
-\label{subsec:similar_programs}
-
-\subsubsection{Sqlite browser}
-\label{subsubsec:sqlite_browser}
-
-One Similar program...
+In this section I go over SQLites beginnings and where it is used. Starting back in spring of 2000. I also look at the SQLite file format in great depth, to under it inside out, and how to parse it.
 
 
-\subsection{Sqlite}
-\label{subsec:sqlite}
+\subsection{What is Sqlite}
+\label{subsec:what_is_sqlite}
 
-\subsubsection{What is Sqlite}
-\label{subsubsec:what_is_sqlite}
-
-Sqlite is a single self-contained, serverless SQL database engine. Started on 29 May 2000 by D. Richard Hipp \citep{sqlite} from gathered inspiration while working on software for guided missiles on a battleship where they needed a self-contained portable database. \citep{sqlitedefguide} He joined up with Joe Mistachkin followed by Dan Kennedy in 2002. Version 1.0 was released in August 2000, then in just over year on the 28 November 2001 2.0 which introduced, BTrees and many of the features seen in 3.0. Which came a lot later containing a full rewrite and improvement over 2.0, with the first public release on 18 June 2004. At the time of writing this paper we are currently sitting at version 3.10.4 \citep{sqlite}.
+D. Richard Hipp, the author of SQLite, Originally got the idea while working on a battleship. He was tasked with developing a program for the on board guided missiles. While working on the software used the database system Informix. That took hours to set up and get anywhere near useful. For the application that he was building, all he needed was a small self-contained, portable and easy to use database. Rather then the bloated mess that was Informix \citep{sqlitedefguide}.
 \\\\
-Sqlite is open source within the public domain making it accessible to everyone. The entire library size can be 350Kib, with some option features omitted it could be reduced to around 300Kib making it incredibly small compared to what it does. In addition to this the runtime usage is minimal with 4Kib stack space and 100Kib heap, allowing it to run on almost anything. Sqlite's main strength is that the entire database in encoded into a single portable file, that can be read, on any system whether 32 or 64 bit, big or small endian. It is often seen as a replacement for storage files rather then a database system \citep{sqlite}.
+Speaking to a colleague in January of 2000, Hipp, disused his idea for a self contained embedded database. When some free time opened up on the 29th of May 2000, SQLite was born. It was not until August 2000 that version 1.0 was released. Then in just over a year on the 28 November 2001 2.0 which introduced, B-Trees and many of the features seen in 3.0 today. During the next year he joined up with Joe Mistachkin followed by Dan Kennedy in 2002. To help work for the 3.0 release. Which came a lot later containing a full rewrite and improvement over 2.0, with the first public release on 18 June 2004. At the time of writing this paper we are currently sitting at version 3.10.4. After changes to the naming scheme, version 3 is currently supported to 2050. \citep{sqlite}.
+\\\\
+Today, SQLite is open source within the public domain making it accessible to everyone. The entire library size is around 350Kib, with some optional features omitted it could be reduced to around 300Kib making it incredibly small compared to what it does. In addition to this the runtime usage is minimal with 4Kib stack space and 100Kib heap, allowing it to run on almost anything. SQLite's main strength is that the entire database in encoded into a single portable file, that can be read, on any system whether 32 or 64 bit, big or small endian. It is often seen as a replacement for storage files rather then a database system. In fact Hipp (2000) has stated, "Think of SQLite not as a replacement for Oracle but as a replacement for fopen()".
+\\\\
+\subsection{Where is Sqlite used}
+\label{subsec:where_is_sqlite}
 
-\subsubsection{Where is Sqlite used}
-\label{subsubsec:where_is_sqlite}
+SQLite being a relational database engine. As well as a replacement for fopen() \citep{sqlite}. Allows it be truly used for anything. Because of this SQLite might be the single most deployed software currently. Alongside zlib, libpng and libjpg. With the number in the billions and billions \citep{sqlite}.
+\\\\
+Because of this SQLite can be found anywhere. Microsoft even approached Hipp, and asked for a special version to be made for use in Windows 10 \citep{sqlitetalk}. In addition to Microsoft. Apple, Google and Facebook all use SQLite, somewhere within their systems. On top of all the big names. You can find it, within any another consumer device, such as Phones, Cameras and Televisions. This wide usage was picked up by Google and Hipp was awarded “Best Integrator” at O’Reilly’s 2005 Open Source Convention \citep{sqlitedefguide}. 
 
-As Sqlite is a minimal portable database engine it has primarily two uses, The first as a relation database like any other, the second as a application file format. In the former case Sqlite would be set up the same way a tradition database system would be, with the primary purpose to hold the back end storage information. The latter case is more unique to Sqlite and is what sets it apart from the traditional database engines \citep{sqlite}. Because of this Sqlite is used everywhere, a few of the big names include, apple, android, adobe even a special version was produced specifically for windows 10. In fact Sqlite might be the single most deployed software currently \citep{sqlite, sqlitetalk}.
+\subsection{How Sqlite works}
+\label{subsec:how_sqlite_works}
 
-\subsubsection{How is Sqlite works}
-\label{subsubsec:how_sqlite_works}
-
-Sqlite consist of three main parts, the backend, core and the SQL compiler. Figure~\ref{fig:sqlite_arch} shows the architectural digram of Sqlite.
+SQLite has a simple and very modular design. Consisting of eleven modules, and four subsystems. The backend, The core, The SQL compiler, and Accessories. Figure~\ref{fig:sqlite_arch} shows the architectural digram of Sqlite.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.5]{images/sqlite_arch.png}
+	\includegraphics[scale=0.70]{images/sqlite_arch.png}
 	\caption{Sqlite architectural diagram \citep{sqlite}}
 	\label{fig:sqlite_arch}
 \end{figure}
 
-The SQL compiler is designed to take SQL strings and turn them into valid SQL commands, it is made up of three parts. Firstly the tokenizer takes a string containing SQL statements and turns it into tokens passing them one by one to the parser. The parser takes the tokens and assign meaning to them. Lastly the code generator takes the tokens from the parser and assembles complete SQL statements that are to be ran on the database file.
+\subsubsection{The SQL Compiler}
+\label{subsec:how_sqlite_compiler}
+
+The SQL compiler takes SQL strings and converts them into the core's virtual machine assembly language. The process starts with the tokenizer and parser. They both work closely together, taking the SQL string and validating the syntax. Before converting it into a hierarchical structure. For use by the code generator. Both systems are custom made for SQLite. With the parser going under the name of Lemon \citep{sqlitedefguide}. Lemon is designed to optimise performance and guards against memory leaks. Once they have successfully converted the SQL string into a Parse Tree, the parser passes it onto the code generator.
 \\\\
+The code generator takes the parse tree from the parser, and translates it into a assembly language program. The program is written in a assembly language that is specifically designed for SQLite. It is ran by the virtual machine inside the core module. Once the SQL program is made it sends it off to the virtual machine for execution.
+
+\subsubsection{The Core}
+\label{subsec:how_sqlite_core}
+
 The Core itself is actually a virtual machine implementing a specifically designed computing engine to manipulate database files. The interface module defines the interface between the virtual machine and the SQL library including the external API. Knowing this we can see that the virtual machine takes the code output from the code generator to manipulate the backend / database. 
-\\\\
+
+\subsubsection{The Backend}
+\label{subsec:how_sqlite_backend}
+
 The final main module is the backend which is the main focus of this paper, controlling the file format. The OS interface contains an abstraction layer to write the files to disk or memory. The Pager takes the B-Trees and is responsible for reading, writing and caching them. This involves locking, rollback and atomic commits of the database. Sqlite uses a B-Tree system to navigate and store the data on disk, this module contains the implementation of the B-tree and as such the defines the file format. 
-\\\\
+
+\subsubsection{The Accessories}
+\label{subsec:how_sqlite_accessories}
+
 The last module, accessories is made up of two parts. Utility containing functions that are used all around Sqlite, such as memory allocation, string comparison, random number generator and symbol tables. The test section contains all the test scripts and only exist for testing purposes, of which contains over 811 times more code then the actual project.
 
 \subsection{The Sqlite file format}
