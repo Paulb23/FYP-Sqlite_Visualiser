@@ -1,14 +1,6 @@
 \section{Introduction}
 \label{sec:introduction}
-Sqlite unlike many other databases is a small, single file, self-contained database engine often used in embedded systems, storage or as an application file. Sqlite is used in many applications such as Firefox, Android and Windows 10. In addition to its wide adaptation Sqlite is server less, and has zero configuration putting it in a unique place among the other alternative systems. Despite the extensive research and testing performed on Sqlite none have attempted to visualise this data in real time. \\\\
-This paper will  help provide a way to see the Sqlite database in action, providing a useful tool for developers and researchers alike in understanding and debugging the internal structure of their own databases. In order to accomplish this paper will: 
 
-\begin{itemize}  
-
-\item Explore in depth the how the file format is put together ( section~\ref{sec:background} ). And how to traverse the file ( section~\ref{sec:background} ).
-
-\item Look at the design and development ( section~\ref{sec:design}  ) including testing ( section~\ref{sec:testing} ) of the tool. And how it takes this data and visualises it ( section~\ref{sec:implementation} ). Including the user experience ( section~\ref{sec:system_operation} ).
-
-\item Evaluation of the tool ( section~\ref{sec:evaluation} ) and where this research could be taken beyond this paper ( section~\ref{sec:conclusion} ).
-
-\end{itemize}  
+Having studied Databases in my previous year, including SQlite. I remember being amazed that it could do so much without the need to configure, manipulate, or go through a long winded install process. It was so simple and flexible anyone could use it. Unlike other systems that I have come across. Including MySQL and Oral. In fact Sqlite takes pride that it is probably one of the most widely deployed database engines. And one of the top five most deployed software modules. Alongside zlib, libpng and libjpg. It finds itself inside all of the top browsers (Firefox, Google chrome and Possibly edge), Operating systems (Windows 10, IOS and embed OS's) and in the most unexpected places such as aircraft.
+\\\\
+This paper will expose SQlites inner workings. By looking at the heart of it's systems. The SQlite file. We shall see how it is constructed and put together. How to traverse the file (without breaking it)( section~\ref{sec:background} ). And develop a tool. The tool will enable anyone to open up a SQlite database, and visualise what it is doing in real time. With live updates as the file is being used ( section~\ref{sec:design},~\ref{sec:implementation},~\ref{sec:system_operation},~\ref{sec:testing} ). On top of this we shall look towards the future and what could be added to improve it ( section~\ref{sec:evaluation},~\ref{sec:conclusion} ). 
