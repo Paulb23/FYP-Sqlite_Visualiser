@@ -1,6 +1,14 @@
-\section{Introduction}
+\section*{Introduction}
 \label{sec:introduction}
 
 Having studied Databases in my previous year, including SQlite. I remember being amazed that it could do so much without the need to configure, manipulate, or go through a long winded install process. It was so simple and flexible anyone could use it. Unlike other systems that I have come across. Including MySQL and Oral. In fact Sqlite takes pride that it is probably one of the most widely deployed database engines. And one of the top five most deployed software modules. Alongside zlib, libpng and libjpg. It finds itself inside all of the top browsers (Firefox, Google chrome and Possibly edge), Operating systems (Windows 10, IOS and embed OS's) and in the most unexpected places such as aircraft.
 \\\\
-This paper will expose SQlites inner workings. By looking at the heart of it's systems. The SQlite file. We shall see how it is constructed and put together. How to traverse the file (without breaking it)( section~\ref{sec:background} ). And develop a tool. The tool will enable anyone to open up a SQlite database, and visualise what it is doing in real time. With live updates as the file is being used ( section~\ref{sec:design},~\ref{sec:implementation},~\ref{sec:system_operation},~\ref{sec:testing} ). On top of this we shall look towards the future and what could be added to improve it ( section~\ref{sec:evaluation},~\ref{sec:conclusion} ). 
+After doing some reading and looking at the SQlites claim to fame. I began to take a close look at its systems. And what makes it so flexible, fast and simple, to use. My main focus however was on the file format that it uses to store the entire database. This included many long nights looking at how it was put together. How to traverse it. And why it is the way it is. This is covered in the first section of this paper.
+\\\\
+Understanding the file format was just the first stepping stone, as I then undertook a journey to build a tool that could traverse and read the file. And record every operation that was and ever will be performed to the file. This is covered in the second and third chapters.
+\\\\
+Once my tool was completed. I looked at how it operated form a users perspective and the best ways to break it. This is covered in sections four and five. 
+\\\\
+I then started looking towards the future of the tool and what could be added to make it ever more useful for developers, researchers and anyone else that were using SQlite systems. This is covered in the final sections, sex and seven.
+\\\\
+The main aim of this paper is to help you understand the SQlite file format and systems. While providing a useful tool that can help debug, manipulate and record your own SQlite databases.
