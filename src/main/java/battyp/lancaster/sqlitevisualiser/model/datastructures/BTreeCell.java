@@ -88,6 +88,16 @@ public class BTreeCell {
     public String[] data;
 
     /**
+     * Is this data a table.
+     */
+    public Boolean[] isTable;
+
+    /**
+     * Page number of Children.
+     */
+    public int[] childrenPageNumbers;
+
+    /**
      * Overflow page numbers.
      */
     public int[] overflowPageNumbers;
@@ -113,6 +123,8 @@ public class BTreeCell {
         this.payLoadSize = new long[cellCount];
         this.data = new String[cellCount];
         this.overflowPageNumbers = new int[cellCount];
+        this.isTable = new Boolean[cellCount];
+        this.childrenPageNumbers = new int[cellCount];
         this.changed = false;
     }
 

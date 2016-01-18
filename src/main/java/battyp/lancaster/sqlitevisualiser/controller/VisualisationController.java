@@ -34,12 +34,15 @@ import battyp.lancaster.sqlitevisualiser.view.Edge;
 import battyp.lancaster.sqlitevisualiser.view.ZoomableScrollPane;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 
 import java.util.List;
 
@@ -117,6 +120,7 @@ public class VisualisationController extends Controller {
 
             Database database = model.getDatabase();
 
+            BorderPane borderPane = new BorderPane();
             Pane pane = new Pane();
 
             BTreeNode<BTreeCell> tree = database.getBTree().getRoot();
@@ -124,7 +128,28 @@ public class VisualisationController extends Controller {
 
             //pane.setRotate(90);
             //pane.setScaleY(-1);
-            zoomablepane.setNodeContent(pane);
+
+            borderPane.setCenter(pane);
+
+       /*     Pane paddingTop = new Pane();
+            paddingTop.setMinSize(200, 2000);
+
+            Pane paddingBottom = new Pane();
+            paddingBottom.setMinSize(200, 2000);
+
+            Pane paddingLeft = new Pane();
+            paddingLeft.setMinSize(2000, 200);
+
+            Pane paddingRight = new Pane();
+            paddingRight.setMinSize(2000, 200);
+
+            borderPane.setLeft(paddingLeft);
+            borderPane.setRight(paddingRight);
+            borderPane.setTop(paddingTop);
+            borderPane.setBottom(paddingBottom);
+*/
+            zoomablepane.setNodeContent(borderPane);
+            //zoomablepane.centerNode(pane);
             zoomablepane.setHvalue(hvalue);
             zoomablepane.setVvalue(vvalue);
         }
@@ -137,10 +162,6 @@ public class VisualisationController extends Controller {
      * Uses recursion to illiterate over the node located in the tree, Therefor
      * the first call should always be with the root node. All children nodes
      * will then be added.
-     *
-     * TODO: Fix Drawing of tree all over the place.
-     * TODO: Try drawing from bottom up
-     * TODO: add glow effect on change to previous b-tree
      *
      * @param node Node to represent
      * @param parent Parent to the node or null for self.

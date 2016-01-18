@@ -47,6 +47,19 @@ import java.nio.ByteBuffer;
  */
 public class DefaultDatabaseParser implements DatabaseParser {
 
+    private static final int VALUE_NULL = 0;
+    private static final int VALUE_ONE_BYTE_INT = 1;
+    private static final int VALUE_TWO_BYTE_INT = 2;
+    private static final int VALUE_THREE_BYTE_INT = 3;
+    private static final int VALUE_FOUR_BYTE_INT = 4;
+    private static final int VALUE_SIX_BYTE_INT = 5;
+    private static final int VALUE_EIGHT_BYTE_INT = 6;
+    private static final int VALUE_EIGHT_BYTE_FLOAT = 7;
+    private static final int VALUE_ZERO = 8;
+    private static final int VALUE_ONE = 9;
+    private static final int VALUE_BLOB = 12;
+    private static final int VALUE_STRING = 13;
+
     /**
      * {@inheritDoc}
      */
@@ -136,9 +149,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
         final int starting_page_number = 1;
 
         int pageSize = database.getMetadata().pageSize;
-        BTreeNode<BTreeCell> root = parseBtree(in, starting_page_number, pageSize);
-
-        database.getBTree().setRoot(root);
+        database.getBTree().setRoot(parseBtree(in, starting_page_number, pageSize));
     }
 
     /**
@@ -146,9 +157,6 @@ public class DefaultDatabaseParser implements DatabaseParser {
      *
      * <p>
      * Uses recursion to load up each node, with it's children.
-     *
-     * TODO: Read Overflow Pages
-     * TODO: Read INDEX_BTREE_LEAF_CELL and INDEX_BTREE_INTERIOR_CELL Payloads
      *
      * @param in The input stream.
      * @param pageNumber The page number we are on.
@@ -175,11 +183,11 @@ public class DefaultDatabaseParser implements DatabaseParser {
             }
             break;
             case SqliteConstants.INDEX_BTREE_LEAF_CELL: {
-                cell = parseIndexBtreeLeafCell(in, pageHeader);
+                cell = parseIndexBtreeLeafCell(in, pageHeader, node);
             }
             break;
             case SqliteConstants.INDEX_BTREE_INTERIOR_CELL: {
-                cell = parseIndexBtreeInteriorCell(in, pageHeader);
+                cell = parseIndexBtreeInteriorCell(in, pageHeader, node);
             }
             break;
             default: {
@@ -223,57 +231,9 @@ public class DefaultDatabaseParser implements DatabaseParser {
 
             cell.payLoadSize[i] = decodeVarint(in)[0];
             cell.rowId[i] = decodeVarint(in)[0];
-            long bytesInHeader = decodeVarint(in)[0] - 1;
-            int[] types = new int[(int) bytesInHeader];
-            int bytesCounted = 0;
-            int numberOfItems = 0;
-            while (bytesCounted < bytesInHeader) {
-                long[] varint = decodeVarint(in);
-                types[numberOfItems] = (int) varint[0];
-                bytesCounted += varint[1];
-                numberOfItems++;
-            }
-
-            boolean isTable = false;
-            int tablePageNumber = 0;
-            for (int j = 0; j < numberOfItems; j++) {
-                if (types[j] == 0) {
-                    cell.data[i] += "";
-                } else if (types[j] == 1) {
-                    short bytes = in.readByte();
-                    if (isTable && tablePageNumber == 0) {
-                        tablePageNumber = bytes;
-                    }
-                    cell.data[i] += " " + bytes + " ";
-                } else if (types[j] == 2) {
-                    cell.data[i] += " " + in.readShort() + " ";
-                } else if (types[j] == 3) {
-                    cell.data[i] += " " + readBytesAsString(in, 3) + " ";
-                } else if (types[j] == 4) {
-                    cell.data[i] += " " + in.readInt() + " ";
-                } else if (types[j] == 5) {
-                    cell.data[i] += " " + readBytesAsString(in, 6) + " ";
-                } else if (types[j] == 6) {
-                    cell.data[i] += " " + in.readLong() + " ";
-                } else if (types[j] == 7) {
-                    cell.data[i] += " " + in.readDouble() + " ";
-                } else if (types[j] == 8) {
-                    cell.data[i] += " 0 ";
-                } else if (types[j] == 9) {
-                    cell.data[i] += " 0 ";
-                } else if (types[j] >= 12 && types[j] % 2 == 0) {
-                    cell.data[i] += " " + readBytesAsString(in, (types[j] - 12) / 2) + " ";
-                } else if (types[j] >= 13 && types[j] % 2 != 0) {
-                    String str = readBytesAsString(in, (types[j] - 13) / 2);
-                    cell.data[i] += " " + str + " ";
-                    if (str.equals("table") || str.equals("index")) {
-                        isTable = true;
-                    }
-                }
-            }
-            if (isTable) {
-                cell.type = CellType.Table;
-                node.addChild(parseBtree(in, tablePageNumber, pageHeader.getPageSize()));
+            parseRecordPayload(in, cell, i);
+            if (cell.isTable[i]) {
+                node.addChild(parseBtree(in, cell.childrenPageNumbers[i], pageHeader.getPageSize()));
             }
             // read overflow
             // cell.overflowPageNumbers[i] = in.readInt();
@@ -322,7 +282,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
      * @throws IOException If there is a problem reading the file.
      * @throws InvalidFileException If there is an unusual format.
      */
-    private BTreeCell parseIndexBtreeLeafCell(RandomAccessFile in, PageHeader pageHeader) throws IOException, InvalidFileException {
+    private BTreeCell parseIndexBtreeLeafCell(RandomAccessFile in, PageHeader pageHeader, BTreeNode<BTreeCell> node) throws IOException, InvalidFileException {
         final int numberOfCells = pageHeader.getNumberOfCells();
         final int cellType = pageHeader.getPageType();
         final long[] cellPointers = pageHeader.getCellPointers();
@@ -334,9 +294,10 @@ public class DefaultDatabaseParser implements DatabaseParser {
             in.seek(cellPointers[i]);
 
             cell.payLoadSize[i] = decodeVarint(in)[0];
-            byte[] bytes = new byte[(int)cell.payLoadSize[i]];
-            in.read(bytes);
-            cell.data[i] = new String(bytes);
+            parseRecordPayload(in, cell, i);
+            if (cell.isTable[i]) {
+                node.addChild(parseBtree(in, cell.childrenPageNumbers[i], pageHeader.getPageSize()));
+            }
             //  cell.overflowPageNumbers[i] = in.readInt();
         }
         return cell;
@@ -353,7 +314,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
      * @throws IOException If there is a problem reading the file.
      * @throws InvalidFileException If there is an unusual format.
      */
-    private BTreeCell parseIndexBtreeInteriorCell(RandomAccessFile in, PageHeader pageHeader) throws IOException, InvalidFileException {
+    private BTreeCell parseIndexBtreeInteriorCell(RandomAccessFile in, PageHeader pageHeader, BTreeNode<BTreeCell> node) throws IOException, InvalidFileException {
         final int numberOfCells = pageHeader.getNumberOfCells();
         final int cellType = pageHeader.getPageType();
         final long[] cellPointers = pageHeader.getCellPointers();
@@ -366,12 +327,106 @@ public class DefaultDatabaseParser implements DatabaseParser {
 
             cell.leftChildPointers[i] = in.readInt();
             cell.payLoadSize[i] = decodeVarint(in)[0];
-            byte[] bytes = new byte[(int)cell.payLoadSize[i]];
-            in.read(bytes);
-            cell.data[i] = new String(bytes);
+            parseRecordPayload(in, cell, i);
+            if (cell.isTable[i]) {
+                node.addChild(parseBtree(in, cell.childrenPageNumbers[i], pageHeader.getPageSize()));
+            }
             //cell.overflowPageNumbers[i] = in.readInt();
         }
         return cell;
+    }
+
+    /**
+     * Parsers a record
+     *
+     * @param in input stream.
+     * @param cell cell to read from.
+     * @param cellNumber cell number to read.
+     *
+     * @throws IOException
+     */
+    private void parseRecordPayload(RandomAccessFile in, BTreeCell cell, int cellNumber) throws IOException {
+        long bytesInHeader = decodeVarint(in)[0] - 1;
+        int[] types = new int[(int) bytesInHeader];
+        int bytesCounted = 0;
+        int numberOfItems = 0;
+        while (bytesCounted < bytesInHeader) {
+            long[] varint = decodeVarint(in);
+            types[numberOfItems] = (int) varint[0];
+            bytesCounted += varint[1];
+            numberOfItems++;
+        }
+
+        boolean isTable = false;
+        int tablePageNumber = 0;
+        for (int j = 0; j < numberOfItems; j++) {
+            switch (types[j]) {
+                case VALUE_NULL: {
+                    cell.data[cellNumber] += "";
+                    break;
+                }
+                case VALUE_ONE_BYTE_INT: {
+                    short bytes = in.readByte();
+                    if (isTable && tablePageNumber == 0) {
+                        tablePageNumber = bytes;
+                    }
+                    cell.data[cellNumber] += " " + bytes + " ";
+                    break;
+                }
+                case VALUE_TWO_BYTE_INT: {
+                    cell.data[cellNumber] += " " + in.readShort() + " ";
+                    break;
+                }
+                case VALUE_THREE_BYTE_INT: {
+                    cell.data[cellNumber] += " " + readBytesAsLong(in, 3) + " ";
+                    break;
+                }
+                case VALUE_FOUR_BYTE_INT: {
+                    cell.data[cellNumber] += " " + in.readInt() + " ";
+                    break;
+                }
+                case VALUE_SIX_BYTE_INT: {
+                    cell.data[cellNumber] += " " + readBytesAsLong(in, 6) + " ";
+                    break;
+                }
+                case VALUE_EIGHT_BYTE_INT: {
+                    cell.data[cellNumber] += " " + in.readLong() + " ";
+                    break;
+                }
+                case VALUE_EIGHT_BYTE_FLOAT: {
+                    cell.data[cellNumber] += " " + in.readDouble() + " ";
+                    break;
+                }
+                case VALUE_ZERO: {
+                    cell.data[cellNumber] += " 0 ";
+                    break;
+                }
+                case VALUE_ONE: {
+                    cell.data[cellNumber] += " 1 ";
+                    break;
+                }
+                default: {
+                    if (types[j] >= VALUE_BLOB && types[j] % 2 == 0) {
+                        cell.data[cellNumber] += " " + readBytesAsString(in, (types[j] - 12) / 2) + " ";
+                    } else if (types[j] >= VALUE_STRING && types[j] % 2 != 0) {
+                        String str = readBytesAsString(in, (types[j] - 13) / 2);
+                        cell.data[cellNumber] += " " + str + " ";
+                        if (str.equals("table") || str.equals("index")) {
+                            isTable = true;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        if (isTable) {
+            cell.type = CellType.Table;
+            cell.isTable[cellNumber] = true;
+            cell.childrenPageNumbers[cellNumber] = tablePageNumber;
+        } else {
+            cell.isTable[cellNumber] = false;
+            cell.childrenPageNumbers[cellNumber] = 0;
+        }
     }
 
     /**
@@ -406,6 +461,19 @@ public class DefaultDatabaseParser implements DatabaseParser {
             value[1] = i + 1;
         }
         return value;
+    }
+
+    private long readBytesAsLong (RandomAccessFile in, int len) throws IOException {
+        byte[] byteArray = new byte[len];
+        in.read(byteArray);
+
+        long val = 0;
+        len = Math.min(len, 8);
+        for (int i = (len - 1); i >= 0; i--) {
+            val <<= 8;
+            val |= (byteArray [i] & 0x00FF);
+        }
+        return val;
     }
 
     /**

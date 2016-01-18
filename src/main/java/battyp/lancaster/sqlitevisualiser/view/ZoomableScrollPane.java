@@ -25,6 +25,7 @@
 package battyp.lancaster.sqlitevisualiser.view;
 
 import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
@@ -98,6 +99,19 @@ public class ZoomableScrollPane extends ScrollPane {
     public void setNodeContent(Node content) {
         this.zoomGroup.getChildren().add(content);
     }
+
+    public void centerNode(Node node) {
+        double width = this.getContent().getBoundsInLocal().getWidth();
+        double height = this.getContent().getBoundsInLocal().getHeight();
+
+        double x = node.getBoundsInParent().getMaxX();
+        double y = node.getBoundsInParent().getMaxY();
+
+        // scrolling values range from 0 to 1
+        this.setVvalue(y/height);
+        this.setHvalue(x/width);
+    }
+
 
     /**
      * Removes all nodes attached to the pane.

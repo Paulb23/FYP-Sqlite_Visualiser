@@ -69,8 +69,8 @@ public class DefaultLog implements Log {
                 Stack<BTreeCell> newTree = newRoot.childrenToStack();
 
                 sqlLog.add(new SimpleDateFormat("HH:mm:ss dd/MM/yyyy").format(Calendar.getInstance().getTime()));
-                detectTreeChanges(newTree, oldTree);
-                detectDataChanges(newTree, oldTree);
+                    detectTreeChanges(newTree, oldTree);
+                    detectDataChanges(newTree, oldTree);
                 sqlLog.set(sqlLog.size() - 1, sqlLog.get(sqlLog.size() - 1) + "\n");
             }
         }
