@@ -35,24 +35,54 @@ SQLite has a simple and very modular design. Consisting of eleven modules, and f
 \subsubsection{The SQL Compiler}
 \label{subsec:how_sqlite_compiler}
 
-The SQL compiler takes SQL strings and converts them into the core's virtual machine assembly language. The process starts with the tokenizer and parser. They both work closely together, taking the SQL string and validating the syntax. Before converting it into a hierarchical structure. For use by the code generator. Both systems are custom made for SQLite. With the parser going under the name of Lemon \citep{sqlitedefguide}. Lemon is designed to optimise performance and guards against memory leaks. Once they have successfully converted the SQL string into a Parse Tree, the parser passes it onto the code generator.
+The SQL compiler takes SQL strings and converts them into the core's virtual machine assembly language. The process starts with the tokenizer and parser. They both work closely together. Taking the SQL string and validating the syntax. Before converting it into a hierarchical structure. For use by the code generator. Both systems are custom made for SQLite. With the parser going under the name of Lemon \citep{sqlitedefguide}. Lemon is designed to optimise performance and guard against memory leaks. Once they have successfully converted the SQL string into a Parse Tree, the parser passes it onto the code generator.
 \\\\
 The code generator takes the parse tree from the parser, and translates it into a assembly language program. The program is written in a assembly language that is specifically designed for SQLite. It is ran by the virtual machine inside the core module. Once the SQL program is made it sends it off to the virtual machine for execution.
 
 \subsubsection{The Core}
 \label{subsec:how_sqlite_core}
 
-The Core itself is actually a virtual machine implementing a specifically designed computing engine to manipulate database files. The interface module defines the interface between the virtual machine and the SQL library including the external API. Knowing this we can see that the virtual machine takes the code output from the code generator to manipulate the backend / database. 
+The Core itself is actually one single virtual machine implementing a specifically designed computing engine to manipulate database files. The language contains 128 instructions, all designed to manipulate and interact with the database, or prepare the machine for such operations. Figure~\ref{fig:vm_code} shown an example program. 
+\begin{figure}[H]
+	\centering
+	\begin{lstlisting} 
+		SQL =  SELECT * FROM examp;
+		addr  opcode        p1     p2     p3                                 
+		----  ------------  -----  -----  ---------------------
+		0     ColumnName    0      0      one                                
+		1     ColumnName    1      0      two                                
+		2     Integer       0      0                                         
+		3     OpenRead      0      3      examp                              
+		4     VerifyCookie  0      81                                        
+		5     Rewind        0      10                                        
+		6     Column        0      0                                         
+		7     Column        0      1                                         
+		8     Callback      2      0                                         
+		9     Next          0      6                                         
+		10    Close         0      0                                         
+		11    Halt          0      0
+	\end{lstlisting}
+	\caption{Select operation program from \cite{sqlite}}
+	\label{fig:vm_code}
+\end{figure}
+
+The interface module defines the interface between the virtual machine and the SQL library. All libraries and external application use this to communicate with SQLite.
+\\\\
+Knowing this we can see that the virtual machine takes the SQL input from the Interface, passes it onto the SQL Compiler. Then Collecting the outputted program from the code generator. And executing this program to perform the original request that was sent in. Making the the heart or core of SQLites operations.
 
 \subsubsection{The Backend}
 \label{subsec:how_sqlite_backend}
 
-The final main module is the backend which is the main focus of this paper, controlling the file format. The OS interface contains an abstraction layer to write the files to disk or memory. The Pager takes the B-Trees and is responsible for reading, writing and caching them. This involves locking, rollback and atomic commits of the database. Sqlite uses a B-Tree system to navigate and store the data on disk, this module contains the implementation of the B-tree and as such the defines the file format. 
+The final main module we will look at is the backend. It deals with the file interactions, such as writing, reading and ordering of the file. The B-Tree and pager work closely together to organise the pages, both of which do not care for the content. The B-Tree module is like a factory that maintains and sorts the relationships between each of the different pages within the file. Forming them into a tree structure that makes it easy to find what you are after. 
+\\\\
+The OS Interface is a warehouse, providing a constant interface to access the disk. It handles the locking, reading and writing of files across all types of operating systems. So the pager does not have to worry about how it is implemented, it can just tell it what it wants.
+\\\\
+Lastly, the Pager is the transport truck, going between between the B-Tree (factory) and the OS interface (storage) to deliver pages at the B-tree requests. It also keeps the most commonly used pages in its cache, so it does not have to keep going through the OS interface in order to collect the pages, since it already has them.
 
 \subsubsection{The Accessories}
 \label{subsec:how_sqlite_accessories}
 
-The last module, accessories is made up of two parts. Utility containing functions that are used all around Sqlite, such as memory allocation, string comparison, random number generator and symbol tables. The test section contains all the test scripts and only exist for testing purposes, of which contains over 811 times more code then the actual project.
+The last module, accessories is made up of two parts. Utility and tests. The utility module contains functions that are used all across Sqlite, such as memory allocation, string comparison, random number generator and symbol tables. This basically acts as a shared system for all parts of SQlite. The test section contains all the test scripts and only exist for testing purposes, of which contains over 811 times more code then the actual project, and million of test cases. As it covers every possible code path through SQLite. This is partly why it is considered to be so reliable. 
 
 \subsection{The Sqlite file format}
 \label{subsec:sqlite_file_format}
