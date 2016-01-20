@@ -58,6 +58,6 @@ public class TablePointerInternalCell extends Cell {
         view.setFill(Color.DARKORANGE);
 
         getChildren().add(view);
-        getChildren().add(new Label("Page: " + cell.pageNumber));
+        getChildren().add(new Label("Page: " + (cell.pageNumber + 1)));
     }
 }

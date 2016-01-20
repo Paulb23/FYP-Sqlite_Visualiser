@@ -57,6 +57,6 @@ public class TableCell extends Cell {
         view.setFill(Color.INDIANRED);
 
         getChildren().add(view);
-        getChildren().add(new Label("Page: " + cell.pageNumber));
+        getChildren().add(new Label("Page: " + (cell.pageNumber + 1)));
     }
 }

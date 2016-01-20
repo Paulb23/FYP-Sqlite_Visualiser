@@ -463,6 +463,16 @@ public class DefaultDatabaseParser implements DatabaseParser {
         return value;
     }
 
+    /**
+     * Reads a long from the input stream.
+     *
+     * @param in The input stream to read the from.
+     * @param len Size of the long
+     *
+     * @return long read from the input stream
+     *
+     * @throws IOException If there is a problem reading the file.
+     */
     private long readBytesAsLong (RandomAccessFile in, int len) throws IOException {
         byte[] byteArray = new byte[len];
         in.read(byteArray);

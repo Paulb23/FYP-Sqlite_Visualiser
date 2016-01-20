@@ -206,7 +206,7 @@ public class VisualisationController extends Controller {
      * @param cell cell to show.
      */
     private void showData(Cell cell) {
-        cellDataPage.setText("Page Number: " + cell.cell.pageNumber);
+        cellDataPage.setText("Page Number: " + (cell.cell.pageNumber + 1));
         cellDataCount.setText("Cell Count: " + cell.cell.cellCount);
         cellDataType.setText("Cell Type: " + cell.cell.cellType);
         cellRightPointer.setText("Right Pointer: " + cell.cell.rightChildPointer);

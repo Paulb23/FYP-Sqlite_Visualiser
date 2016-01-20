@@ -58,6 +58,6 @@ public class IndexLeafCell extends Cell {
         view.setFill(Color.DARKGOLDENROD);
 
         getChildren().add(view);
-        getChildren().add(new Label("Page: " + cell.pageNumber));
+        getChildren().add(new Label("Page: " + (cell.pageNumber + 1)));
     }
 }

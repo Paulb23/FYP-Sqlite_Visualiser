@@ -88,17 +88,22 @@ public class DefaultLog implements Log {
     }
 
     private void detectAddedPages(Stack<BTreeCell> newTree, Stack<BTreeCell> oldTree) {
-        detectPageChanges(newTree, oldTree, "ADDED PAGE ");
+        detectPageChanges(newTree, oldTree, 1, "ADDED PAGE ");
     }
 
     private void detectRemovedPages(Stack<BTreeCell> newTree, Stack<BTreeCell> oldTree) {
-        detectPageChanges(oldTree, newTree, "REMOVED PAGE ");
+        detectPageChanges(oldTree, newTree, 2, "REMOVED PAGE ");
     }
 
-    private void detectPageChanges(Stack<BTreeCell> newTree, Stack<BTreeCell> oldTree, String message) {
+    private void detectPageChanges(Stack<BTreeCell> newTree, Stack<BTreeCell> oldTree, int newCell, String message) {
         for (BTreeCell n : newTree) {
             for (BTreeCell nn : oldTree) {
                 if (nn.pageNumber != n.pageNumber) {
+                    if (newCell == 1) {
+                        n.changed = true;
+                    } else {
+                        nn.changed = true;
+                    }
                     sqlLog.add(message + "'" + n.pageNumber + "'");
                 }
             }
@@ -126,15 +131,20 @@ public class DefaultLog implements Log {
     }
 
     private void detectAddedRows(BTreeCell newCell, BTreeCell oldCell) {
-        detectRowChanges(newCell, oldCell, "ADDED ");
+        detectRowChanges(newCell, oldCell, 1, "ADDED ");
     }
 
     private void detectRemovedRows(BTreeCell newCell, BTreeCell oldCell) {
-        detectRowChanges(oldCell, newCell, "REMOVED ");
+        detectRowChanges(oldCell, newCell, 2, "REMOVED ");
     }
 
-    private void detectRowChanges(BTreeCell mainCell, BTreeCell comparisonCell, String message) {
-        mainCell.changed = true;
+    private void detectRowChanges(BTreeCell mainCell, BTreeCell comparisonCell, int newCell, String message) {
+        if (newCell == 1) {
+            mainCell.changed = true;
+        } else {
+            comparisonCell.changed = true;
+        }
+
         List<String> newCellData = new ArrayList<>(Arrays.asList(mainCell.data));
         newCellData.removeAll(new ArrayList<>(Arrays.asList(comparisonCell.data)));
         sqlLog.addAll(newCellData.stream().map(s -> message + "'" + s + "'").collect(Collectors.toList()));

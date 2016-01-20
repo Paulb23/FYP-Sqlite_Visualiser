@@ -57,6 +57,6 @@ public class DataCell extends Cell{
         view.setFill(Color.CHARTREUSE);
 
         getChildren().add(view);
-        getChildren().add(new Label("Page: " + cell.pageNumber));
+        getChildren().add(new Label("Page: " + (cell.pageNumber + 1)));
     }
 }

@@ -58,6 +58,6 @@ public class IndexPointerInternalCell extends Cell {
         view.setFill(Color.DARKSLATEBLUE);
 
         getChildren().add(view);
-        getChildren().add(new Label("Page: " + cell.pageNumber));
+        getChildren().add(new Label("Page: " + ((cell.pageNumber + 1))));
     }
 }
