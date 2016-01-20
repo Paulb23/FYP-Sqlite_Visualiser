@@ -1,8 +1,12 @@
-\section{SQlite}
+\section{Background}
 \label{sec:sqlite_intro}
 
 In this section I go over SQLites beginnings and where it is used. Starting back in spring of 2000. I also look at the SQLite file format in great depth, to under it inside out, and how to parse it.
 
+\subsection{Similar programs}
+\label{subsec:similar_programs}
+
+Before i got far into the research of SQLite and it's history. i decided to take a look at what other system where available. 
 
 \subsection{What is Sqlite}
 \label{subsec:what_is_sqlite}
@@ -90,13 +94,13 @@ The last module, accessories is made up of two parts. Utility and tests. The uti
 \subsubsection{The page system}
 \label{subsubsec:sqlite_page_system}
 
-As mentioned is section~\ref{subsubsec:how_sqlite_works} Sqlite works off of a B-tree structure to store and navigate the database. The B-Tree implementation is designed to support fast querying, the various B-Tree structures can be found in \cite{btreepaper} paper. Sqlite also takes some improvements seen in \cite{btreeimprpaper} book \citep{sqliteray}.
+As I mentioned in section~\ref{subsec:how_sqlite_backend} the B-Tree module looks after the pages including the organisation and relationships between them. And then packs them into a tree structure. This is the same structure that gets written to disk. The B-Tree implementation is designed to support fast querying. The various B-Tree structures can be found in \cite{btreepaper} paper. Sqlite also takes some improvements seen in \cite{btreeimprpaper} book \citep{sqliteray}.
 \\\\
-The basic idea is that the file is made up of chunks or pages, each page is the same fixed size. The size of the pages are a power of two between 512 - 65536 bytes. Pages are numbered starting with 1 instead of 0. The maximum number of pages that Sqlite can hold is 2,147,483,646 with a page size of 512 bytes witch is around 140 terabytes. The minimum number of pages within a database is 1. There are five types of pages:
+The basic idea is that the file is made up of pages, each page is the same fixed size. The size of the pages are a power of two between 512 - 65536 bytes. Pages are numbered starting with 1 instead of 0. The maximum number of pages that Sqlite can hold is 2,147,483,646 with a page size of 512 bytes witch is around 140 terabytes. The minimum number of pages within a database is 1. There are five types of pages:
 
 \begin{itemize} 
 	\item Lock Byte Page \hfill \\
-		The lock byte page appears between bytes, 1073741824 - 1073742335, if a database is smaller or equal to 1073742335 bytes it will not contain a lock byte page. It is used by the OS Interface mentioned in section~\ref{subsubsec:how_sqlite_works}.
+		The lock byte page appears between bytes, 1073741824 - 1073742335, if a database is smaller or equal to 1073742335 bytes it will not contain a lock byte page. It is used by the operating system not SQLite.
 	
 	\item Freelist Page \hfill \\
 		The freelist page is a unused page, often left behind when information is deleted from the database. The other type is a freelist trunk page containing page numbers of the other freelist pages.
@@ -111,10 +115,12 @@ The basic idea is that the file is made up of chunks or pages, each page is the 
 		Pointer map pages are inserted to make the vacuum modes faster. And are the reverse B-Tree going child to parent rather then parent to child. They exist in databases that have a non-zero value largest root B-Tree within the header. The first instance of these pages are at page 2. 
 \end{itemize} 
 
+This paper will not cover the lock byte and pointer map pages. 
+\\\\
 \subsubsection{The Header}
 \label{subsubsec:sqlite_page_hader}
 
-The first page before the root B-Tree header ( section~\ref{subsec:schema_table} ) contains a 100 Sqlite byte header. This is what makes Sqlite have zero configuration as all the database settings are stored within this header, all multibyte fields are stored in a big-endian format. The header follows the following format: 
+The first step in parsing the SQLite file before we tackle the different pages is to read in the SQLite header. This is the first 100 bytes located in page one. The header stores all the necessary information to read the rest of the file. so reading it correctly is crucial. Immediately following the header is the root B-Tree which we will cover the the next section. Table~\ref{tbl:sqlite_header} show the header layout.  All multibyte fields are stored in a big-endian format.
 
 \begin{longtable}[h]{| c | c | p{10cm} |}
 		\hline
@@ -178,12 +184,21 @@ The first page before the root B-Tree header ( section~\ref{subsec:schema_table}
 	\label{tbl:sqlite_header}
 \end{longtable}
 
-Immediately following the header is the root B-Tree which we will cover the the next section.
-
 \subsubsection{The Trees and Cells}
 \label{subsubsec:sqlite_trees_and_cells}
 
-As mentioned in section~\ref{subsubsec:sqlite_page_system} the file is split into pages and each page contains one of four types of B-Tree. Each B-Tree type is slightly different but follow the same pattern. At the start of each page there is the B-Tree / page header. Following the header is a array of pointers to their cells. The cell layouts are where the main difference in B-Tree types become more apparent, as they store the payload. Figure~\ref{fig:sqlite_file_format} shows the full layout of the SQlite file.
+As mentioned in section~\ref{subsubsec:sqlite_page_system} the file is split into pages and each page contains one of four types of pages. However each page is linked together in a B-Tree format, where each page represents a node in the tree. This is what the B-Tree module takes care of as mentioned in section~\ref{subsec:how_sqlite_backend}. Below figure~\ref{fig:sqlite_btree_figure} shows an example file B-Tree.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{images/sqlite_btree_format.png}
+	\caption{B-Tree page structure.}
+	\label{fig:sqlite_btree_figure}
+\end{figure}
+
+One thing to note is how the file is made up of mainly B-Trees. This is as briefly mentioned in the last section, pointer maps, lock byte and overflow pages only appear when the requirements are met. And Freelist pages when enough data has been deleted. This leaves the only B-Tree pages.
+\\\\
+Each B-Tree page is slightly different but follow the same pattern. At the start of each page there is the B-Tree / page header. Following the header is a array of pointers to their cells. The cell layouts are where the main difference in B-Tree types become more apparent, as they store the payload. Figure~\ref{fig:sqlite_file_format} shows the full layout of the SQlite file.
 
 \begin{figure}[H]
 	\centering
@@ -205,7 +220,7 @@ There are two main types of B-Trees. Table and Index, both of which uses a key-v
  INSERT INTO t1 VALUES(3, 'pentagon', 5, 540, 'grey');
 \end{lstlisting}
 
-\begin{figure}[H]
+\begin{figure}[H]the format.
 	\centering
 	\includegraphics[scale=0.5]{images/examplepop.png}
 	\caption{Example key pair database \citep{sqliteray}}
@@ -221,9 +236,9 @@ Those two types of B-Trees are broken down into Leaf and Interior. The leafs are
 	\item If one value is a real or integer value, and the other is a text or blob value, then the numeric value is considered lesser
 	\item If both values are text, then the collation function is used to compare them. The collation function is a property of the index column in which the values are found
 	\item If one value is text and the other a blob, the text value is considered lesser.
-	\item If both values are blobs, memcmp() is used to determine the results of the comparison function. If one blob is a prefix of the other, the shorter blob is considered lesser.
-\end{enumerate}  
-
+	\item If both values are blobs, memcmp() is used to determine the results of the comparison function. If one blob is a prefix of the other, the shorter blob is considered lesser. \\
+\end{enumerate}
+  
 Overall the four type of B-Trees found inside Sqlite are:
 
 \begin{itemize} 
@@ -234,7 +249,7 @@ Overall the four type of B-Trees found inside Sqlite are:
 \end{itemize} 
 
 
-In the case of index B-Trees, the interior trees contains N number of children and N-1 number of database records where N is two or greater. Whereas a leaf will always contain M database records where M is a one or greater. The database records stored inside a Index B-Tree are of the same quantity as the associated database table, with the same fields and columns. As can be seen in figure~\ref{fig:sqlite_key_pair}.
+In the case of index B-Trees, the interior trees contains N number of children and N-1 number of database records where N is two or greater. Whereas a leaf will always contain M database records where M is a one or greater. The database records stored inside a Index B-Tree are of the same quantity as the associated database table, with the same fields and columns. between the tables and rows. As can be seen above in figure~\ref{fig:sqlite_key_pair}. Index trees are used by SQlite to keep track the the foreign keys and row relationships.
 \\\\
 The Table B-Trees are a little different as they store most of the data. Unlike index B-Trees the interior trees contain no data but only pointers to children B-Trees, as all the data is stored on the leaf nodes. The interior trees contain at least one pointer, and the leaf node contains at least one record. For each table that exists in the database, one corresponding Table B-Tree also exists, and that B-Tree contains one entry per row, appearing in the same order as the logical database. Figure~\ref{fig:sqlite_table_btree} show the physical layout of the Table B-Tree. 
 \begin{figure}[H]
@@ -269,30 +284,6 @@ If we have the following value in hex 5B and convert this to binary we have 0101
 	\caption{Varint combinations \cite{sqliteray}}
 	\label{tbl:varints}
 \end{longtable}
-
-With this in mind the following pseudo code is needed to decode the varint.
-
-\begin{lstlisting}
-	byte[] varints = new byte[9];	// array to store the varints
-
-	for (i = 1 to 9) {	// count the number of bytes
-		varints[i] = byte;
-		if (bytes most significant is not set) {
-			break;
-		}
-	}
-	
-	if (number of bytes is 0) {  // check it is a varint.
-		return 0;
-	} else {
-		for (i = 0 to number of bytes) {   // remove significant bit
-			varints[i] = varints[i] << 1;
-		}
-		return concatenation of varints[]; // get the real value
-	}
-\end{lstlisting}
-
-The reasoning for the two for loops to count the size of the varint will become more apparent in the later section~\ref{subsubsec:record_format}.
 
 \subsubsection{B-Tree header}
 \label{subsubsec:btree_header}
@@ -371,7 +362,7 @@ if (payload-size > max-local) {
 }
 \end{lstlisting}
 
-Where bytes-of-unused-space is read in the Sqlite header at offset 20 and \newline max-embedded-fraction at offset 12 ( see section~\ref{subsubsec:sqlite_page_hader} for more info ). Once we know there is an offset we can use the following calculation to work out the size of the record in this part of the cell before jumping over to the overflow page:  
+Where bytes-of-unused-space is read in the Sqlite header at offset 20 and \newline max-embedded-fraction at offset 12. Once we know there is an overflow we can use the following calculation to work out the size of the record in this part of the cell before jumping over to the overflow page:  
 
 \begin{lstlisting}	
 usable-size = page-size - bytes-of-unused-space;
