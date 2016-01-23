@@ -27,7 +27,14 @@ package battyp.lancaster.sqlitevisualiser.controller;
 import battyp.lancaster.sqlitevisualiser.util.UiUtil;
 import battyp.lancaster.sqlitevisualiser.model.Model;
 import javafx.fxml.FXML;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TableColumn;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.util.Callback;
 
 import java.io.FileNotFoundException;
 import java.sql.ResultSet;
@@ -55,6 +62,9 @@ public class SqlEditorController extends Controller {
 
     @FXML
     private TextArea sqleditorreturn;
+	
+	@FXML
+	private TableView sqlResultTable;
 
     /**
      * Constructor.
@@ -97,17 +107,21 @@ public class SqlEditorController extends Controller {
     }
 
     private String performSelect() throws SQLException {
+		sqlResultTable.getItems().removeAll(sqlResultTable.getItems());
+        sqlResultTable.getColumns().removeAll(sqlResultTable.getColumns());
         ResultSet result = model.getSqlExecutor().executeSql(sqleditor.getText());
-        String output = "";
+        String output = "Selected.";
 
-        int cols = result.getMetaData().getColumnCount();
+       /* int cols = result.getMetaData().getColumnCount();
         while (result.next()) {
             for (int i = 0; i < cols; i++) {
                 output += (result.getString(i + 1) + "\t");
             }
             output += ("\r\n");
         }
-
+		*/
+			addColumnsToTable(result);
+			addDataToTable(result);
         result.close();
         model.getSqlExecutor().disconnect(); // close connection as only select
         return output;
@@ -117,5 +131,31 @@ public class SqlEditorController extends Controller {
         model.getSqlExecutor().performUpdate(sqleditor.getText());
         this.model.getSqlExecutor().getDatabaseMetaData().getConnection().commit(); // leave connection open as updater will close it
         return "Database updated.\n";
+    }
+	
+	
+	private void addColumnsToTable(ResultSet rs) throws SQLException {
+        for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
+            final int j = i;
+            TableColumn col = new TableColumn(rs.getMetaData().getColumnName(i + 1));
+            col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ObservableList, String>, ObservableValue<String>>() {
+                public ObservableValue<String> call(TableColumn.CellDataFeatures<ObservableList, String> param) {
+                    return new SimpleStringProperty(param.getValue().get(j).toString());
+                }
+            });
+            sqlResultTable.getColumns().addAll(col);
+        }
+    }
+
+    private void addDataToTable(ResultSet rs) throws SQLException  {
+        ObservableList<ObservableList> data = FXCollections.observableArrayList();
+        while (rs.next()) {
+            ObservableList<String> row = FXCollections.observableArrayList();
+            for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+                row.add(rs.getString(i));
+            }
+            data.add(row);
+        }
+        sqlResultTable.setItems(data);
     }
 }

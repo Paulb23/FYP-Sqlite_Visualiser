@@ -98,15 +98,32 @@ public class HeaderController extends Controller {
         HeaderInformationPane panel = new HeaderInformationPane("Type");
         panel.addItem("Schema Cookie", String.valueOf(metadata.schemaCookie));
         panel.addItem("Schema Format", String.valueOf(metadata.schemaFormat));
-        panel.addItem("Text Encoding", String.valueOf(metadata.textEncoding));
+		
+		if (metadata.textEncoding == 1) {
+			        panel.addItem("Text Encoding", String.valueOf(metadata.textEncoding) + " (UTF-8)");
+		} else if (metadata.textEncoding == 2) {
+			        panel.addItem("Text Encoding", String.valueOf(metadata.textEncoding) + " (UTF-16le)");
+		} else if (metadata.textEncoding == 3) {
+			        panel.addItem("Text Encoding", String.valueOf(metadata.textEncoding) + " (UTF-16be)");
+		}
         return panel;
     }
 
     private HeaderInformationPane createVersionPanel(Metadata metadata) {
         HeaderInformationPane panel = new HeaderInformationPane("Version");
         panel.addItem("User Version", String.valueOf(metadata.userVersion));
-        panel.addItem("Write Version", String.valueOf(metadata.writeVersion));
-        panel.addItem("Read Version", String.valueOf(metadata.readVersion));
+		
+		if (metadata.writeVersion == 1) {
+			panel.addItem("Write Version", String.valueOf(metadata.writeVersion) + " (Legacy)");
+		} else {
+			panel.addItem("Write Version", String.valueOf(metadata.writeVersion) + " (WAL)");
+		}
+		
+		if (metadata.readVersion == 1) {
+			panel.addItem("Read Version", String.valueOf(metadata.readVersion) + " (Legacy)");
+		} else {
+			panel.addItem("Read Version", String.valueOf(metadata.readVersion) + " (WAL)");
+		}
         panel.addItem("Valid Version", String.valueOf(metadata.versionValidNumber));
         panel.addItem("Sqlite Version", String.valueOf(metadata.sqliteVersion));
         return panel;
