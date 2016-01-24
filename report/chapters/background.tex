@@ -24,7 +24,7 @@ The second tool, is very unique. It showed a fragmented view of the database. Ma
 \\\\
 The tool is ran though the command line, and produces a Json file with the analysis, before sending it to the visualiser that produces a SVG image output. This allows any type of out to be added in. Some of the more advanced features, is filtering certain pages out or in. 
 \\\\
-Although it is very powerful, it does not support WAL mode, slow on larger databases and can only cope with UTF-8 text support. But it provides a very useful insight into SQLite. On top of this, it clearly lays out the page format of the file. Which is very similar to where where my tool is going.
+Although it is very powerful, it does not support WAL mode, slow on larger databases and can only cope with UTF-8 text support. But it provides a very useful insight into SQLite. On top of this, it clearly lays out the page format of the file. Which is very similar to where my tool is going.
 
 \subsection{What is Sqlite}
 \label{subsec:what_is_sqlite}
@@ -34,7 +34,7 @@ D. Richard Hipp, the author of SQLite, Originally got the idea while working on 
 Speaking to a colleague in January of 2000, Hipp, disused his idea for a self contained embedded database. When some free time opened up on the 29th of May 2000, SQLite was born. It was not until August 2000 that version 1.0 was released. Then in just over a year on the 28 November 2001 2.0 which introduced, B-Trees and many of the features seen in 3.0 today. During the next year he joined up with Joe Mistachkin followed by Dan Kennedy in 2002. To help work for the 3.0 release. Which came a lot later containing a full rewrite and improvement over 2.0, with the first public release on 18 June 2004. At the time of writing this paper we are currently sitting at version 3.10.4. After changes to the naming scheme, version 3 is currently supported to 2050. \citep{sqlite}.
 \\\\
 Today, SQLite is open source within the public domain making it accessible to everyone. The entire library size is around 350Kib, with some optional features omitted it could be reduced to around 300Kib making it incredibly small compared to what it does. In addition to this the runtime usage is minimal with 4Kib stack space and 100Kib heap, allowing it to run on almost anything. SQLite's main strength is that the entire database in encoded into a single portable file, that can be read, on any system whether 32 or 64 bit, big or small endian. It is often seen as a replacement for storage files rather then a database system. In fact Hipp (2000) has stated, "Think of SQLite not as a replacement for Oracle but as a replacement for fopen()".
-\\\\
+
 \subsection{Where is Sqlite used}
 \label{subsec:where_is_sqlite}
 
@@ -49,7 +49,7 @@ SQLite has a simple and very modular design. Consisting of eleven modules, and f
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.70]{images/sqlite_arch.png}
+	\includegraphics[scale=0.50]{images/sqlite_arch.png}
 	\caption{Sqlite architectural diagram \citep{sqlite}}
 	\label{fig:sqlite_arch}
 \end{figure}
