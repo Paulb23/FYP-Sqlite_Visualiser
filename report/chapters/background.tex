@@ -1,12 +1,30 @@
 \section{Background}
 \label{sec:sqlite_intro}
 
-In this section I go over SQLites beginnings and where it is used. Starting back in spring of 2000. I also look at the SQLite file format in great depth, to under it inside out, and how to parse it.
+To begin with we will go over some programs that provide support for SQlite. The turn our attention to SQLites beginnings and where it is used. Starting back in spring of 2000. Then look at the SQLite file format in great depth, to understand it inside out, and how to parse it. Before moving onto the other sections.
 
 \subsection{Similar programs}
 \label{subsec:similar_programs}
 
-Before i got far into the research of SQLite and it's history. i decided to take a look at what other system where available. 
+While searching the vast web for other tools, that could help me. I only came across two different types. The user interface, that removed having the need for SQL and the command line. Or very technical tools, and no middle ground. This was particularly interesting as the number of user interface tools where everywhere, while I could only find one technical tool. 
+
+\subsubsection{Sqlite browser}
+\label{subsubsec:sqlite_browser}
+
+The first tool I came across was the SQlite browser made by \cite{sqlitebrowser} based off of the Arca database browser. Out of all the user interface tools that I came across this was the most polished. It allowed users to open, view and manipulate the database. Without having to learn SQL, or the command line. With the main aim to be as simple as possible. 
+\\\\
+Apart from the usual features, such as viewing tables, schemas, and modifying them. The more unique features allowed exporting the tables to CSV, producing SQL dumps, and acting as a sandbox. The sandbox allowed users to execute commands, see the changes but, nothing was actually performed until the user committed the changes onto the database. In addition this it provided a fully fledged SQL editor with auto-complete, syntax highlighting and loading and saving of commands in external files.
+\\\\
+The tool itself was made in C/C++ and QT with support for SQlite databases up to version 3.8.2. It is available for all major platforms. While I was using this tool I found it simple and intuitive to navigate. It also was very powerful and did exactly what it said on the tin. However, it did not allow a insight into SQLite nor the logging of commands, produced by external programs.
+
+\subsubsection{Sqlite fragmentation}
+\label{subsubsec:sqlite_fragmentation}
+
+The second tool, is very unique. It showed a fragmented view of the database. Made by \cite{sqlitefrag}. Written in python and published to Github. It only did one thing but did it well. As we will find out later on. The file is made up of pages. This tool would scan the file, and produce a visualisation of the fragmentation status of each page. Much like that old Windows XP de-fragmentation tool. 
+\\\\
+The tool is ran though the command line, and produces a Json file with the analysis, before sending it to the visualiser that produces a SVG image output. This allows any type of out to be added in. Some of the more advanced features, is filtering certain pages out or in. 
+\\\\
+Although it is very powerful, it does not support WAL mode, slow on larger databases and can only cope with UTF-8 text support. But it provides a very useful insight into SQLite. On top of this, it clearly lays out the page format of the file. Which is very similar to where where my tool is going.
 
 \subsection{What is Sqlite}
 \label{subsec:what_is_sqlite}
