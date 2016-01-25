@@ -20,9 +20,9 @@ The tool itself was made in C/C++ and QT with support for SQlite databases up to
 \subsubsection{Sqlite fragmentation}
 \label{subsubsec:sqlite_fragmentation}
 
-The second tool, is very unique. It showed a fragmented view of the database. Made by \cite{sqlitefrag}. Written in python and published to Github. It only did one thing but did it well. As we will find out later on. The file is made up of pages. This tool would scan the file, and produce a visualisation of the fragmentation status of each page. Much like that old Windows XP de-fragmentation tool. 
+The second tool, is very unique. It showed a fragmented view of the database. Made by \cite{sqlitefrag}. Written in python and published to Github. It only did one thing but did it well. As we will find out later on. The file is made up of pages. This tool would scan the file, and produce a visualisation of the fragmentation status of each page. Much like that old Windows 98 de-fragmentation tool. 
 \\\\
-The tool is ran though the command line, and produces a Json file with the analysis, before sending it to the visualiser that produces a SVG image output. This allows any type of out to be added in. Some of the more advanced features, is filtering certain pages out or in. 
+The tool is ran though the command line, and produces a Json file with the analysis, before sending it to the visualiser that produces a SVG image output. This allows any type of out to be added in. Some of the more advanced features, is filtering certain pages out or in, and de-fragmentation. 
 \\\\
 Although it is very powerful, it does not support WAL mode, slow on larger databases and can only cope with UTF-8 text support. But it provides a very useful insight into SQLite. On top of this, it clearly lays out the page format of the file. Which is very similar to where my tool is going.
 
@@ -138,69 +138,7 @@ This paper will not cover the lock byte and pointer map pages.
 \subsubsection{The Header}
 \label{subsubsec:sqlite_page_hader}
 
-The first step in parsing the SQLite file before we tackle the different pages is to read in the SQLite header. This is the first 100 bytes located in page one. The header stores all the necessary information to read the rest of the file. so reading it correctly is crucial. Immediately following the header is the root B-Tree which we will cover the the next section. Table~\ref{tbl:sqlite_header} show the header layout.  All multibyte fields are stored in a big-endian format.
-
-\begin{longtable}[h]{| c | c | p{10cm} |}
-		\hline
-			\textbf{Byte Offset} & \textbf{Byte Size} & \textbf{Description} \\ 
-		\hline
-		\endhead
-			0 & 16 & A UTF-8 Header String followed by null terminator read as: "SQLite format 3" or in hex: "53 51 4c 69 74 65 20 66 6f 72 6d 61 74 20 33 00". \\
-		\hline
-			16 & 2 & Page Size 	in bytes, power of two between 512 - 65536 bytes. if using version 3.7.0.1 and earlier between 512 - 32768, or 1 for 65536. \\
-		\hline
-			18 & 1 & Write version, 1 for legacy; 2 for WAL. \\
-		\hline
-			19 & 1 & Read version, 1 for legacy; 2 for WAL. \\
-		\hline
-			20 & 1 & Bytes of unused space at the end of each page. This space is used by extensions, such as cryptographic to store a checksum, but normally 0. \\
-		\hline
-			21 & 1 & Maximum embedded payload fraction, must be 64. Was going to be used to determine the maximum size of a B-Tree cell on a index B-Tree. \\
-		\hline
-			22 & 1 & Minimum embedded payload fraction, must be 32. Was going to be used to determine the portion of a B-Tree cell that has one or more overflow pages on a index B-tree. \\
-		\hline
-			23 & 1 & Leaf payload fraction, must be 32. Was going to be used to determine the portion of a B-Tree cell that has one or more overflow pages on a leaf or table B-Tree. \\
-		\hline
-			24 & 4 & File change counter. It counts the number of times the database is unlocked after being modified. May not be incremented in WAL mode. \\
-		\hline
-			28 & 4 & Size of the database in pages, Total number of pages. \\
-		\hline
-			32 & 4 & Page number of first freelist page, or 0 if no freelist. \\
-		\hline
-			36 & 4 & Number of freelist pages. \\
-		\hline
-			40 & 4 & Schema Cookie. The schema version, each time the schema is modified this number is incremented. \\
-		\hline
-			44 & 4 & Schema format number. either 1, 2, 3 or 4. \newline
-			1. Format support back to version 3.0.0. \newline
-			2. Varying number of columns within the same table. From Version 3.1.3. \newline 
-			3. Extra column can be non-NULL values. From Version 3.1.4. \newline
-			4. Respects DESC keyword and boolean type. From Version 3.3.0. \newline \\
-		\hline
-			48 & 4 & Page cache size. suggestion only towards Sqlite's pager. \\
-		\hline
-			52 & 4 & Page number of largest root B-Tree, when in vacuum mode else 0. \\
-		\hline
-			56 & 4 & Text encoding. \newline
-			 1 for UTF-8. \newline 
-			 2 for UTF-816le. \newline 
-			 3 for UTF-816be. \\
-		\hline
-			60 & 4 & User version. Set by and read by the user, not used by Sqlite. \\
-		\hline
-			64 & 4 & Incremental-vacuum mode. Non 0 for true. 0 for false \\
-		\hline
-			68 & 4 & Application ID. Used to associate the database with a application. 0 is Sqlite3 Database \\
-		\hline
-			72 & 20 & Empty, Reserved for expansion. \\
-		\hline
-			92 & 4 & Version-valid-for-number. Value of the change counter when the Sqlite version number was stored. \\
-		\hline
-			96 & 4 & Version. Sqlite version. \\
-		\hline
-	\caption{Sqlite Header, modified from \cite{sqlite}}
-	\label{tbl:sqlite_header}
-\end{longtable}
+The first step in parsing the SQLite file before we tackle the different pages is to read in the SQLite header. This is the first 100 bytes located in page one. The header stores all the necessary information to read the rest of the file. so reading it correctly is crucial. Immediately following the header is the root B-Tree which we will cover the the next section. Appendix Table~\ref{tbl:sqlite_header} show the header layout.  All multibyte fields are stored in a big-endian format.
 
 \subsubsection{The Trees and Cells}
 \label{subsubsec:sqlite_trees_and_cells}
