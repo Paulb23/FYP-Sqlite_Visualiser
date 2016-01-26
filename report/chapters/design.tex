@@ -1,7 +1,7 @@
 \section{Design}
 \label{sec:design}
 
-In this section I go over the high level overview of my tools design. Starting with the high level, and going into more depth looking at each module.
+In this section I go over the high level overview of my applications design. Starting with the high level, and going into more depth looking at each module.
 
 \subsection{High level Overview}
 \label{subsec:high_level_overview}
@@ -26,9 +26,41 @@ The Model was going to run in its own thread so it could control, manage and pre
 	\label{fig:design_new}
 \end{figure}
 
-Most of the changes are seen within the Model, with the addition of two new modules. And rather then running the whole thing inside a new thread only the file watcher is. On top of this the command logging is no longer written out to file. I will go over each of the modules in the next part.
+Most of the changes are seen within the Model, with the addition of two new modules. And rather then running the whole thing inside a new thread only the file watcher is. On top of this the command logging is no longer written out to file. The final change is the reduction in the amount of controllers. I will go over each of the modules in the next part.
 
 \subsection{Module Overview}
 \label{subsec:module_overview}
 
-The first module..
+\subsubsection{The Main}
+\label{subsubsec:main}
+
+The main module represent the staring point of the application, it serves no other purpose other then to correctly initialise the view, model and controllers.
+
+\subsubsection{The View}
+\label{subsubsec:the_view}
+
+The view, consists of three parts, the top, middle and right side. Since it follows the MVC style, these only contain the layout of each of the corresponding sections. The middle section however, changes depending on what is being viewed.
+
+\subsubsection{The Controller}
+\label{subsubsec:the_controller}
+
+The controller is made up of two parts, the master controller, and the pane controller. The pane controller is changed depending on what is being viewed. Similar to the views middle pane. The master controller coordinates what is being shown. Both of them communicate to the model to collect updates, and interact with the data.
+
+\subsubsection{The Model}
+\label{subsubsec:the_model}
+
+The model is the most complicated section and is made up of seven modules. The model itself acts as a repository design with everything connecting and interacting though it.
+\\\\
+All contact with the model will go though the model interface. This allows the controllers to communicate to the individual modules. In addition to this, it provides a small amount of functionality for setting up and closing. Such as opening the database. Since every module will require something from this action, the model interface will take care of setting up each module. And on exit making sure all threads have been stopped, and any other connections have been closed.
+\\\\
+The Database, is the in program mapping of the SQLite database system. The database is made up of two parts, the data objects, and the interface into the data object. The data object are the mapping of the SQLite database. Containing the B-Tree system, and the data. The interface provides access to the history, allowing to program move along the database time line. And management of the data objects.
+\\\\
+The file watcher, runs in its own thread, and utilises the observer pattern. It runs in a continuous loop waiting for a modification to happen on the database. Once a change is detect it sends a signal out over the observers, so the change is recorded. Although, if they did not tune in to the observer, the rest of the program would not receive database updates.
+\\\\
+The File parser, parses any given valid database file. Converting it into the database object.
+\\\\
+The log, takes any two database objects and records the changes between them.
+\\\\
+The live updater, acts like a master controller for the modules, apart from the SQL executor, file watcher and model interface. It controls what happens when a change is detected, and as such is registered to the file watchers observer. When a change is detected, the first thing it does is contact the file parser for the updated database object, send it off to the log, to record changes, and then stores it in the database module. As it controls what happens and when it can also not update, allowing the parsing to pause.
+\\\\
+The SQL executor, controls the SQL connections, and executes SQL commands onto the database.
