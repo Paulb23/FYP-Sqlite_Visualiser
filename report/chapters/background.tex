@@ -1,32 +1,32 @@
 \section{Background}
 \label{sec:sqlite_intro}
 
-To begin with we will go over some programs that provide support for SQlite. The turn our attention to SQLites beginnings and where it is used. Starting back in spring of 2000. Then look at the SQLite file format in great depth, to understand it inside out, and how to parse it. Before moving onto the other sections.
+To begin with, we will go over some programs that provide support for SQLite. Then turn our attention to SQLites beginnings, and where it is used. Starting back in spring of 2000. Then look at the SQLite file format in great depth, to understand it inside out, and how to parse it. Before moving onto the other sections.
 
 \subsection{Similar programs}
 \label{subsec:similar_programs}
 
-While searching the vast web for other tools, that could help me. I only came across two different types. The user interface, that removed having the need for SQL and the command line. Or very technical tools, and no middle ground. This was particularly interesting as the number of user interface tools where everywhere, while I could only find one technical tool. 
+While searching the vast web for other tools I only came across two different types. The user interface. They would add a user interface to SQLite, removing the need for using SQL and the command line directly. Or very technical tools, and no middle ground. This was particularly interesting as the number of user interface tools where everywhere, while I could only find one technical tool. 
 
-\subsubsection{Sqlite browser}
+\subsubsection{SQLite browser}
 \label{subsubsec:sqlite_browser}
 
-The first tool I came across was the SQlite browser made by \cite{sqlitebrowser} based off of the Arca database browser. Out of all the user interface tools that I came across this was the most polished. It allowed users to open, view and manipulate the database. Without having to learn SQL, or the command line. With the main aim to be as simple as possible. 
+The first tool I came across was the SQLite browser, made by \cite{sqlitebrowser}. It is based off of the Arca database browser. Out of all the user interface tools that I came across this was the most polished. It allowed users to open, view and manipulate the database. Without having to learn SQL, or the command line. With the main aim to be as simple as possible. 
 \\\\
-Apart from the usual features, such as viewing tables, schemas, and modifying them. The more unique features allowed exporting the tables to CSV, producing SQL dumps, and acting as a sandbox. The sandbox allowed users to execute commands, see the changes but, nothing was actually performed until the user committed the changes onto the database. In addition this it provided a fully fledged SQL editor with auto-complete, syntax highlighting and loading and saving of commands in external files.
+Apart from the usual features, such as viewing tables, schemas, and modifying them. The more unique features allowed exporting the tables to CSV, producing SQL dumps, and acting as a sandbox. The sandbox allowed users to execute commands, see the changes but, nothing was actually performed until the user committed the changes onto the database. In addition  to this it provided a fully fledged SQL editor with auto-complete, syntax highlighting and loading and saving of commands in external files.
 \\\\
-The tool itself was made in C/C++ and QT with support for SQlite databases up to version 3.8.2. It is available for all major platforms. While I was using this tool I found it simple and intuitive to navigate. It also was very powerful and did exactly what it said on the tin. However, it did not allow a insight into SQLite nor the logging of commands, produced by external programs.
+The tool itself was made in C/C++ and QT, with support for SQLite databases up to version 3.8.2. It is available for all major platforms. While I was using this tool, I found it simple and intuitive to navigate. It was very powerful and did exactly what it said on the tin. However, it did not allow an insight into SQLite nor the logging of commands, produced by external programs.
 
-\subsubsection{Sqlite fragmentation}
+\subsubsection{SQLite fragmentation}
 \label{subsubsec:sqlite_fragmentation}
 
-The second tool, is very unique. It showed a fragmented view of the database. Made by \cite{sqlitefrag}. Written in python and published to Github. It only did one thing but did it well. As we will find out later on. The file is made up of pages. This tool would scan the file, and produce a visualisation of the fragmentation status of each page. Much like that old Windows 98 de-fragmentation tool. 
+The second tool, is very unique. It showed a fragmented view of the database. Made by \cite{sqlitefrag}. Written in python and published to Github. It only did one thing but did it well. As we will find out later on, the file is made up of pages. This tool would scan the file, and produce a visualisation of the fragmentation status of each page. Much like that old Windows 98 de-fragmentation tool. 
 \\\\
 The tool is ran though the command line, and produces a Json file with the analysis, before sending it to the visualiser that produces a SVG image output. This allows any type of out to be added in. Some of the more advanced features, is filtering certain pages out or in, and de-fragmentation. 
 \\\\
 Although it is very powerful, it does not support WAL mode, slow on larger databases and can only cope with UTF-8 text support. But it provides a very useful insight into SQLite. On top of this, it clearly lays out the page format of the file. Which is very similar to where my tool is going.
 
-\subsection{What is Sqlite}
+\subsection{What is SQLite}
 \label{subsec:what_is_sqlite}
 
 D. Richard Hipp, the author of SQLite, Originally got the idea while working on a battleship. He was tasked with developing a program for the on board guided missiles. While working on the software used the database system Informix. That took hours to set up and get anywhere near useful. For the application that he was building, all he needed was a small self-contained, portable and easy to use database. Rather then the bloated mess that was Informix \citep{sqlitedefguide}.
@@ -35,17 +35,17 @@ Speaking to a colleague in January of 2000, Hipp, disused his idea for a self co
 \\\\
 Today, SQLite is open source within the public domain making it accessible to everyone. The entire library size is around 350Kib, with some optional features omitted it could be reduced to around 300Kib making it incredibly small compared to what it does. In addition to this the runtime usage is minimal with 4Kib stack space and 100Kib heap, allowing it to run on almost anything. SQLite's main strength is that the entire database in encoded into a single portable file, that can be read, on any system whether 32 or 64 bit, big or small endian. It is often seen as a replacement for storage files rather then a database system. In fact Hipp (2000) has stated, "Think of SQLite not as a replacement for Oracle but as a replacement for fopen()".
 
-\subsection{Where is Sqlite used}
+\subsection{Where is SQLite used}
 \label{subsec:where_is_sqlite}
 
 SQLite being a relational database engine. As well as a replacement for fopen() \citep{sqlite}. Allows it be truly used for anything. Because of this SQLite might be the single most deployed software currently. Alongside zlib, libpng and libjpg. With the number in the billions and billions \citep{sqlite}.
 \\\\
 Because of this SQLite can be found anywhere. Microsoft even approached Hipp, and asked for a special version to be made for use in Windows 10 \citep{sqlitetalk}. In addition to Microsoft. Apple, Google and Facebook all use SQLite, somewhere within their systems. On top of all the big names. You can find it, within any another consumer device, such as Phones, Cameras and Televisions. This wide usage was picked up by Google and Hipp was awarded “Best Integrator” at O’Reilly’s 2005 Open Source Convention \citep{sqlitedefguide}. 
 
-\subsection{How Sqlite works}
+\subsection{How SQLite works}
 \label{subsec:how_sqlite_works}
 
-SQLite has a simple and very modular design. Consisting of eleven modules, and four subsystems. The backend, The core, The SQL compiler, and Accessories. Figure~\ref{fig:sqlite_arch} shows the architectural digram of Sqlite.
+SQLite has a simple and very modular design. Consisting of eleven modules, and four subsystems. The backend, The core, The SQL compiler, and Accessories. Figure~\ref{fig:sqlite_arch} shows the architectural digram of SQLite.
 
 \begin{figure}[H]
 	\centering
@@ -104,15 +104,15 @@ Lastly, the Pager is the transport truck, going between between the B-Tree (fact
 \subsubsection{The Accessories}
 \label{subsec:how_sqlite_accessories}
 
-The last module, accessories is made up of two parts. Utility and tests. The utility module contains functions that are used all across Sqlite, such as memory allocation, string comparison, random number generator and symbol tables. This basically acts as a shared system for all parts of SQlite. The test section contains all the test scripts and only exist for testing purposes, of which contains over 811 times more code then the actual project, and million of test cases. As it covers every possible code path through SQLite. This is partly why it is considered to be so reliable. 
+The last module, accessories is made up of two parts. Utility and tests. The utility module contains functions that are used all across SQLite, such as memory allocation, string comparison, random number generator and symbol tables. This basically acts as a shared system for all parts of SQLite. The test section contains all the test scripts and only exist for testing purposes, of which contains over 811 times more code then the actual project, and million of test cases. As it covers every possible code path through SQLite. This is partly why it is considered to be so reliable. 
 
-\subsection{The Sqlite file format}
+\subsection{The SQLite file format}
 \label{subsec:sqlite_file_format}
 
 \subsubsection{The page system}
 \label{subsubsec:sqlite_page_system}
 
-As I mentioned in section~\ref{subsec:how_sqlite_backend} the B-Tree module looks after the pages including the organisation and relationships between them. And then packs them into a tree structure. This is the same structure that gets written to disk. The B-Tree implementation is designed to support fast querying. The various B-Tree structures can be found in \cite{btreepaper} paper. Sqlite also takes some improvements seen in \cite{btreeimprpaper} book \citep{sqliteray}.
+As I mentioned in section~\ref{subsec:how_sqlite_backend} the B-Tree module looks after the pages including the organisation and relationships between them. And then packs them into a tree structure. This is the same structure that gets written to disk. The B-Tree implementation is designed to support fast querying. The various B-Tree structures can be found in \cite{btreepaper} paper. SQLite also takes some improvements seen in \cite{btreeimprpaper} book \citep{sqliteray}.
 \\\\
 The basic idea is that the file is made up of pages, each page is the same fixed size. The size of the pages are a power of two between 512 - 65536 bytes. Pages are numbered starting with 1 instead of 0. The maximum number of pages that Sqlite can hold is 2,147,483,646 with a page size of 512 bytes witch is around 140 terabytes. The minimum number of pages within a database is 1. There are five types of pages:
 
@@ -138,7 +138,7 @@ This paper will not cover the lock byte and pointer map pages.
 \subsubsection{The Header}
 \label{subsubsec:sqlite_page_hader}
 
-The first step in parsing the SQLite file before we tackle the different pages is to read in the SQLite header. This is the first 100 bytes located in page one. The header stores all the necessary information to read the rest of the file. so reading it correctly is crucial. Immediately following the header is the root B-Tree which we will cover the the next section. Appendix Table~\ref{tbl:sqlite_header} show the header layout.  All multibyte fields are stored in a big-endian format.
+The first step in parsing the SQLite file before we tackle the different pages is to read in the SQLite header. This is the first 100 bytes located in page one. The header stores all the necessary information to read the rest of the file. so reading it correctly is crucial. Immediately following the header is the root B-Tree which we will cover the the next section. Appendix Table~\ref{tbl:sqlite_header} shows the header layout.  All multibyte fields are stored in a big-endian format.
 
 \subsubsection{The Trees and Cells}
 \label{subsubsec:sqlite_trees_and_cells}
@@ -152,9 +152,9 @@ As mentioned in section~\ref{subsubsec:sqlite_page_system} the file is split int
 	\label{fig:sqlite_btree_figure}
 \end{figure}
 
-One thing to note is how the file is made up of mainly B-Trees. This is as briefly mentioned in the last section, pointer maps, lock byte and overflow pages only appear when the requirements are met. And Freelist pages when enough data has been deleted. This leaves the only B-Tree pages.
+One thing to note is how the file is made up of mainly B-Trees. This is as briefly mentioned in the last section, pointer maps, lock byte and overflow pages only appear when the requirements are met. And Freelist pages when enough data has been deleted. This leaves only the B-Tree pages.
 \\\\
-Each B-Tree page is slightly different but follow the same pattern. At the start of each page there is the B-Tree / page header. Following the header is a array of pointers to their cells. The cell layouts are where the main difference in B-Tree types become more apparent, as they store the payload. Figure~\ref{fig:sqlite_file_format} shows the full layout of the SQlite file.
+At the start of each B-Tree page there is the B-Tree / page header. Following the header is a array of pointers to their cells. One thing to note is that the first page also has the database header. This mean you will have to skip it before reaching the page header. Figure~\ref{fig:sqlite_file_format} shows the full layout of the SQLite file.
 
 \begin{figure}[H]
 	\centering
@@ -163,9 +163,9 @@ Each B-Tree page is slightly different but follow the same pattern. At the start
 	\label{fig:sqlite_file_format}
 \end{figure}
 
-The cells start at the end of the page and work backwards towards the top.
+When the cells are added to the page, they start at the end of the page and work backwards towards the top. The main difference between each type of B-tree pages are found inside the cells as they carry the payload for the node. 
 \\\\
-There are two main types of B-Trees. Table and Index, both of which uses a key-value system in order to organise them. The Table B-Trees use 64 bit integers also known as row-id or primary key. The Index B-Trees uses database records as keys. This can be seen in the following example taken from \cite{sqliteray}:
+As mentioned in section~\ref{subsubsec:sqlite_page_system} there are four types of B-Trees. These can be split into two main types, and two sub types. The main types are Table and Index, both of which uses a key-value system in order to organise them. The Table B-Trees use 64 bit integers also known as row-id or primary key, theses are often what the user has set inside the database, else SQLite will attach its own system. The Index B-Trees uses database records as keys. This can be seen in the following example taken from \cite{sqliteray}:
 
 \begin{lstlisting}
  CREATE TABLE t1(a INTEGER PRIMARY KEY, b, c, d);
@@ -183,7 +183,7 @@ There are two main types of B-Trees. Table and Index, both of which uses a key-v
 	\label{fig:sqlite_key_pair}
 \end{figure}
 
-Those two types of B-Trees are broken down into Leaf and Interior. The leafs are located at the end of the tree and contain no children. Whereas the interior will always have at least one single child. In addition to this all database records / values within the B-Trees are sorted using the following rules written by \cite{sqliteray}:
+Those sub types of B-Trees are broken down into Leaf and Interior. The leafs are located at the end of the tree and contain no children. Whereas the interior will always have at least one single child. In addition to this all database records / values within the B-Trees are sorted using the following rules written by \cite{sqliteray}:
 
 \begin{enumerate} 
 	\item If both values are NULL, then they are considered equal.
@@ -195,7 +195,7 @@ Those two types of B-Trees are broken down into Leaf and Interior. The leafs are
 	\item If both values are blobs, memcmp() is used to determine the results of the comparison function. If one blob is a prefix of the other, the shorter blob is considered lesser. \\
 \end{enumerate}
   
-Overall the four type of B-Trees found inside Sqlite are:
+Overall the four type of B-Trees found inside SQLite are:
 
 \begin{itemize} 
 	\item Index B-Tree Interior
@@ -205,7 +205,7 @@ Overall the four type of B-Trees found inside Sqlite are:
 \end{itemize} 
 
 
-In the case of index B-Trees, the interior trees contains N number of children and N-1 number of database records where N is two or greater. Whereas a leaf will always contain M database records where M is a one or greater. The database records stored inside a Index B-Tree are of the same quantity as the associated database table, with the same fields and columns. between the tables and rows. As can be seen above in figure~\ref{fig:sqlite_key_pair}. Index trees are used by SQlite to keep track the the foreign keys and row relationships.
+In the case of index B-Trees, the interior trees contains N number of children and N-1 number of database records where N is two or greater. Whereas a leaf will always contain M database records where M is a one or greater. The database records stored inside a Index B-Tree are of the same quantity as the associated database table, with the same fields and columns. between the tables and rows. As can be seen above in figure~\ref{fig:sqlite_key_pair}. Index trees are used by SQLite to keep track the the foreign keys and row relationships.
 \\\\
 The Table B-Trees are a little different as they store most of the data. Unlike index B-Trees the interior trees contain no data but only pointers to children B-Trees, as all the data is stored on the leaf nodes. The interior trees contain at least one pointer, and the leaf node contains at least one record. For each table that exists in the database, one corresponding Table B-Tree also exists, and that B-Tree contains one entry per row, appearing in the same order as the logical database. Figure~\ref{fig:sqlite_table_btree} show the physical layout of the Table B-Tree. 
 \begin{figure}[H]
@@ -218,9 +218,9 @@ The Table B-Trees are a little different as they store most of the data. Unlike 
 \subsubsection{Encoding of the data}
 \label{subsubsec:sqlite_data_encoding}
 
-Sqlite uses a variable length integer or 'varint' in order encode some of the values inside the database, since they use up less space for small positive values. A varint is a static Huffman encoding of a 64-bit two complements integer. A varint is between and 1 - 9 bytes in size. The maximum number a byte can hold is 127 as the most significant bit is needed as a flag unless we are in the ninth byte where all the bits are used. If the most significant bit is set then we need the next byte. So if it is set in byte 1 then we need byte 2 and so on.
+SQLite uses a variable length integer or 'varint' in order encode some of the values inside the database, since they use up less space for small positive values. A varint is a static Huffman encoding of a 64-bit two complements integer. A varint is between and 1 - 9 bytes in size. The maximum number a byte can hold is 127 as the most significant bit is needed as a flag unless we are in the ninth byte where all the bits are used. If the most significant bit is set then we need the next byte. So if it is set in byte 1 then we need byte 2 and so on.
 \\\\
-If we have the following value in hex 5B and convert this to binary we have 01011011 as we can see the the most significance bit is not set leaving us with the value 91. However, if we have the value in hex 84 and convert this to binary we have the value 10000100, the most significant bit is set this means we need the next byte which has a value in hex of 60 converting this to binary leaves us with  01100000 meaning that this varint is two byes long. In order to create the final value we need to concatenate them together leaving out the most significant bit. creating the value 00001001100000 giving us a total value of 608 in decimal \citep{sausagefactory}. Table~\ref{tbl:varints} show the all combinations of varints. 
+If we have the following value in hex 5B and convert this to binary we have 01011011 as we can see the the most significance bit is not set leaving us with the value 91. However, if we have the value in hex 84 and convert this to binary we have the value 10000100, the most significant bit is set this means we need the next byte which has a value in hex of 60, converting this to binary leaves us with  01100000 meaning that this varint is two byes long. In order to create the final value we need to concatenate them together leaving out the most significant bit. creating the value 00001001100000 giving us a total value of 608 in decimal \citep{sausagefactory}. Table~\ref{tbl:varints} show the all combinations of varints. 
 
 \begin{longtable}[h]{| c | c | p{10cm} |}
 		\hline
@@ -244,7 +244,7 @@ If we have the following value in hex 5B and convert this to binary we have 0101
 \subsubsection{B-Tree header}
 \label{subsubsec:btree_header}
 
-As mentioned in section~\ref{subsubsec:sqlite_trees_and_cells} the header for each type of B-Tree does not vary that much. Table~\ref{tbl:btree_header} shows the header for the B-Trees.
+As mentioned in section~\ref{subsubsec:sqlite_trees_and_cells} each page begins with a header. Table~\ref{tbl:btree_header} shows the header for the B-Trees.
 
 \begin{longtable}[h]{| c | c | p{10cm} |}
 		\hline
@@ -383,7 +383,7 @@ if (payload-size > max-local) {
 }
 \end{lstlisting}
 
-Where bytes-of-unused-space is read in the Sqlite header at offset 20 and \newline max-embedded-fraction at offset 12 ( see section~\ref{subsubsec:sqlite_page_hader} for more info ). Once we know there is an offset we can use the following calculation to work out the size of the record in this part of the cell before jumping over to the overflow page:  
+Where bytes-of-unused-space is read in the Sqlite header at offset 20 and \newline max-embedded-fraction at offset 12. Once we know there is an offset we can use the following calculation to work out the size of the record in this part of the cell before jumping over to the overflow page:  
 
 \begin{lstlisting}	
 usable-size = page-size - bytes-of-unused-space;
@@ -429,7 +429,9 @@ Throughout the previous sections the payload has been called the data type byte 
 	\label{fig:sqlite_record_format}
 \end{figure}
 
-The cell header is made up of N + 1 varints where N is the number of values in the record. The first varint is the number of bytes in the header. As varints can be between 1 - 9 bytes it is important to keep track of each of fhe following N varints size to count the number of values, as briefly mentioned in section~\ref{subsubsec:sqlite_data_encoding}. They contain the values types. The different value types can be seem below in Table~\ref{tbl:cell_header_record_types} 
+The cell header is made up of N + 1 varints where N is the number of values in the record. The first varint is the number of bytes in the header. And the following N the type of record.
+\\\\
+As varints can be between 1 - 9 bytes it is important to keep track of the varints size. In order to count the number of values in the record. For example if we have N values, and the number of bytes as 8. This could mean there are 8 small values, or 1 large value, or anywhere in between. The different value types can be seem below in Table~\ref{tbl:cell_header_record_types} 
 
 \begin{longtable}[h]{| c | c| p{5cm} |}
 		\hline
@@ -468,10 +470,12 @@ The cell header is made up of N + 1 varints where N is the number of values in t
 
 The cell content as shown in figure~\ref{fig:sqlite_record_format} follows the same format layout in the header, with the content size and type specified in table~\ref{tbl:cell_header_record_types}. Where the size is 0 there is no varint to read from the data section and should be skipped.
 
-\subsubsection{ B-Tree and Schema Table}
+\subsubsection{Root B-Tree and Schema Table}
 \label{subsubsec:schema_table}
 
-As mentioned in section~\ref{subsubsec:sqlite_page_hader} following the Sqlite header is root B-Tree. The root B-Tree is one of the Table B-Trees with a defined payload format ( section~\ref{subsubsec:record_format}). This B-Tree payload contains pointer / page number to all the other pages in the file. It is referred to as the "sqlite\verb|_|master" table. Without parsing it properly you will only be able to access the "sqlite\verb|_|master" table. An example of why can be seen in figure~\ref{fig:sqlite_table_btree}. The Table~\ref{tbl:schema_table} below shows the layout of the "sqlite\verb|_|master" table.
+As mentioned in section~\ref{subsubsec:sqlite_page_hader} following the SQLite header is root B-Tree. The root B-Tree is one of the Table B-Trees with a defined payload format ( section~\ref{subsubsec:record_format}). This B-Tree payload contains pointer / page numbers to all the other pages in the file. It is referred to as the "sqlite\verb|_|master" table. Without parsing it properly you will only be able to access the "sqlite\verb|_|master" table.
+\\\\
+In some of my test databases, the root page was a Interior Table B-Tree, so going by page numbers in order to find the schema table is a bad idea. The Table~\ref{tbl:schema_table} below shows the payload / record layout of the "sqlite\verb|_|master" table.
 
 \begin{longtable}[h]{| c | c| p{10cm} |}
 		\hline
