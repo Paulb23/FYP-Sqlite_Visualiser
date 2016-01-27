@@ -64,3 +64,9 @@ The log, takes any two database objects and records the changes between them.
 The live updater, acts like a master controller for the modules, apart from the SQL executor, file watcher and model interface. It controls what happens when a change is detected, and as such is registered to the file watchers observer. When a change is detected, the first thing it does is contact the file parser for the updated database object, send it off to the log, to record changes, and then stores it in the database module. As it controls what happens and when it can also not update, allowing the parsing to pause.
 \\\\
 The SQL executor, controls the SQL connections, and executes SQL commands onto the database.
+
+\subsection{The User interface}
+\label{subsec:high_user_interface}
+***************************************************\\
+TODO: WHEN FINISHED!\\
+****************************************************

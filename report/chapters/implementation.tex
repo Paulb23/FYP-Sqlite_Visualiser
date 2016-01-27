@@ -1,11 +1,12 @@
 \section{Implementation}
 \label{sec:implementation}
 
+In this section I will go over the previously discussed modules, and how they are implemented. And why some thing turned out the way they did.
+
 \subsection{The tools}
 \label{subsec:the_tools}
 
-I used..
-
+To application is built in Java with JavaFX for the user interface and controllers. This meant right from the get go I had cross platform support. A MVC style architecture and with JDBC open access to SQL database connections. The only major issue was speed, as SQLite is known to be fast, whether my application could keep up with the requests that where being performed. However, as SQLite only allows one writer at a time this was never an issue. The other downside to using Java was not having direct access to the SQLite API through its own interface. But, after looking at the interface everything that i needed was supported through JDBC.
 
 \subsection{The Modules}
 \label{subsec:the_modules}
