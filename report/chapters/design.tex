@@ -15,8 +15,15 @@ From the start I wanted to build a system, that was modular and self-contained. 
 	\label{fig:design_old}
 \end{figure}
 
-As you can see, the design utilizes the MVC (Model-View-Controller) style architect in order to separate the interface from the data. The idea being that the view could be switched out at anytime without breaking the application.
-\\\\
+As you can see, the design utilizes the MVC (Model-View-Controller) style architect in order to separate the interface from the data. This means the view will make requests to the controller, who will then in turn contact the model for information, then sending the information to be presented by the view. The idea being that the view could be switched or adjusted at anytime without breaking the application. an example of MVC can be seen below in figure~\ref{fig:mvc}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{images/mvc.png}
+	\caption{MVC architecture}
+	\label{fig:mvc}
+\end{figure}
+
 The Model was going to run in its own thread so it could control, manage and prepare the data as it came in. This meant the view could request it when it wanted. One other thing to note, is the command logging was going to store them in to an external file, for the view. However, this design proved unusable and thus changed into the following seen in figure~\ref{fig:design_new}. 
 
 \begin{figure}[H]
