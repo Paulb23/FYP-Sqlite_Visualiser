@@ -3,6 +3,20 @@
 
 In this section I go over the high level overview of my applications design. Starting with the high level, and going into more depth looking at each module.
 
+\subsection{Features}
+\label{subsec:Features}
+As mentioned in the last section, I wanted a cross platform tool, that would enable anyone to view the internal structure of a SQLite database. With consistency and reliability. The application comes with five main features, all building upon one feature.  
+\\\\
+The central feature is the visualiser. The visualiser allows you to see the broken down page structure and hierarchy. So you can see how you SQLite database is laved out. On top of this you can click a node in order to see more information about. Such as data, page number e.t.c
+\\\\
+In addition to the visualiser, there is also a meta data tab, that will allow you to view, the header information in the database. Alongside other statistics that come from parsing the database. Such as number of tables, primary keys and so on.
+\\\\
+The last main feature ties into the base feature, that allows real time updating of this data when any command from any system modifies the database in some way shape or form. The live updating allows you to step through the time line of updates that have occurs while the application is running. You can also pause it if you want to inspect a certain state. 
+\\\\
+Whenever a update occurs, all changes that happened are recorded inside a log, and a "snapshot" of the database is taken. This snapshot is then presented to use, through the visualiser, metadata and log tabs. Creating the time line that you can then browse. 
+\\\\
+Apart from just showing you data, you can also execute SQL onto the database, through the SQL executor and view the schema and tables currently inside the database.
+
 \subsection{High level Overview}
 \label{subsec:high_level_overview}
 

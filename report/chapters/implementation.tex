@@ -167,13 +167,28 @@ In order to compare database though required looping through every data value in
 \end{figure}
 
 This means we can tell if there is any change in the current section tree just by comparing the nodes hashes without having to loop over them. meaning that we will only loop over the tree at all when a change is seen. otherwise we can skip it. Creating an unnoticeable change unless many nodes are changed at once. The hash for node is calculated off the hash of the data and number of children meaning we will also know if a page has been added or removed. 
+\\\\
+In addition to this, when it detects an update to the data, it will mark that page as modified, a simple boolean value. and record the store the string value, from the old page and the new page. If instead it was a removal or addition, of data, it will simply store the value, and leave the removed or non-existent value. Something similar happens with added and removed pages. With the addition of pages, the newer page will be marked as changed. Often when this happens a pointer to the new page will also be placed somewhere, so this is also recorded. When a  page is removed, utilising the data from the old tree we can see exactly what was gone and record it, but there is nothing to marked as changed, apart from the pointers in other pages to that page. 
 
 \subsubsection{Live Updater}
 \label{subsubsec:live_Updater_imp}
 
-The Live updater...
+The Live updater has undergone many changes from the start, although its position in the architecture has not changed, it gradually was morphed and shaped by the rest of the application. Originally it stared out as a relatively simple class that would control the parsing of the application. By contacting the database and telling it when to move along the time line, allowing the pausing of live updates. It would also receive the update signal from the file watcher, and parse the file, moving it into the database storage. Basically an extra more controlled, and tailored interface into the database interface linking it to the file parser.
+\\\\
+Then as time went on I wanted to have additional information into the metadata of the database, tat required running SQL onto the database, else i would have to loop through the entire tree again. So it needed access to the SQL execute, which we will cover in the next section. Then I ran into problems with the log feature, and it was all to easy to stick the log module inside this one. However, this class soon became bloated, as I added new features, since this was the only one that had access to all the needed resources.
+\\\\
+Rather then stick with it I decided rather then fighting against my designs it would be better to dedicate this as a master module, that would orchestrate the process when an update signal is revived. This allowed me to move the bloat back into their correct modules. And now it does exactly what I said in the beginning, acts as a tailored interface into the database interface, contacts the file parser, SQL executor, and Log modules to control the parsing of the updated database.
 
 \subsubsection{SQL executor}
 \label{subsubsec:sql_executor_imp}
 
-The SQL executor...
+The SQL executor manages the JDBC connections to the database, making sure that it connects, closes and commits any changes that are needed onto the database. It interface provides four methods to the other modules, connect, close, perform select, perform update and get database meta-data. Unlike th rest of the modules this was one of the more straight forward and simple to implement.
+
+\subsection{User Interface}
+\label{subsec:user_interface_imp}
+
+I mentioned in the last section how the view is put together, but now we have looked at each of the modules is turn. I wanted to go through how each of the different tabs / features are put together. In order to better understand how each module is interacted with.
+\\\\
+***********************\\
+TODO WHEN THE UI IS FINISHED\\
+***********************
