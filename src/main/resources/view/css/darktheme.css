@@ -305,3 +305,56 @@
      -fx-border-width: 2px 2px 2px 2px;
      -fx-border-color: derive(#1d1d1d,20%);
 }
+
+#logArea {
+     -fx-background-color: derive(#1d1d1d,30%);
+     -fx-background: derive(#1d1d1d,30%);
+     -fx-border-style: solid;
+     -fx-border-width: 2px 2px 2px 2px;
+     -fx-border-color: derive(#1d1d1d,20%);
+}
+
+.titled-pane {
+     -fx-text-fill: white;
+}
+
+
+.titled-pane:focused {
+     -fx-text-fill: white;
+}
+
+.titled-pane > .title {
+     -fx-color: white;
+     -fx-text-fill: white;
+     -fx-background-color: derive(#1d1d1d,10%);
+     -fx-background: derive(#1d1d1d,10%);
+     -fx-border-style: solid;
+     -fx-border-width: 2px 2px 2px 2px;
+     -fx-border-color: derive(#1d1d1d,5%);
+}
+
+.titled-pane:focused > .title {
+     -fx-color: white;
+     -fx-text-fill: white;
+     -fx-background-color: derive(#1d1d1d,10%);
+     -fx-background: derive(#1d1d1d,10%);
+     -fx-border-style: solid;
+     -fx-border-width: 2px 2px 2px 2px;
+     -fx-border-color: derive(#1d1d1d,5%);
+}
+
+.titled-pane > *.content {
+     -fx-color: white;
+     -fx-text-fill: white;
+     -fx-background-color: derive(#1d1d1d,10%);
+     -fx-background: derive(#1d1d1d,10%);
+     -fx-border-style: solid;
+     -fx-border-width: 2px 2px 2px 2px;
+     -fx-border-color: derive(#1d1d1d,5%);
+     -fx-padding: 1em;
+ }
+
+
+.titled-pane > .title > .arrow-button .arrow {
+    -fx-background-color: white;
+}

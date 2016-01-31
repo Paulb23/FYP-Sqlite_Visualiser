@@ -73,7 +73,6 @@ public class DefaultModel implements Model {
         this.sqlExecutor.setDatabaseFile(path);
         this.liveUpdater.setDatabase(path);
         this.fileWatcher.setFile(path);
-        this.log.setFile(path);
         this.liveUpdater.updateMetaData(database);
         isFileOpen = true;
     }

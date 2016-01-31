@@ -25,6 +25,7 @@
 package battyp.lancaster.sqlitevisualiser.model.log;
 
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
+import battyp.lancaster.sqlitevisualiser.model.datastructures.LogItem;
 
 import java.util.List;
 
@@ -48,18 +49,11 @@ public interface Log {
      */
     public void detectChanges(Database newDatabase, Database previousDatabase);
 
-    /**
-     * Sets the database to log.
-     *
-     * @param pathToDatabase Path to the database including file name and extension.
-     */
-    public  void setFile(String pathToDatabase);
-
 
     /**
      * Gets the log.
      *
      * @return The log with each command on a  new line.
      */
-    public List<String> getLog();
+    public List<LogItem> getLog();
 }

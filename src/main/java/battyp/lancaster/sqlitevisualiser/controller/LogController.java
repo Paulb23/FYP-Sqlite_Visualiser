@@ -25,8 +25,15 @@
 package battyp.lancaster.sqlitevisualiser.controller;
 
 import battyp.lancaster.sqlitevisualiser.model.Model;
+import battyp.lancaster.sqlitevisualiser.model.datastructures.LogItem;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TitledPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 
 import java.util.List;
 
@@ -42,7 +49,7 @@ import java.util.List;
 public class LogController extends Controller {
 
     @FXML
-    private TextArea logTextArea;
+    private ScrollPane logArea;
 
     /**
      * Constructor.
@@ -57,10 +64,24 @@ public class LogController extends Controller {
      * {@inheritDoc}
      */
     public void notifyObserver() {
-        logTextArea.clear();
-        List<String> log = model.getLog().getLog();
-        for (String item : log) {
-            logTextArea.appendText(item + "\n");
+        if (this.model.getLiveUpdater().isUpdating()) {
+            List<LogItem> log = model.getLog().getLog();
+
+            VBox pane = new VBox();
+            pane.setSpacing(10.0);
+
+            for (LogItem item : log) {
+                TitledPane entry = new TitledPane();
+                entry.setText(item.date);
+                Pane centerPane = new Pane();
+                for (String changes : item.items) {
+                    centerPane.getChildren().add(new Label(changes));
+                }
+                entry.setContent(centerPane);
+                pane.getChildren().add(entry);
+                entry.setExpanded(false);
+            }
+            logArea.setContent(pane);
         }
     }
 }

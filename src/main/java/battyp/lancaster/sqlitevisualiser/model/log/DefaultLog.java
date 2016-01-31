@@ -27,6 +27,7 @@ package battyp.lancaster.sqlitevisualiser.model.log;
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeNode;
+import battyp.lancaster.sqlitevisualiser.model.datastructures.LogItem;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -45,14 +46,16 @@ import java.util.stream.Collectors;
 public class DefaultLog implements Log {
 
 
-    private String pathToDatabase;
     private List<String> sqlLog;
+
+    private List<LogItem> logItems;
 
     /**
      * Constructor.
      */
     public DefaultLog() {
         this.sqlLog = new ArrayList<>();
+        this.logItems = new ArrayList<>();
     }
 
     /**
@@ -60,6 +63,7 @@ public class DefaultLog implements Log {
      */
     @Override
     public void detectChanges(Database newDatabase, Database previousDatabase) {
+        sqlLog.clear();
         if (previousDatabase != null && newDatabase != null) {
             BTreeNode<BTreeCell> oldRoot = previousDatabase.getBTree().getRoot();
             BTreeNode<BTreeCell> newRoot = newDatabase.getBTree().getRoot();
@@ -68,10 +72,17 @@ public class DefaultLog implements Log {
                 Stack<BTreeCell> oldTree = oldRoot.childrenToStack();
                 Stack<BTreeCell> newTree = newRoot.childrenToStack();
 
-                sqlLog.add(new SimpleDateFormat("HH:mm:ss dd/MM/yyyy").format(Calendar.getInstance().getTime()));
+                String date = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy").format(Calendar.getInstance().getTime());
                     detectTreeChanges(newTree, oldTree);
                     detectDataChanges(newTree, oldTree);
-                sqlLog.set(sqlLog.size() - 1, sqlLog.get(sqlLog.size() - 1) + "\n");
+                if (sqlLog.size() != 0) {
+                    sqlLog.set(sqlLog.size() - 1, sqlLog.get(sqlLog.size() - 1) + "\n");
+
+                    LogItem entry = new LogItem();
+                    entry.date = date;
+                    entry.items = sqlLog;
+                    logItems.add(entry);
+                }
             }
         }
     }
@@ -166,15 +177,7 @@ public class DefaultLog implements Log {
      * {@inheritDoc}
      */
     @Override
-    public void setFile(String pathToDatabase) {
-        this.pathToDatabase = pathToDatabase;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<String> getLog() {
-        return this.sqlLog;
+    public List<LogItem> getLog() {
+        return this.logItems;
     }
 }

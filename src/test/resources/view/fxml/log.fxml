@@ -22,12 +22,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
 -->
-<?import javafx.scene.text.*?>
-<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
 
 <AnchorPane fx:id="LogPage" prefHeight="480.0" prefWidth="640.0" xmlns:fx="http://javafx.com/fxml">
     <children>
-        <TextArea editable="false" fx:id="logTextArea" AnchorPane.topAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.bottomAnchor="10.0" />
+        <ScrollPane fx:id="logArea" AnchorPane.topAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.bottomAnchor="10.0" />
     </children>
 </AnchorPane>

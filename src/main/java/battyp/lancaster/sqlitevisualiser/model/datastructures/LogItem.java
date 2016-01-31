@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2014 Paul Batty
@@ -21,13 +20,26 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
--->
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
+ */
 
+package battyp.lancaster.sqlitevisualiser.model.datastructures;
 
-<AnchorPane fx:id="LogPage" prefHeight="480.0" prefWidth="640.0" xmlns:fx="http://javafx.com/fxml">
-    <children>
-        <ScrollPane fx:id="logArea" AnchorPane.topAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.bottomAnchor="10.0" />
-    </children>
-</AnchorPane>
+import battyp.lancaster.sqlitevisualiser.model.log.Log;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * <h1> Log Item </h1>
+ *
+ * <p>
+ * A log item or record for the log class.
+ *
+ * @author Paul Batty
+ * @see Log
+ * @since 0.9
+ */
+public class LogItem {
+    public String date;
+    public List<String> items = new ArrayList<>();
+}
