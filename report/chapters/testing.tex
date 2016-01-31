@@ -1,15 +1,21 @@
 \section{Testing}
 \label{sec:testing}
 
-\subsection{Code Tests}
-\label{subsec:code_tests}
+Testing is an important part of making all application, and as such will go over the ways that I went about testing my application.
 
-\subsubsection{Unit tests}
-\label{subsubsec:unit_tests}
+\subsection{Test data}
+\label{subsec:test_data}
 
-Unit testing...
+In order to assure that my program ran correctly under a variety of circumstances, I used a variety of databases including different sizes, and headers. 
 
-\subsubsection{Integration tests}
-\label{subsubsec:integration_tests}
+\subsection{Unit tests}
+\label{subsec:unit_tests}
 
-Integration tests...
+Throughout the implementation stage I kept close to test driven development, and as such have written a lot of unit tests utilising the JGroups framework. In total I have around TODO:X unit tests. All passing. The unit tests are written to use mocks where dependences are needed allowing me to make sure its correctly testing.
+\\\\
+In order to test the user interface I found a test framework that works alongside called testFx that is specifically designed to test JavaFX. You pass it the root node of your scene, and pass it commands, such as click, with either the id, or name of the item. It will then automatically control the mouse, interacting with the user interface.
+
+\subsection{Integration tests}
+\label{subsec:integration_tests}
+
+In addition to unit testing, I performed integration tests that would test the interactions between the various modules in order to check that they are working correctly. Such as the live updater and it corresponding calls to the other modules. This also included testing that the user interface would correctly interact with the module and its various modules correctly.
