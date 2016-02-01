@@ -111,15 +111,6 @@ public class SqlEditorController extends Controller {
         sqlResultTable.getColumns().removeAll(sqlResultTable.getColumns());
         ResultSet result = model.getSqlExecutor().executeSql(sqleditor.getText());
         String output = "Selected.";
-
-       /* int cols = result.getMetaData().getColumnCount();
-        while (result.next()) {
-            for (int i = 0; i < cols; i++) {
-                output += (result.getString(i + 1) + "\t");
-            }
-            output += ("\r\n");
-        }
-		*/
 			addColumnsToTable(result);
 			addDataToTable(result);
         result.close();

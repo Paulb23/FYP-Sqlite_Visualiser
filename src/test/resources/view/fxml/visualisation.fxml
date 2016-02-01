@@ -28,7 +28,7 @@
 
 <AnchorPane fx:id="VisualisationPage" prefHeight="480.0" prefWidth="640.0" xmlns:fx="http://javafx.com/fxml">
     <children>
-        <ZoomableScrollPane cache="true" styleClass="zommablepane" fitToHeight="false" fitToWidth="false"  AnchorPane.topAnchor="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" fx:id="zoomablepane" pannable="true" vbarPolicy="NEVER" hbarPolicy="NEVER" style="-fx-ZoomableScrollPane-padding: 20 20 20 20;">
-        </ZoomableScrollPane>
+        <BorderPane cache="true" styleClass="zommablepane" AnchorPane.topAnchor="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" fx:id="visPane">
+        </BorderPane>
     </children>
 </AnchorPane>

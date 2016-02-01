@@ -36,6 +36,8 @@ import javafx.scene.shape.Line;
  * This class is used to represent edges between cells during the visualisation
  * of the database.
  *
+ * thanks to: https://stackoverflow.com/questions/30679025/graph-visualisation-like-yfiles-in-javafx
+ *
  * @author Paul Batty
  * @see Cell
  * @since 0.7
@@ -43,6 +45,9 @@ import javafx.scene.shape.Line;
 public class Edge extends Group {
 
     private Line line;
+
+    private Cell source;
+    private Cell target;
 
     /**
      * Constructor.
@@ -53,6 +58,12 @@ public class Edge extends Group {
     public Edge(Cell source, Cell target) {
         this.line = new Line();
 
+        this.source = source;
+        this.target = target;
+
+        source.addCellChild(target);
+        target.addCellParent(source);
+
         line.setStartX(source.getLayoutX() + (source.getBoundsInParent().getWidth() / 2));
         line.setStartY(source.getLayoutY() + (source.getBoundsInParent().getHeight() / 2));
 
@@ -60,7 +71,15 @@ public class Edge extends Group {
         line.setEndY(target.getLayoutY() + (target.getBoundsInParent().getHeight() / 2));
 
         line.setStrokeWidth(2);
-        line.setStroke(new Color(Math.random(), Math.random(), Math.random(), 1));
+        line.setStroke(new Color(1, 1, 1, 1));
         getChildren().add(line);
+    }
+
+    public Cell getSource() {
+        return source;
+    }
+
+    public Cell getTarget() {
+        return target;
     }
 }

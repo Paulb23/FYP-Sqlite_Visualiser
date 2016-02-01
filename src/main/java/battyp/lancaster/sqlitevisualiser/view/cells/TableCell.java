@@ -55,8 +55,9 @@ public class TableCell extends Cell {
         Rectangle view = new Rectangle( 50,50);
         view.setStroke(Color.INDIANRED);
         view.setFill(Color.INDIANRED);
+        setView(view);
 
-        getChildren().add(view);
-        getChildren().add(new Label("Page: " + (cell.pageNumber + 1)));
+        //getChildren().add(view);
+        //getChildren().add(new Label("Page: " + (cell.pageNumber + 1)));
     }
 }

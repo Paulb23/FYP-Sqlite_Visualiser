@@ -25,9 +25,14 @@
 package battyp.lancaster.sqlitevisualiser.view;
 
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
+import javafx.scene.Node;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <h1> Cell </h1>
@@ -35,15 +40,22 @@ import javafx.scene.shape.Rectangle;
  * <p>
  * This class is used to visualise the different nodes within the database.
  *
+ * thanks to: https://stackoverflow.com/questions/30679025/graph-visualisation-like-yfiles-in-javafx
+ *
  * @author Paul Batty
  * @since 0.7
  */
-public abstract class Cell extends Pane {
+public class Cell extends Pane {
 
     /**
      * Cell this pane represents.
      */
     public final BTreeCell cell;
+
+    List<Cell> children = new ArrayList<>();
+    List<Cell> parents = new ArrayList<>();
+
+    private Node view;
 
     /**
      * Constructor.
@@ -58,11 +70,45 @@ public abstract class Cell extends Pane {
      * Adds a outline border to the the cell.
      */
     public void highlight() {
-        Rectangle view = new Rectangle( 50,50);
-        view.setStrokeWidth(10);
-        view.setStroke(Color.BLUEVIOLET);
-        view.setFill(Color.TRANSPARENT);
+        DropShadow borderGlow = new DropShadow();
+        borderGlow.setColor(Color.YELLOW);
+        borderGlow.setOffsetX(0f);
+        borderGlow.setOffsetY(0f);
+        borderGlow.setHeight(70);
+        borderGlow.setWidth(70);
+        this.setEffect(borderGlow);
+    }
 
-        this.getChildren().add(1, view);
+    public void addCellChild(Cell cell) {
+        children.add(cell);
+    }
+
+    public List<Cell> getCellChildren() {
+        return children;
+    }
+
+    public void addCellParent(Cell cell) {
+        parents.add(cell);
+    }
+
+    public List<Cell> getCellParents() {
+        return parents;
+    }
+
+    public void removeCellChild(Cell cell) {
+        children.remove(cell);
+    }
+
+    public void setView(Node view) {
+        this.view = view;
+        getChildren().add(view);
+    }
+
+    public Node getView() {
+        return this.view;
+    }
+
+    public String getCellId() {
+        return String.valueOf(this.cell.pageNumber);
     }
 }

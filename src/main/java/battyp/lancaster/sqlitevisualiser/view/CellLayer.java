@@ -22,42 +22,21 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.view.cells;
 
+package battyp.lancaster.sqlitevisualiser.view;
 
-import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
-import battyp.lancaster.sqlitevisualiser.view.Cell;
-import battyp.lancaster.sqlitevisualiser.view.CellType;
-import javafx.scene.control.Label;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.layout.Pane;
 
 /**
- * <h1> Table Pointer Internal Cell </h1>
+ * <h1> Cell Layer </h1>
  *
  * <p>
- * Cell type to represent the internal pointer cell, within the Sqlite
- * database.
+ * This class is a wrapper for the cells.
+ *
+ * thanks to: https://stackoverflow.com/questions/30679025/graph-visualisation-like-yfiles-in-javafx
  *
  * @author Paul Batty
- * @see Cell
- * @since 0.8
+ * @since 0.9
  */
-public class TablePointerInternalCell extends Cell {
-
-    /**
-     * Constructor.
-     *
-     * @param cell The cell this Cell represents.
-     */
-    public TablePointerInternalCell(BTreeCell cell) {
-        super(cell);
-
-        Rectangle view = new Rectangle( 50,50);
-        view.setStroke(Color.DARKORANGE);
-        view.setFill(Color.DARKORANGE);
-        setView(view);
-       // getChildren().add(view);
-       // getChildren().add(new Label("Page: " + (cell.pageNumber + 1)));
-    }
+public class CellLayer extends Pane {
 }

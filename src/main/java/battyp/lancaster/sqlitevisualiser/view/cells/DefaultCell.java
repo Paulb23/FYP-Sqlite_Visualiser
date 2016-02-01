@@ -54,7 +54,7 @@ public class DefaultCell extends Cell {
         Rectangle view = new Rectangle( 50,50);
         view.setStroke(Color.DODGERBLUE);
         view.setFill(Color.DODGERBLUE);
-
-        getChildren().add(view);
+        setView(view);
+       // getChildren().add(view);
     }
 }

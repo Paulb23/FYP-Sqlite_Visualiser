@@ -41,6 +41,8 @@ import javafx.scene.transform.Scale;
  * and is used to draw the tree visualisation. Made up of Cells and
  * edges.
  *
+ * thanks to: https://stackoverflow.com/questions/30679025/graph-visualisation-like-yfiles-in-javafx
+ *
  * @author Paul Batty
  * @see Cell
  * @see Edge
@@ -50,6 +52,7 @@ public class ZoomableScrollPane extends ScrollPane {
 
     private Group zoomGroup;
     private Scale scaleTransform;
+    private Node content;
     private double scale = 1.0;
     private double delta = 0.1;
 
@@ -57,13 +60,18 @@ public class ZoomableScrollPane extends ScrollPane {
      * Creates a new zoomable pane
      *
      */
-    public ZoomableScrollPane() {
+    public ZoomableScrollPane(Node content) {
+        this.content = content;
         Group contentGroup = new Group();
         zoomGroup = new Group();
         contentGroup.getChildren().add(zoomGroup);
+        zoomGroup.getChildren().add(content);
         setContent(contentGroup);
         scaleTransform = new Scale(scale, scale, 0, 0);
         zoomGroup.getTransforms().add(scaleTransform);
+        this.setPannable(true);
+        this.setHbarPolicy(ScrollBarPolicy.ALWAYS);
+        this.setVbarPolicy(ScrollBarPolicy.ALWAYS);
 
         /**
          * Disable scrolling with mouse wheel
@@ -151,5 +159,9 @@ public class ZoomableScrollPane extends ScrollPane {
             scale = 10;
         }
         zoomTo(scale);
+    }
+
+    public double getScaleValue() {
+        return scale;
     }
 }

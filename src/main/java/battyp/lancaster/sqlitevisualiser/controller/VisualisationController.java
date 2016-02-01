@@ -28,23 +28,15 @@ import battyp.lancaster.sqlitevisualiser.model.Model;
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeNode;
+import battyp.lancaster.sqlitevisualiser.view.*;
 import battyp.lancaster.sqlitevisualiser.view.Cell;
-import battyp.lancaster.sqlitevisualiser.view.CellFactory;
-import battyp.lancaster.sqlitevisualiser.view.Edge;
-import battyp.lancaster.sqlitevisualiser.view.ZoomableScrollPane;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-
 import java.util.List;
+import java.util.Random;
 
 /**
  * <h1> Visualisation Controller </h1>
@@ -75,7 +67,7 @@ import java.util.List;
 public class VisualisationController extends Controller {
 
     @FXML
-    private ZoomableScrollPane zoomablepane;
+    private BorderPane visPane;
 
     @FXML
     private Label cellDataPage;
@@ -114,22 +106,31 @@ public class VisualisationController extends Controller {
      */
     public void notifyObserver() {
         if (model.isFileOpen()) {
-            double hvalue = zoomablepane.getHvalue();
-            double vvalue = zoomablepane.getVvalue();
-            zoomablepane.clear();
-
             Database database = model.getDatabase();
 
             BorderPane borderPane = new BorderPane();
-            Pane pane = new Pane();
+            VisualisationGraph graph = new VisualisationGraph();
+            VisualisationModel model = graph.getModel();
+            visPane.setCenter(graph.getScrollPane());
+
+            graph.beginUpdate();
 
             BTreeNode<BTreeCell> tree = database.getBTree().getRoot();
-            addCell(tree, null, 50, 50, pane);
+            addCell(tree, null, 50, 50, model);
 
-            //pane.setRotate(90);
-            //pane.setScaleY(-1);
+            graph.endUpdate();
 
-            borderPane.setCenter(pane);
+            List<Cell> cells = graph.getModel().getAllCells();
+            Random rnd = new Random();
+            for (Cell cell : cells) {
+                double x = rnd.nextDouble() * 500;
+                double y = rnd.nextDouble() * 500;
+                cell.relocate(x, y);
+            }
+            //cell.relocate(x + 150, y);
+
+            borderPane.setCenter(graph.getScrollPane());
+
 
        /*     Pane paddingTop = new Pane();
             paddingTop.setMinSize(200, 2000);
@@ -148,10 +149,6 @@ public class VisualisationController extends Controller {
             borderPane.setTop(paddingTop);
             borderPane.setBottom(paddingBottom);
 */
-            zoomablepane.setNodeContent(borderPane);
-            //zoomablepane.centerNode(pane);
-            zoomablepane.setHvalue(hvalue);
-            zoomablepane.setVvalue(vvalue);
         }
     }
 
@@ -167,34 +164,33 @@ public class VisualisationController extends Controller {
      * @param parent Parent to the node or null for self.
      * @param x X pos to draw the node.
      * @param y Y pos to draw the node.
-     * @param pane Pane to attach the node to.
+     * @param model Pane to attach the node to.
      */
-    private void addCell(BTreeNode<BTreeCell> node, Cell parent, int x, int y, Pane pane) {
+    private void addCell(BTreeNode<BTreeCell> node, Cell parent, int x, int y, VisualisationModel model) {
         Cell cell = cellFactory.createCell(node.getData().type, node.getData());
 
-        cell.setLayoutX(x + 150);
-        cell.setLayoutY(y);
+      //  cell.setLayoutX(x + 150);
+      //  cell.setLayoutY(y);
         cell.setOnMouseClicked(event -> {
             Cell cell1 = (Cell)event.getSource();
             showData(cell1);
         });
 
+        model.addCell(cell);
         if (parent != null) {
-            Edge edge = new Edge(parent, cell);
-            pane.getChildren().add(edge);
+            model.addEdge(parent.getCellId(), cell.getCellId());
         }
-        pane.getChildren().add(cell);
 
         List<BTreeNode<BTreeCell>> children = node.getChildren();
 
         y+=150;
         if (node.getNumberOfChildren() > 0) {
             for (BTreeNode<BTreeCell> child : children) {
-                if (pane.getChildren().size() > 0) {
-                    Node previousAddedNode = pane.getChildren().get(pane.getChildren().size() - 1);
+               if (model.getAddedCells().size() > 0) {
+                    Node previousAddedNode = model.getAddedCells().get(model.getAddedCells().size() - 1);
                     x = (int) previousAddedNode.getLayoutX();
                 }
-                addCell(child, cell, x, y, pane);
+                addCell(child, cell, x, y, model);
                 x++;
             }
         }

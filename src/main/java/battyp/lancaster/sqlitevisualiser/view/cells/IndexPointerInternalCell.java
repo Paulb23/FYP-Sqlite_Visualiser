@@ -56,8 +56,8 @@ public class IndexPointerInternalCell extends Cell {
         Rectangle view = new Rectangle( 50,50);
         view.setStroke(Color.DARKSLATEBLUE);
         view.setFill(Color.DARKSLATEBLUE);
-
-        getChildren().add(view);
-        getChildren().add(new Label("Page: " + ((cell.pageNumber + 1))));
+        setView(view);
+        //getChildren().add(view);
+        //getChildren().add(new Label("Page: " + ((cell.pageNumber + 1))));
     }
 }
