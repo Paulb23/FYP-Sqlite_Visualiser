@@ -62,7 +62,7 @@ public class SqlEditorController extends Controller {
 
     @FXML
     private TextArea sqleditorreturn;
-	
+
 	@FXML
 	private TableView sqlResultTable;
 
@@ -132,14 +132,17 @@ public class SqlEditorController extends Controller {
         this.model.getSqlExecutor().getDatabaseMetaData().getConnection().commit(); // leave connection open as updater will close it
         return "Database updated.\n";
     }
-	
-	
+
+
 	private void addColumnsToTable(ResultSet rs) throws SQLException {
         for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
             final int j = i;
             TableColumn col = new TableColumn(rs.getMetaData().getColumnName(i + 1));
             col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ObservableList, String>, ObservableValue<String>>() {
                 public ObservableValue<String> call(TableColumn.CellDataFeatures<ObservableList, String> param) {
+                    if (param.getValue().get(j) == null) {
+                        return new SimpleStringProperty("null");
+                    }
                     return new SimpleStringProperty(param.getValue().get(j).toString());
                 }
             });
