@@ -35,6 +35,8 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -120,16 +122,25 @@ public class VisualisationController extends Controller {
             graph.endUpdate();
 
             List<Cell> cells = graph.getModel().getAllCells();
-            Random rnd = new Random();
+            Collections.reverse(cells);
+            double x = 50;
+            double leafX = 50;
             for (Cell cell : cells) {
-                double x = rnd.nextDouble() * 500;
-                double y = rnd.nextDouble() * 500;
-                cell.relocate(x, y);
+                List<Cell> children = cell.getCellChildren();
+                double y = cell.getLayoutY();
+
+                if (children.size() > 0) {
+                    if (children.size() == 1) {
+                        x = children.get(0).getLayoutX();
+                    } else {
+                        x =  ((children.get(0).getLayoutX() + children.get(children.size() - 1).getLayoutX()) / 2);
+                    }
+                    cell.relocate(x, y);
+                } else {
+                    cell.relocate(leafX, y);
+                    leafX += 150;
+                }
             }
-            //cell.relocate(x + 150, y);
-
-            //visPane.setCenter(graph.getScrollPane());
-
 
        /*     Pane paddingTop = new Pane();
             paddingTop.setMinSize(200, 2000);
@@ -169,7 +180,8 @@ public class VisualisationController extends Controller {
         Cell cell = cellFactory.createCell(node.getData().type, node.getData());
 
       //  cell.setLayoutX(x + 150);
-      //  cell.setLayoutY(y);
+        cell.setLayoutY(y);
+      //  cell.relocate(x + 150, y);
         cell.setOnMouseClicked(event -> {
             Cell cell1 = (Cell)event.getSource();
             showData(cell1);
