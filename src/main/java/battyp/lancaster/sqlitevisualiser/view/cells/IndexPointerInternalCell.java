@@ -28,9 +28,13 @@ package battyp.lancaster.sqlitevisualiser.view.cells;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
 import battyp.lancaster.sqlitevisualiser.view.Cell;
 import battyp.lancaster.sqlitevisualiser.view.CellType;
+import javafx.geometry.Bounds;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
 /**
  * <h1> Index Pointer Internal Cell </h1>
@@ -53,11 +57,22 @@ public class IndexPointerInternalCell extends Cell {
     public IndexPointerInternalCell(BTreeCell cell) {
         super(cell);
 
+        StackPane pane = new StackPane();
         Rectangle view = new Rectangle( 50,50);
-        view.setStroke(Color.DARKSLATEBLUE);
-        view.setFill(Color.DARKSLATEBLUE);
-        setView(view);
-        //getChildren().add(view);
-        //getChildren().add(new Label("Page: " + ((cell.pageNumber + 1))));
+        view.setId("index-pointer-cell");
+        pane.getChildren().add(view);
+
+        Text label = new Text(String.valueOf(this.cell.pageNumber + 1));
+        label.setId("cell-text");
+
+        Bounds rb = view.getBoundsInLocal();
+        Bounds t2b = label.getBoundsInLocal();
+        double scalex = (rb.getWidth()/t2b.getWidth()) / 2;
+        double scaley = rb.getHeight()/t2b.getHeight() / 2;
+        label.setScaleX( scalex );
+        label.setScaleY( scaley );
+
+        pane.getChildren().add(label);
+        setView(pane);
     }
 }

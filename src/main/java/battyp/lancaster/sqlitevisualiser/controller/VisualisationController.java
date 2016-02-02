@@ -31,6 +31,7 @@ import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeNode;
 import battyp.lancaster.sqlitevisualiser.view.*;
 import battyp.lancaster.sqlitevisualiser.view.Cell;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
@@ -117,13 +118,13 @@ public class VisualisationController extends Controller {
             graph.beginUpdate();
 
             BTreeNode<BTreeCell> tree = database.getBTree().getRoot();
-            addCell(tree, null, 50, 50, model);
+            addCell(tree, null, 50, model);
 
             graph.endUpdate();
 
             List<Cell> cells = graph.getModel().getAllCells();
             Collections.reverse(cells);
-            double x = 50;
+            double x;
             double leafX = 50;
             for (Cell cell : cells) {
                 List<Cell> children = cell.getCellChildren();
@@ -141,24 +142,7 @@ public class VisualisationController extends Controller {
                     leafX += 150;
                 }
             }
-
-       /*     Pane paddingTop = new Pane();
-            paddingTop.setMinSize(200, 2000);
-
-            Pane paddingBottom = new Pane();
-            paddingBottom.setMinSize(200, 2000);
-
-            Pane paddingLeft = new Pane();
-            paddingLeft.setMinSize(2000, 200);
-
-            Pane paddingRight = new Pane();
-            paddingRight.setMinSize(2000, 200);
-
-            borderPane.setLeft(paddingLeft);
-            borderPane.setRight(paddingRight);
-            borderPane.setTop(paddingTop);
-            borderPane.setBottom(paddingBottom);
-*/
+            graph.getScrollPane().zoomTo(0.2);
         }
     }
 
@@ -172,16 +156,13 @@ public class VisualisationController extends Controller {
      *
      * @param node Node to represent
      * @param parent Parent to the node or null for self.
-     * @param x X pos to draw the node.
      * @param y Y pos to draw the node.
      * @param model Pane to attach the node to.
      */
-    private void addCell(BTreeNode<BTreeCell> node, Cell parent, int x, int y, VisualisationModel model) {
+    private void addCell(BTreeNode<BTreeCell> node, Cell parent, int y, VisualisationModel model) {
         Cell cell = cellFactory.createCell(node.getData().type, node.getData());
 
-      //  cell.setLayoutX(x + 150);
         cell.setLayoutY(y);
-      //  cell.relocate(x + 150, y);
         cell.setOnMouseClicked(event -> {
             Cell cell1 = (Cell)event.getSource();
             showData(cell1);
@@ -197,12 +178,7 @@ public class VisualisationController extends Controller {
         y+=150;
         if (node.getNumberOfChildren() > 0) {
             for (BTreeNode<BTreeCell> child : children) {
-               if (model.getAddedCells().size() > 0) {
-                    Node previousAddedNode = model.getAddedCells().get(model.getAddedCells().size() - 1);
-                    x = (int) previousAddedNode.getLayoutX();
-                }
-                addCell(child, cell, x, y, model);
-                x++;
+                addCell(child, cell, y, model);
             }
         }
     }

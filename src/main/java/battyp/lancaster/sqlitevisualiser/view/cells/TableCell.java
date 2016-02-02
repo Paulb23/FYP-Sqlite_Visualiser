@@ -27,9 +27,13 @@ package battyp.lancaster.sqlitevisualiser.view.cells;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
 import battyp.lancaster.sqlitevisualiser.view.Cell;
 import battyp.lancaster.sqlitevisualiser.view.CellType;
+import javafx.geometry.Bounds;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
 /**
  * <h1> Table Cell </h1>
@@ -52,12 +56,22 @@ public class TableCell extends Cell {
     public TableCell(BTreeCell cell) {
         super(cell);
 
+        StackPane pane = new StackPane();
         Rectangle view = new Rectangle( 50,50);
-        view.setStroke(Color.INDIANRED);
-        view.setFill(Color.INDIANRED);
-        setView(view);
+        view.setId("table-cell");
+        pane.getChildren().add(view);
 
-        //getChildren().add(view);
-        //getChildren().add(new Label("Page: " + (cell.pageNumber + 1)));
+        Text label = new Text(String.valueOf(this.cell.pageNumber + 1));
+        label.setId("cell-text");
+
+        Bounds rb = view.getBoundsInLocal();
+        Bounds t2b = label.getBoundsInLocal();
+        double scalex = (rb.getWidth()/t2b.getWidth()) / 2;
+        double scaley = rb.getHeight()/t2b.getHeight() / 2;
+        label.setScaleX( scalex );
+        label.setScaleY( scaley );
+
+        pane.getChildren().add(label);
+        setView(pane);
     }
 }

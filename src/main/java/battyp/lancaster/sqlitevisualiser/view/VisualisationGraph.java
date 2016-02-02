@@ -62,6 +62,7 @@ public class VisualisationGraph {
         scrollPane = new ZoomableScrollPane(canvas);
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(true);
+        scrollPane.setPannable(true);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
     }
@@ -90,9 +91,9 @@ public class VisualisationGraph {
         getCellLayer().getChildren().removeAll(model.getRemovedCells());
         getCellLayer().getChildren().removeAll(model.getRemovedEdges());
 
-        for (Cell cell : model.getAddedCells()) {
-            mouseGestures.makeDraggable(cell);
-        }
+//        for (Cell cell : model.getAddedCells()) {
+//            mouseGestures.makeDraggable(cell);
+//        }
 
         // every cell must have a parent, if it doesn't, then the graphParent is
         // the parent

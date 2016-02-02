@@ -358,3 +358,29 @@
 .titled-pane > .title > .arrow-button .arrow {
     -fx-background-color: white;
 }
+
+#data-cell {
+    -fx-fill:#26A65B;
+}
+
+#table-cell {
+    -fx-fill:#E87E04;
+}
+
+#internal-table-cell {
+    -fx-fill:#EF4836;
+}
+
+#index-leaf-cell {
+    -fx-fill:#86E2D5;
+}
+
+#index-pointer-cell {
+    -fx-fill:#F9BF3B;
+}
+
+#cell-text {
+    -fx-color: black;
+    -fx-text-fill: black;
+    -fx-font-weight: bolder;
+}

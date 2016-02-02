@@ -25,7 +25,6 @@
 package battyp.lancaster.sqlitevisualiser.view;
 
 import javafx.event.EventHandler;
-import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
@@ -53,7 +52,7 @@ public class ZoomableScrollPane extends ScrollPane {
     private Group zoomGroup;
     private Scale scaleTransform;
     private Node content;
-    private double scale = 1.0;
+    private double scaleValue = 1.0;
     private double delta = 0.1;
 
     /**
@@ -67,7 +66,7 @@ public class ZoomableScrollPane extends ScrollPane {
         contentGroup.getChildren().add(zoomGroup);
         zoomGroup.getChildren().add(content);
         setContent(contentGroup);
-        scaleTransform = new Scale(scale, scale, 0, 0);
+        scaleTransform = new Scale(scaleValue, scaleValue, 0, 0);
         zoomGroup.getTransforms().add(scaleTransform);
 
         /**
@@ -87,12 +86,11 @@ public class ZoomableScrollPane extends ScrollPane {
 
             @Override
             public void handle(ScrollEvent event) {
-                if (event.getDeltaY() < 0) {
-                    scale -= delta;
-                } else {
-                    scale += delta;
-                }
-                zoomTo(scale);
+                    if (event.getDeltaY() < 0) {
+                        zoomOut();
+                    } else {
+                        zoomIn();
+                    }
                 event.consume();
             }
         });
@@ -124,7 +122,7 @@ public class ZoomableScrollPane extends ScrollPane {
      * @param scale Value to zoom to
      */
     public void zoomTo(double scale) {
-        this.scale = scale;
+        this.scaleValue = scale;
         scaleTransform.setX(scale);
         scaleTransform.setY(scale);
     }
@@ -133,25 +131,25 @@ public class ZoomableScrollPane extends ScrollPane {
      * Zooms out
      */
     public void zoomOut() {
-        scale -= delta;
-        if (Double.compare(scale, 0.1) < 0) {
-            scale = 0.1;
+        scaleValue -= delta;
+        if (Double.compare(scaleValue, 0.1) < 0) {
+            scaleValue = 0.1;
         }
-        zoomTo(scale);
+        zoomTo(scaleValue);
     }
 
     /**
      * Zooms in
      */
     public void zoomIn() {
-        scale += delta;
-        if (Double.compare(scale, 10) > 0) {
-            scale = 10;
+        scaleValue += delta;
+        if (Double.compare(scaleValue, 10) > 0) {
+            scaleValue = 10;
         }
-        zoomTo(scale);
+        zoomTo(scaleValue);
     }
 
     public double getScaleValue() {
-        return scale;
+        return scaleValue;
     }
 }
