@@ -118,17 +118,22 @@ public class VisualisationController extends Controller {
             graph.beginUpdate();
 
             BTreeNode<BTreeCell> tree = database.getBTree().getRoot();
-            addCell(tree, null, 50, model);
+            addCell(tree, null, 1000, model);
+
 
             graph.endUpdate();
 
             List<Cell> cells = graph.getModel().getAllCells();
             Collections.reverse(cells);
             double x;
-            double leafX = 50;
+            double lowestY = 0;
+            double leafX = 1000;
             for (Cell cell : cells) {
                 List<Cell> children = cell.getCellChildren();
                 double y = cell.getLayoutY();
+                if (y > lowestY) {
+                    lowestY = y;
+                }
 
                 if (children.size() > 0) {
                     if (children.size() == 1) {
@@ -143,6 +148,14 @@ public class VisualisationController extends Controller {
                 }
             }
             graph.getScrollPane().zoomTo(0.2);
+
+            Pane topLeftPane = new Pane();
+            topLeftPane.relocate(0, 0);
+
+            Pane bottomRightPane = new Pane();
+            bottomRightPane.relocate(leafX + 1000, lowestY + 1000);
+            graph.getCellLayer().getChildren().add(topLeftPane);
+            graph.getCellLayer().getChildren().add(bottomRightPane);
         }
     }
 
