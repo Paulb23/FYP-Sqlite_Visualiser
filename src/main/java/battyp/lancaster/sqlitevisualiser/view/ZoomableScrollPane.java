@@ -69,9 +69,6 @@ public class ZoomableScrollPane extends ScrollPane {
         setContent(contentGroup);
         scaleTransform = new Scale(scale, scale, 0, 0);
         zoomGroup.getTransforms().add(scaleTransform);
-        this.setPannable(true);
-        this.setHbarPolicy(ScrollBarPolicy.ALWAYS);
-        this.setVbarPolicy(ScrollBarPolicy.ALWAYS);
 
         /**
          * Disable scrolling with mouse wheel
@@ -99,13 +96,6 @@ public class ZoomableScrollPane extends ScrollPane {
                 event.consume();
             }
         });
-    }
-
-    /**
-     * Sets the content pane
-     */
-    public void setNodeContent(Node content) {
-        this.zoomGroup.getChildren().add(content);
     }
 
     public void centerNode(Node node) {

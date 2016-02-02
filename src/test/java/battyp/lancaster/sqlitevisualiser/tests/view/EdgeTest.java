@@ -24,6 +24,7 @@
 
 package battyp.lancaster.sqlitevisualiser.tests.view;
 
+import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
 import battyp.lancaster.sqlitevisualiser.tests.view.mocks.MockCell;
 import battyp.lancaster.sqlitevisualiser.view.Cell;
 import battyp.lancaster.sqlitevisualiser.view.CellType;
@@ -41,12 +42,12 @@ public class EdgeTest {
 
     @Test
     public void TestCreationWithValidCells() {
-        new Edge(new MockCell(null), new MockCell(null));
+        new Edge(new MockCell(new BTreeCell(0, 0, 1)), new MockCell(new BTreeCell(0, 0, 0)));
     }
 
     @Test
     public void TestCreationWithSameCell() {
-        Cell cell = new MockCell(null);
+        Cell cell = new MockCell(new BTreeCell(0, 0, 0));
         new Edge(cell, cell);
     }
 

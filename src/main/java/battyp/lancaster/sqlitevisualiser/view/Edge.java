@@ -26,7 +26,6 @@ package battyp.lancaster.sqlitevisualiser.view;
 
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
 
 /**
@@ -56,7 +55,6 @@ public class Edge extends Group {
      * @param target Ending cell.
      */
     public Edge(Cell source, Cell target) {
-        this.line = new Line();
 
         this.source = source;
         this.target = target;
@@ -64,11 +62,13 @@ public class Edge extends Group {
         source.addCellChild(target);
         target.addCellParent(source);
 
-        line.setStartX(source.getLayoutX() + (source.getBoundsInParent().getWidth() / 2));
-        line.setStartY(source.getLayoutY() + (source.getBoundsInParent().getHeight() / 2));
+        this.line = new Line();
 
-        line.setEndX(target.getLayoutX() + (target.getBoundsInParent().getWidth() / 2));
-        line.setEndY(target.getLayoutY() + (target.getBoundsInParent().getHeight() / 2));
+        line.startXProperty().bind( source.layoutXProperty().add(source.getBoundsInParent().getWidth() / 2.0));
+        line.startYProperty().bind( source.layoutYProperty().add(source.getBoundsInParent().getHeight() / 2.0));
+
+        line.endXProperty().bind( target.layoutXProperty().add( target.getBoundsInParent().getWidth() / 2.0));
+        line.endYProperty().bind( target.layoutYProperty().add( target.getBoundsInParent().getHeight() / 2.0));
 
         line.setStrokeWidth(2);
         line.setStroke(new Color(1, 1, 1, 1));

@@ -108,7 +108,6 @@ public class VisualisationController extends Controller {
         if (model.isFileOpen()) {
             Database database = model.getDatabase();
 
-            BorderPane borderPane = new BorderPane();
             VisualisationGraph graph = new VisualisationGraph();
             VisualisationModel model = graph.getModel();
             visPane.setCenter(graph.getScrollPane());
@@ -129,7 +128,7 @@ public class VisualisationController extends Controller {
             }
             //cell.relocate(x + 150, y);
 
-            borderPane.setCenter(graph.getScrollPane());
+            //visPane.setCenter(graph.getScrollPane());
 
 
        /*     Pane paddingTop = new Pane();

@@ -24,8 +24,6 @@
 
 package battyp.lancaster.sqlitevisualiser.view;
 
-import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,23 +42,23 @@ import java.util.Map;
  * @since 0.9
  */
 public class VisualisationModel {
-    Cell graphParent;
+    private Cell graphParent;
 
-    List<Cell> allCells;
-    List<Cell> addedCells;
-    List<Cell> removedCells;
+    private List<Cell> allCells;
+    private List<Cell> addedCells;
+    private List<Cell> removedCells;
 
-    List<Edge> allEdges;
-    List<Edge> addedEdges;
-    List<Edge> removedEdges;
+    private List<Edge> allEdges;
+    private List<Edge> addedEdges;
+    private List<Edge> removedEdges;
 
-    Map<String,Cell> cellMap; // <id,cell>
+    private Map<String,Cell> cellMap; // <id,cell>
 
     /**
      * Constructor.
      */
     public VisualisationModel() {
-        graphParent = new Cell(new BTreeCell(0, 0, 0));
+        graphParent = new Cell("_ROOT_");
         clear();
     }
 
@@ -122,7 +120,6 @@ public class VisualisationModel {
         Edge edge = new Edge( sourceCell, targetCell);
 
         addedEdges.add( edge);
-
     }
 
     /**

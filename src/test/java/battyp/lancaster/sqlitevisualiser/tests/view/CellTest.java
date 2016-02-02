@@ -44,7 +44,7 @@ public class CellTest {
         Cell cell = new MockCell(new BTreeCell(0,0,0));
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void TestCreationWithNull() {
         Cell cell = new MockCell(null);
     }

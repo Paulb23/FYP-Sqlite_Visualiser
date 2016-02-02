@@ -52,10 +52,24 @@ public class Cell extends Pane {
      */
     public final BTreeCell cell;
 
-    List<Cell> children = new ArrayList<>();
-    List<Cell> parents = new ArrayList<>();
+    private String cellId;
+
+    private List<Cell> children = new ArrayList<>();
+    private List<Cell> parents = new ArrayList<>();
 
     private Node view;
+
+    /**
+     * Constructor.
+     *
+     * NOTE: Internal use only.
+     *
+     * @param id The id of this cell
+     */
+    public Cell(String id) {
+        this.cell = new BTreeCell(0, 0, 0);
+        this.cellId = id;
+    }
 
     /**
      * Constructor.
@@ -64,6 +78,7 @@ public class Cell extends Pane {
      */
     public Cell(BTreeCell cell) {
         this.cell = cell;
+        this.cellId = String.valueOf(cell.pageNumber);
     }
 
     /**
@@ -109,6 +124,6 @@ public class Cell extends Pane {
     }
 
     public String getCellId() {
-        return String.valueOf(this.cell.pageNumber);
+        return this.cellId;
     }
 }
