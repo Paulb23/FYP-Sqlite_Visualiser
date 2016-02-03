@@ -88,10 +88,12 @@ public class Cell extends Pane {
     public void highlight() {
         DropShadow borderGlow = new DropShadow();
         borderGlow.setColor(Color.YELLOW);
+        borderGlow.setSpread(0.7);
         borderGlow.setOffsetX(0f);
         borderGlow.setOffsetY(0f);
-        borderGlow.setHeight(70);
-        borderGlow.setWidth(70);
+        borderGlow.setRadius(125);
+        borderGlow.setHeight(125);
+        borderGlow.setWidth(125);
         this.setEffect(borderGlow);
     }
 
