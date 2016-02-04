@@ -12,6 +12,7 @@
 *.blg
 *.ps
 *.swp
+*.xoj
 report/*.xml
 
 !/report/sqlite_visualiser_report.bib
