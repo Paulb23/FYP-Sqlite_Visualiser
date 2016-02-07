@@ -1,35 +1,26 @@
 \section{Design}
 \label{sec:design}
 
-In this section I go over the high level overview of my applications design. Starting with the high level, and going into more depth looking at each module.
+Before looking at how the tool is implemented we will first look at the features, high level overview of the architectural design. Then going into more depth looking at each module that makes up the application.
 
 \subsection{Features}
 \label{subsec:Features}
-As mentioned in the last section, I wanted a cross platform tool, that would enable anyone to view the internal structure of a SQLite database. With consistency and reliability. The application comes with five main features, all building upon one feature.  
+As mentioned the previously. The application comes with five main features, all building upon one base feature, real time updates.  In addition to this the tool has to be cross platform and reliable.
 \\\\
-The central feature is the visualiser. The visualiser allows you to see the broken down page structure and hierarchy. So you can see how you SQLite database is laved out. On top of this you can click a node in order to see more information about. Such as data, page number e.t.c
+The central feature is the visualiser. The visualiser allows you to see the broken down page structure and hierarchy. So you can see how the SQLite database file is broken into pages, and how the pages connect to each other in the B-Tree structure. On top of this you can click a node in order to see more information about. Such as data, page number and so on.
 \\\\
-In addition to the visualiser, there is also a meta data tab, that will allow you to view, the header information in the database. Alongside other statistics that come from parsing the database. Such as number of tables, primary keys and so on.
+In addition to the visualiser, there is also a metadata tab, that will allow you to view, the header information in the database. Alongside other statistics that come from parsing the database. Such as number of tables, primary keys and more.
 \\\\
-The last main feature ties into the base feature, that allows real time updating of this data when any command from any system modifies the database in some way shape or form. The live updating allows you to step through the time line of updates that have occurs while the application is running. You can also pause it if you want to inspect a certain state. 
+The base feature allows real time updating of this data when any command from any system modifies the database in some way shape or form. The live updating allows you to step through the time line of updates that have occurred while the application is running. You can also pause it if you want to inspect a certain state. 
 \\\\
-Whenever a update occurs, all changes that happened are recorded inside a log, and a "snapshot" of the database is taken. This snapshot is then presented to use, through the visualiser, metadata and log tabs. Creating the time line that you can then browse. 
+Whenever a update occurs, all changes that happened are recorded inside a log, and a "snapshot" of the database is taken. This snapshot is then presented to user, through the visualiser, metadata and log tabs. Creating the time line that you can then browse. 
 \\\\
-Apart from just showing you data, you can also execute SQL onto the database, through the SQL executor and view the schema and tables currently inside the database.
+Apart from just showing you data, you can also execute SQL onto the database, through the SQL executor. And view the schema and tables currently inside the database.
 
 \subsection{High level Overview}
 \label{subsec:high_level_overview}
 
-From the start I wanted to build a system, that was modular and self-contained. However, as the project went on a few adjust had to my original design. When I ran into some implementation problems discussed in the next chapter. The figure~\ref{fig:design_old} shows the original design.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[scale=0.2]{images/system_diagram_old.png}
-	\caption{Original system diagram}
-	\label{fig:design_old}
-\end{figure}
-
-As you can see, the design utilizes the MVC (Model-View-Controller) style architect in order to separate the interface from the data. This means the view will make requests to the controller, who will then in turn contact the model for information, then sending the information to be presented by the view. The idea being that the view could be switched or adjusted at anytime without breaking the application. an example of MVC can be seen below in figure~\ref{fig:mvc}.
+From the start I wanted to build a system, that was modular, self-contained and adaptable. In order to accomplish this I decide to use a MVC (Model-View-Controller) style architect in order to separate the interface from the data. This means the view will make requests to the controller, who will then in turn contact the model for information, then sending the information backwards to be presented by the view. The idea being that the view could be switched or adjusted at any time without breaking the application. an example of MVC can be seen below in figure~\ref{fig:mvc}.
 
 \begin{figure}[H]
 	\centering
@@ -38,7 +29,16 @@ As you can see, the design utilizes the MVC (Model-View-Controller) style archit
 	\label{fig:mvc}
 \end{figure}
 
-The Model was going to run in its own thread so it could control, manage and prepare the data as it came in. This meant the view could request it when it wanted. One other thing to note, is the command logging was going to store them in to an external file, for the view. However, this design proved unusable and thus changed into the following seen in figure~\ref{fig:design_new}. 
+With this in mind the bulk of the work is performed inside the model. However, like any project, along the way I ran into some problems and so had to adjust my design. Figure~\ref{fig:design_old} shows the original design.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.2]{images/system_diagram_old.png}
+	\caption{Original system diagram}
+	\label{fig:design_old}
+\end{figure}
+
+The Model was going to run in its own thread so it could control, manage and prepare the data as it came in. This meant the view could request it when it wanted. The model was also made up of five modules. With the logging  stored into an external file, for the view to read when it wanted. In adddition to this the contollers follow a hierarchical structure, with a master controller, controlling access to the model. However, this design proved unusable and thus changed into the following seen in figure~\ref{fig:design_new}. 
 
 \begin{figure}[H]
 	\centering
@@ -55,38 +55,92 @@ Most of the changes are seen within the Model, with the addition of two new modu
 \subsubsection{The Main}
 \label{subsubsec:main}
 
-The main module represent the staring point of the application, it serves no other purpose other then to correctly initialise the view, model and controllers.
+The main module represents the staring point of the application, it serves no other purpose other then to correctly initialise the view, model and controllers.
 
 \subsubsection{The View}
 \label{subsubsec:the_view}
 
-The view, consists of three parts, the top, middle and right side. Since it follows the MVC style, these only contain the layout of each of the corresponding sections. The middle section however, changes depending on what is being viewed.
+The view, consists of three parts, the top, middle and right side. The middle section can also be split in half when needed to view two different panes at the same time. In addition to this the top and right sides do not change through the running of the application. The middle section however, changes depending on what is being viewed.
 
 \subsubsection{The Controller}
 \label{subsubsec:the_controller}
 
-The controller is made up of two parts, the master controller, and the pane controller. The pane controller is changed depending on what is being viewed. Similar to the views middle pane. The master controller coordinates what is being shown. Both of them communicate to the model to collect updates, and interact with the data.
+The controller is made up of two parts, the master controller, and the pane controller. The pane controller is changed depending on what is being viewed. Respectively to the views middle pane. The master controller however stays through the running of the program and coordinates what is being shown. Both of them communicate to the model to collect updates, and interact with the data.
 
 \subsubsection{The Model}
 \label{subsubsec:the_model}
 
-The model is the most complicated section and is made up of seven modules. The model itself acts as a repository design with everything connecting and interacting though it.
+The model is the most complicated section and is made up of seven modules. The model itself acts as a repository design with all the modules connecting and interacting though a shared object.
 \\\\
-All contact with the model will go though the model interface. This allows the controllers to communicate to the individual modules. In addition to this, it provides a small amount of functionality for setting up and closing. Such as opening the database. Since every module will require something from this action, the model interface will take care of setting up each module. And on exit making sure all threads have been stopped, and any other connections have been closed.
+The first module, marked as 'model' represents the model interface. In which all communication, with sub modules, from the controllers will go through. It is also the only class to have direct access to all sub modules, as i tried to keep them as modular and independent as possible. In addition to this, it provides a small amount of functionality for setting up, closing and opening the database. Since every module will require something from this action.
 \\\\
-The Database, is the in program mapping of the SQLite database system. The database is made up of two parts, the data objects, and the interface into the data object. The data object are the mapping of the SQLite database. Containing the B-Tree system, and the data. The interface provides access to the history, allowing to program move along the database time line. And management of the data objects.
+The Database, is the in program mapping of the SQLite database file. The database is made up of two parts, the data objects, and the interface into the data objects. The data objects are the mapping of the SQLite database. Containing the B-Tree system, and the data. The interface provides access control to the data objects, allowing the program move along the database time line.
 \\\\
-The file watcher, runs in its own thread, and utilises the observer pattern. It runs in a continuous loop waiting for a modification to happen on the database. Once a change is detect it sends a signal out over the observers, so the change is recorded. Although, if they did not tune in to the observer, the rest of the program would not receive database updates.
+The file watcher, runs in a continuous loop, inside its own thread, utilising the observer pattern. The observer patten allows any class to register to it, and will revive a signal when an event occurs. In this case it would be the updating of the database file. When a change is detected, a signal will be sent out over the observers, alerting them to the change. Although, if they did not tune in to the observer, The program would not receive  database updates.
 \\\\
 The File parser, parses any given valid database file. Converting it into the database object.
 \\\\
 The log, takes any two database objects and records the changes between them.
 \\\\
-The live updater, acts like a master controller for the modules, apart from the SQL executor, file watcher and model interface. It controls what happens when a change is detected, and as such is registered to the file watchers observer. When a change is detected, the first thing it does is contact the file parser for the updated database object, send it off to the log, to record changes, and then stores it in the database module. As it controls what happens and when it can also not update, allowing the parsing to pause.
+The live updater, acts like a master controller for the modules, apart from the SQL executor, file watcher and model interface. It controls the program flow when a change is detected, and as such is registered to the file watchers observer. When a change is detected, the first thing it does is contact the file parser for the updated database object, then sends it off to the log, to record changes, before storing it in the database module and incrementing the current position on the time line.
 \\\\
 The SQL executor, controls the SQL connections, and executes SQL commands onto the database.
 
 \subsection{The User interface}
 \label{subsec:high_user_interface}
 
-The user interface is designed to be simplistic and easy to use. 
+The user interface is designed to be simplistic and easy to use. And familiar to new users. The basic format is a menu bar at the top,  with icons underneath. Just below them is a selection of tabs corresponding to the different views, that the application can take. Down the right hand side, however will be another static section representing the SQl executer. This can be seen below in figure~\ref{fig:design_user_iterface}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.7]{images/ui_design.png}
+	\caption{User interface design.}
+	\label{fig:design_user_iterface}
+\end{figure}
+
+Originally the SQl executor was going to have its own tab. But it worked out better along side the content as you can then view what the commands are doing to the database, when they are ran. Or have the information as a reference when typing up commands, Below figure~\ref{fig:db_browser_screen} shows the SQL executer User interface design.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.7]{images/ui_sqlexe_design.png}
+	\caption{SQL executor design.}
+	\label{fig:design_user_iterface}
+\end{figure}
+
+The user will type commands into the top text box, and then press the button to run the command. After the command is ran a message will be displayed in the return text box. And any returned data will be presented in the results table.
+\\\\
+The base live updater is controlled via the icons and drop down menus with the four other features having their own tab. The metadata tab, is designed to have different panes, split up in to data relevance, each show casing the different values. For example one pane will show the size, another the version numbers and so on. This can be seen below in figure~\ref{fig:des_ui_meta}. 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.32]{images/ui_meatadata.png}
+	\caption{Metadata interface design.}
+	\label{fig:des_ui_meta}
+\end{figure}
+
+The other feature that is closely tied to this information is the visualiser. The visualiser is made up of two parts, the left hand side where the data will be shown, and the central section showing the visualisation. The visualisation will display the file B-Tree as it is inside the file, with the pages represented as nodes. Then when a node is selected the data will be shown inside the data pane. This can be seen below in figure~\ref{fig:des_ui_vis}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.32]{images/ui_visuliser.png}
+	\caption{Visualiser interface design.}
+	\label{fig:des_ui_vis}
+\end{figure}
+
+In the above figure, the glowing node tells the user that this node was updated in the last update. Along side this a log entry is created, as mentioned before. The log tab much like the metadata tab will be made up off small panes, titled with the date, and the collapsible content. The content will store what changed in that update this can be seen in figure~\ref{fig:des_ui_log}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.32]{images/ui_log.png}
+	\caption{Log interface design.}
+	\label{fig:des_ui_log}
+\end{figure}
+
+The idea behind the folding panels,  is to allow users to hide information that they don't need. And if there is a large change it would not always be filling the screen. The last feature and tab is the table and schema view. This, much like the visualiser uses two sections the left, to display the list of tables and the schema. With the centre displaying the table data. This can be seen in figure~\ref{fig:des_ui_table}. 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.32]{images/ui_table.png}
+	\caption{Table interface design.}
+	\label{fig:des_ui_table}
+\end{figure}
