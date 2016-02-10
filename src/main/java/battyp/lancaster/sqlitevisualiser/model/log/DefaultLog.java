@@ -69,6 +69,9 @@ public class DefaultLog implements Log {
             BTreeNode<BTreeCell> newRoot = newDatabase.getBTree().getRoot();
 
             if (oldRoot != null && newRoot != null) {
+                if (newRoot.equals(oldRoot)) {
+                    return;
+                }
                 Stack<BTreeCell> oldTree = oldRoot.childrenToStack();
                 Stack<BTreeCell> newTree = newRoot.childrenToStack();
 

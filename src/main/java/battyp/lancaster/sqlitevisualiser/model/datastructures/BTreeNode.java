@@ -236,6 +236,7 @@ public class BTreeNode<T> {
         final int prime = 31;
         int hash = 1;
         for (BTreeNode<T> child : children) {
+            hash = hash * prime + child.hashCode();
             hash = hash * prime + child.getData().hashCode();
         }
         return hash;
