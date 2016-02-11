@@ -62,6 +62,22 @@ public class MockDatabaseInterface implements DatabaseInterface {
     }
 
     @Override
+    public int getCount() {
+        return 0;
+    }
+
+    @Override
+    public int getCurrentPos() {
+        return 0;
+    }
+
+    @Override
+    public void setCurrent(int current) {
+
+    }
+
+
+    @Override
     public void addDatabase(Database database) {
 
     }

@@ -64,24 +64,22 @@ public class LogController extends Controller {
      * {@inheritDoc}
      */
     public void notifyObserver() {
-        if (this.model.getLiveUpdater().isUpdating()) {
-            List<LogItem> log = model.getLog().getLog();
+        List<LogItem> log = model.getLog().getLog();
 
-            VBox pane = new VBox();
-            pane.setSpacing(10.0);
+        VBox pane = new VBox();
+        pane.setSpacing(10.0);
 
-            for (LogItem item : log) {
-                TitledPane entry = new TitledPane();
-                entry.setText(item.date);
-                Pane centerPane = new Pane();
-                for (String changes : item.items) {
-                    centerPane.getChildren().add(new Label(changes));
-                }
-                entry.setContent(centerPane);
-                pane.getChildren().add(entry);
-                entry.setExpanded(false);
+        for (LogItem item : log) {
+            TitledPane entry = new TitledPane();
+            entry.setText(item.date);
+            Pane centerPane = new Pane();
+            for (String changes : item.items) {
+                centerPane.getChildren().add(new Label(changes));
             }
-            logArea.setContent(pane);
+            entry.setContent(centerPane);
+            pane.getChildren().add(entry);
+            entry.setExpanded(false);
         }
+        logArea.setContent(pane);
     }
 }

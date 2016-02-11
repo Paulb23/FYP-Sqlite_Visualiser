@@ -79,6 +79,21 @@ public interface DatabaseInterface {
     public void previousStep();
 
     /**
+     * Gets the number of databases.
+     */
+    public int getCount();
+
+    /**
+     * Gets the current database id.
+     */
+    public int getCurrentPos();
+
+    /**
+     * Sets the timeline position.
+     */
+    public void setCurrent(int current);
+
+    /**
      * Adds a database to the front of the history queue.
      *
      * @param database Database to add.

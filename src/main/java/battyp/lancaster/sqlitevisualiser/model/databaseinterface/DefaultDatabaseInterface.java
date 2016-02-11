@@ -89,6 +89,32 @@ public class DefaultDatabaseInterface implements DatabaseInterface {
      * {@inheritDoc}
      */
     @Override
+    public int getCount() {
+        return  this.history.size();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getCurrentPos() {
+        return  this.getCurrentPos();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setCurrent(int current) {
+        if (current < this.history.size() && current >= 0) {
+            this.current = current;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void nextStep() {
         if (this.current < this.history.size() - 1) {
             this.current++;

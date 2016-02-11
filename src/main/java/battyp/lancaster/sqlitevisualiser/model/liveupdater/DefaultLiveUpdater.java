@@ -187,6 +187,9 @@ public class DefaultLiveUpdater implements LiveUpdater {
      */
     @Override
     public void startUpdating() {
+        if (this.model != null) {
+            this.model.getDatabaseInterface().setCurrent(this.model.getDatabaseInterface().getCount());
+        }
         live = true;
     }
 

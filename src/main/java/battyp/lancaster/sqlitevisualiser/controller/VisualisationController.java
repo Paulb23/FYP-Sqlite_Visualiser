@@ -113,7 +113,20 @@ public class VisualisationController extends Controller {
 
             VisualisationGraph graph = new VisualisationGraph();
             VisualisationModel model = graph.getModel();
+
+            ZoomableScrollPane zoomPane = (ZoomableScrollPane) visPane.getCenter();
+            double hvalue = 0;
+            double vvalue = 0;
+            double zoom = 0.2;
+            if (zoomPane != null) {
+                hvalue = zoomPane.getHvalue();
+                vvalue = zoomPane.getVvalue();
+                zoom = zoomPane.getScaleValue();
+            }
+
             visPane.setCenter(graph.getScrollPane());
+            graph.getScrollPane().setHvalue(hvalue);
+            graph.getScrollPane().setVvalue(vvalue);
 
             graph.beginUpdate();
 
@@ -147,7 +160,7 @@ public class VisualisationController extends Controller {
                     leafX += 150;
                 }
             }
-            graph.getScrollPane().zoomTo(0.2);
+            graph.getScrollPane().zoomTo(zoom);
 
             Pane topLeftPane = new Pane();
             topLeftPane.relocate(0, 0);
