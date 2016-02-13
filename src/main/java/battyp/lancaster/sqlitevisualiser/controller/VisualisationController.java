@@ -28,18 +28,19 @@ import battyp.lancaster.sqlitevisualiser.model.Model;
 import battyp.lancaster.sqlitevisualiser.model.database.Database;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeNode;
+import battyp.lancaster.sqlitevisualiser.model.log.Log;
 import battyp.lancaster.sqlitevisualiser.view.*;
 import battyp.lancaster.sqlitevisualiser.view.Cell;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 /**
  * <h1> Visualisation Controller </h1>
@@ -85,14 +86,19 @@ public class VisualisationController extends Controller {
     private Label cellRightPointer;
 
     @FXML
-    private ComboBox cellDataCombo;
+    private TableView cellData;
 
-    @FXML
-    private TextArea cellDataData;
+    TableColumn<VisualisationTableCell, String> cellColumn;
+    TableColumn<VisualisationTableCell, String> leftChildColumn;
+    TableColumn<VisualisationTableCell, String> rowIdColumn;
+    TableColumn<VisualisationTableCell, String> payloadSizeColumn;
+    TableColumn<VisualisationTableCell, String> payloadColumn;
 
     private CellFactory cellFactory;
 
     private Cell selectedCell;
+
+    private boolean setUp;
 
     /**
      * Constructor.
@@ -102,6 +108,21 @@ public class VisualisationController extends Controller {
     public VisualisationController(Model model) {
         super(model);
         cellFactory = new CellFactory();
+
+        cellColumn = new TableColumn<>("Cell");
+        cellColumn.setCellValueFactory(cellData -> cellData.getValue().cell);
+
+        leftChildColumn = new TableColumn<>("Left Child");
+        leftChildColumn.setCellValueFactory(cellData -> cellData.getValue().leftChild);
+
+        rowIdColumn = new TableColumn<>("Row id");
+        rowIdColumn.setCellValueFactory(cellData -> cellData.getValue().rowId);
+
+        payloadSizeColumn = new TableColumn<>("Payload Size");
+        payloadSizeColumn.setCellValueFactory(cellData -> cellData.getValue().payloadSize);
+
+        payloadColumn = new TableColumn<>("Payload");
+        payloadColumn.setCellValueFactory(cellData -> cellData.getValue().payload);
     }
 
     /**
@@ -109,6 +130,16 @@ public class VisualisationController extends Controller {
      */
     public void notifyObserver() {
         if (model.isFileOpen()) {
+            if (!setUp) {
+                setUp = true;
+
+                cellData.getColumns().add(cellColumn);
+                cellData.getColumns().add(leftChildColumn);
+                cellData.getColumns().add(rowIdColumn);
+                cellData.getColumns().add(payloadSizeColumn);
+                cellData.getColumns().add(payloadColumn);
+            }
+
             Database database = model.getDatabase();
 
             VisualisationGraph graph = new VisualisationGraph();
@@ -219,46 +250,22 @@ public class VisualisationController extends Controller {
         cellDataCount.setText("Cell Count: " + cell.cell.cellCount);
         cellDataType.setText("Cell Type: " + cell.cell.cellType);
         cellRightPointer.setText("Right Pointer: " + cell.cell.rightChildPointer);
-        int cellCount =  cell.cell.cellCount;
-        cellDataCombo.getItems().removeAll(cellDataCombo.getItems());
-        cellDataCombo.getItems().add("All");
-        for (int i = 0; i < cellCount; i++) {
-            cellDataCombo.getItems().add(i);
-        }
-        cellDataData.clear();
+        //TODO: clear the table
         this.selectedCell = cell;
+        updateCellData();
     }
 
     /**
-     * Called when the combo is changed
+     * Updates the cell data
      */
-    @FXML
     private void updateCellData() {
-        if (cellDataCombo.getValue() != null) {
-            cellDataData.clear();
-            BTreeCell cell = selectedCell.cell;
-            String selected = cellDataCombo.getValue().toString();
-            if (selected.equals("All")) {
-                int cellCount =  selectedCell.cell.cellCount;
-                for (int i = 0; i < cellCount; i++) {
-                    cellDataData.appendText("\n-----------" +
-                                    "\nCell: " + i +
-                                    "\nLeft Child pointer: " + cell.leftChildPointers[i] +
-                                    "\nRow Id: " + cell.rowId[i] +
-                                    "\nPayload Size: " + cell.payLoadSize[i] +
-                                    "\nData: " + cell.data[i]
-                    );
-                }
-            } else {
-                int numSelected = Integer.parseInt(selected);
-                cellDataData.appendText("\n-----------" +
-                        "\nCell: " + numSelected +
-                        "\nLeft Child pointer: " + cell.leftChildPointers[numSelected] +
-                        "\nRow Id: " + cell.rowId[numSelected] +
-                        "\nPayload Size: " + cell.payLoadSize[numSelected] +
-                        "\nData: " + cell.data[numSelected]
-                );
-            }
+        BTreeCell cell = selectedCell.cell;
+        int cellCount =  selectedCell.cell.cellCount;
+
+        ObservableList<VisualisationTableCell> cellDataObjects = FXCollections.observableArrayList();
+        cellData.setItems(cellDataObjects);
+        for (int i = 0; i < cellCount; i++) {
+            cellDataObjects.add(new VisualisationTableCell(i, cell.leftChildPointers[i], cell.rowId[i], cell.payLoadSize[i], cell.data[i]));
         }
     }
 }

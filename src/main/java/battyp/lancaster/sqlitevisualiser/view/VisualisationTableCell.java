@@ -22,42 +22,42 @@
  * THE SOFTWARE.
  */
 
-package battyp.lancaster.sqlitevisualiser.app;
+package battyp.lancaster.sqlitevisualiser.view;
 
-import battyp.lancaster.sqlitevisualiser.model.DefaultModel;
+import javafx.beans.property.*;
 
 /**
- * <h1> Sqlite Visualisation App </h1>
+ * <h1> Visualisation Table Cell </h1>
  *
  * <p>
- * This Class only contains the main method.
- * It is designed to conduct the start up of the application and deal with any
- * special command line arguments that are passed in.
+ * Intermediate class for the table in the Visualisation tab.
  *
  * @author Paul Batty
- * @version 1.0
- * @since 0.5
+ * @see battyp.lancaster.sqlitevisualiser.controller.VisualisationController
+ * @since 0.9
  */
-public class SqliteVisualisationApp {
+public class VisualisationTableCell {
+    public final StringProperty cell;
+    public final StringProperty leftChild;
+    public final StringProperty rowId;
+    public final StringProperty payloadSize;
+    public final StringProperty payload;
 
     /**
-     * <h1> Main. </h1>
-     *
-     * <p>
-     * Starting point for the application.
-     *
-     * @param args Command line arguments, Currently non are supported so does
-     *             nothing.
+     * Contructor.
+     *  @param cell The cell id
+     * @param leftChild The left child pointer
+     * @param rowId The row id.
+     * @param payloadSize The payload size.
+     * @param payload the payload.
      */
-    public static void main(String args[]) {
-
-        // help fix blurry font..
-        System.setProperty("prism.lcdtext", "false");
-        System.setProperty("prism.text", "t2k");
-
-        /* Use the static calls to start javaFx else
-         * it wont launch properly.               */
-        SqliteVisualiser.setModel(new DefaultModel());
-        SqliteVisualiser.launch(SqliteVisualiser.class);
+    public VisualisationTableCell(int cell, int leftChild, long rowId, long payloadSize, String payload) {
+        this.cell = new SimpleStringProperty(String.valueOf(cell));
+        this.leftChild = new SimpleStringProperty(String.valueOf(leftChild));
+        this.rowId = new SimpleStringProperty(String.valueOf(rowId));
+        this.payloadSize = new SimpleStringProperty(String.valueOf(payloadSize));
+        this.payload = new SimpleStringProperty(payload);
     }
+
 }
+
