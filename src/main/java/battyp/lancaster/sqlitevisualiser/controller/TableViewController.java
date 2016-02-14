@@ -128,7 +128,12 @@ public class TableViewController extends Controller {
     }
 
     private void showSchema() throws SQLException {
-        ResultSet rs = model.getSqlExecutor().executeSql("SELECT * FROM sqlite_master WHERE tbl_name='" + tableSelect.getValue() +"'");
+        ResultSet rs;
+        if (tableSelect.getValue().equals("sqlite_master")) {
+            rs = model.getSqlExecutor().executeSql("SELECT * FROM sqlite_master");
+        } else {
+            rs = model.getSqlExecutor().executeSql("SELECT * FROM sqlite_master WHERE tbl_name='" + tableSelect.getValue() + "'");
+        }
         schemaTextArea.appendText(rs.getString("sql"));
         rs.close();
     }
@@ -147,6 +152,7 @@ public class TableViewController extends Controller {
             this.model.getSqlExecutor().connect();
             ResultSet rs = model.getSqlExecutor().executeSql("SELECT * FROM sqlite_master WHERE type='table'");
             tableSelect.getItems().removeAll(tableSelect.getItems());
+            tableSelect.getItems().add("sqlite_master");
             while(rs.next()) {
                 tableSelect.getItems().add(rs.getString("tbl_name"));
             }

@@ -28,6 +28,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TableView?>
 <AnchorPane fx:id="VisualisationPage" xmlns:fx="http://javafx.com/fxml">
     <children>
         <Label styleClass="celltextHeader" layoutX="10" layoutY="10" style="-fx-font-weight: bold" text="Cell Info"/>
@@ -35,8 +36,6 @@
         <Label styleClass="celltext"  fx:id="cellDataCount" layoutX="10" layoutY="60" text="Cell Count: " />
         <Label styleClass="celltext"  fx:id="cellDataType" layoutX="10" layoutY="80" text="Cell Type: " />
         <Label styleClass="celltext"  fx:id="cellRightPointer" layoutX="10" layoutY="100" text="Right Pointer: " />
-        <Label styleClass="celltext"  layoutX="10" layoutY="140" text="Select Cell: " />
-        <ComboBox fx:id="cellDataCombo" AnchorPane.rightAnchor="10.0" AnchorPane.leftAnchor="10.0" layoutY="160" onAction="#updateCellData" />
-        <TextArea fx:id="cellDataData" editable="false"  AnchorPane.bottomAnchor="10.0" AnchorPane.topAnchor="200.0" AnchorPane.rightAnchor="10.0" AnchorPane.leftAnchor="10.0" layoutY="160" prefWidth="200" />
+        <TableView fx:id="cellData" editable="false"  AnchorPane.bottomAnchor="10.0" AnchorPane.topAnchor="130.0" AnchorPane.rightAnchor="10.0" AnchorPane.leftAnchor="10.0" layoutY="160" prefWidth="200"></TableView>
     </children>
 </AnchorPane>
