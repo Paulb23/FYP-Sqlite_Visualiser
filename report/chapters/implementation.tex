@@ -1,12 +1,12 @@
 \section{Implementation}
 \label{sec:implementation}
 
-Now that we have looked at how the tool is designed, and the user interface deign. In this next section we will go over how I went about implementing the features, and any problems that I came across along the way.   
+Now that we have looked at how the application is designed. In this next section we will go over the tools I used, how I went about implementing the features, and any problems that I came across along the way.   
 
 \subsection{The tools}
 \label{subsec:the_tools}
 
-Before we look at the implementation, we must first pick our tools. For this particular application I went with Java. Using JavaFX for the user interface and controllers. This meant right from the get go I had cross platform support. A MVC style architecture and with JDBC open access to SQL database connections. The only major issue was speed, as SQLite is known to be fast, whether my application could keep up with the requests that where being performed. However, as SQLite only allows one writer at a time this so was never an issue. The other downside to using Java was not having direct access to the SQLite API through its own interface. But, after looking at the interface everything that I needed was supported through JDBC.
+For this particular application I went with Java and JavaFX for the user interface and controllers. This meant right from the get go I had cross platform support. A MVC style architecture and with JDBC open access to SQL database connections. The only major issue was speed, as SQLite is known to be fast, whether my application could keep up with the requests that where being performed. However, as SQLite only allows one writer at a time this was never an issue. The other downside to using Java was not having direct access to the SQLite API through its own interface. But, after looking at the interface everything that I needed was supported through JDBC.
 
 \subsection{The Modules}
 \label{subsec:the_modules}
@@ -16,11 +16,11 @@ Before we look at the implementation, we must first pick our tools. For this par
 
 As previously mentioned, the architecture is MVC. And we are using JavaFX. JavaFX comes with a whole host of tools for working with the view, and controllers. 
 \\\\
-Firstly, they have their own file type that is heavily based on HTML, with support for CSS styling. The file can include / imports Java classes into it, allowing for custom items. Each item can be given a unique id that allows it to be controlled with via Java.
+Firstly, each view or section can be repersented using a fxml file. The fxml file is heavly based on HTML, including the support for CSS styling. Each file start with a root node, normaly one of the panes. Such as border, anchor, and grid. For this application I stuck with anchor panes, apart from the menu bar which used a border pane. Then folloing the root pane is the items to attached to it. Each item can be given a unique id that allows it to be controlled with via Java and CSS. In addition to this you can include your own Java classes for custon items.
 \\\\
-On the controller side of things, once you are set as the controller for a particular fxml file. The annotation @FXML followed by the type, and unique id, allows Java to inject the item from the fxml file into the variable, giving you full control of it.  
+Secondly, the controller is a normal Java class set as the controller for a particular fxml file. This can be done in two ways. The way is to inject the controller into the loading process. This allows you to call other code, such as initisiastion before the fxml file is loaded, and keep track of the controller. The second way is to specify the contrller inside the fxml file, and Java will load the controller in when the file is loaded. But you lose all acess to the controller object. Inside the colltroller the annotation @FXML, allows Java to inject the item from the cotrlller into the view, and vise versia. Giving you full controll over the fxml file and object utitlising the items unuqie id. Through my application I use the first method, to allow controlelr sharing, and manual controll over the controller. 
 \\\\
-The view is made up of four sections, the menu bar, containing the file, edit and other drop downs, including the icons, and tabs. The other three section, represent the left, middle, and right sections of the central pane. This means that any one time i can display three different items. Each of the section have their own fxml file, depending on the situation they may also share a controller. This can be seen below in figure~\ref{fig:view_breakdown}.
+The view is made up of four sections, the menu bar, containing the file, edit and other drop downs, including the icons, and tabs. The other three section, represent the left, middle, and right sections of the central pane. This means that any one time I can display three different views. Each of the section have their own fxml file, depending on the situation they may also share a controller. This can be seen below in figure~\ref{fig:view_breakdown}.
 
 \begin{figure}[H]
 	\centering
@@ -29,14 +29,16 @@ The view is made up of four sections, the menu bar, containing the file, edit an
 	\label{fig:view_breakdown}
 \end{figure}
 
-Looking at the breakdown, you will notice that the menu bar will never change. and should never change as its the navigation used to get around the program. Using this fact the menu bar controller also double up as a 'master' controller. By this I mean it controls what is currently seen in the other three sections. Loading and freeing up to load the necessary sections for that tab. As the central pane is simple split pane, allowing each sections size to be adjusted to fit the users needs. If a section is not needed its just a matter of hiding that panes split bar. 
+I mentioned eariler that the menu bar will never change, and should never change. Using this fact the menu bar controller also doubles up as a 'master' controller. It controls what is currently seen in the other three sections. Loading and freeing up the necessary sections for that tab. 
 \\\\
-The controllers for each of the sections extend a abstract controller class. The controller class, enforces a model interface object into the constructor. And implements Observer. The model interface allows each controller to separately contact the model, as previously mentioned to collect the data for the view. And by implementing observer we can register our controllers for the signal when the database is updated. Meaning we can collect the updated information as soon as it's ready. Without having to wait, or having a manual refresh button.    
+The central pane is a split pane, with two split dividers allowing each sections size to be adjusted on the fly to fit the users needs. If a section is not needed its just a matter of hiding that panes divider bar. 
+\\\\
+The controllers for each section extend a abstract controller class. The controller class, enforces a model interface object into the constructor, and implements Observer. The model interface allows each controller to separately contact the model, as previously mentioned to collect the data for the view. And by implementing observer we can register our controllers for the signal when the database is updated. Meaning we can collect the updated information as soon as it is ready. Without having to wait, or having a manual refresh button.    
 
 \subsubsection{Model interface}
 \label{subsubsec:imp_model_interface}
 
-The model interface is how the controllers contact the other sub modules. Its a repository design, that helps keep everything de-coupled, with the exception of the Live updater. All modules including the model interface implement their representing interface. Allowing the implementation to change while keeping the same external view. This enables the design to be adapted to other systems other then SQLite. Below figure~\ref{fig:model_interface_design} show the layout of the model interface.
+The model interface is based on a repository design with all the sub modules attached to it. In order for the controller to communitacate with the sub modules they must also first go through the model interface. This design helps keep everything sepertaed and compaact. All of the sub modles attached to the model interface implement their corrosponding interface. Allowing the implementation to change while keeping the same external view. This enables the design to be adapted to other systems other then SQLite. Below figure~\ref{fig:model_interface_design} show the layout of the model interface.
 
 \begin{figure}[H]
 	\centering
@@ -45,32 +47,30 @@ The model interface is how the controllers contact the other sub modules. Its a 
 	\label{fig:model_interface_design}
 \end{figure}
 
-As you can see everything is attached to the model interface, and only the live updater is the exception with a copy of the model. In addition to provide access to the other modules, it has a very small amount of implementation, that is only used when every module is affected. Such as the case of setting up, closing and opening a database, which are all calls to the corresponding method on the modules interfaces. 
+Everything is attached to the model interface, apart from the live updater being the exception with a copy of the model. In addition to providing access to the other modules, it has a very small amount of implementation, that is only used when every module is affected. Such as the case of setting up, closing and opening a database, which are all calls to the corresponding method on the modules interfaces. 
 
 \subsubsection{The database}
 \label{subsubsec:databse_imp}
 
-The database module is made up of two parts, the interface and the storage. The interface is what everything else has access to allowing it to control the storage without interference. The storage is made up of database items, that contain a "snapshot" of the current state of the database file.
+The database module is made up of two parts, the interface and the storage. The interface controls access to the storage. Allowing the adding of new database items, retrieving of database items and stepping through the time line of database objects, and complete clearing of database items. Used with setting up and opening a new database, in order to make sure that the items are not mixed up with different files. The items are stored within a arraylist, and a int counter is used to keep track of where in the array we currently are.
 \\\\
-The interface allows adding of new database items, retrieving of database items and stepping through the time line of database objects. And complete clearing of database items, used with setting up and opening a new database, in order to make sure that the items are not mixed up with the different files.
-\\\\
-The database items in the storage, are a data structure, made of two parts the meta-data, and B-Tree. The meta-data contains all the information in the header, including a few others such as number of tables, file name, and more. The B-Tree is a custom implementation, holding the various B-Tree pages, as represented in the file. The database items are filled with information via the file parser. Out of all the classes, the database items, are the most used, being sent to the view for displaying, and modified by the various other modules during creation. 
+The storage is made up of database items, that contain a "snapshot" of the current state of the database file. The database item is made of two parts the meta-data, and B-Tree. The meta-data contains all the information in the header, including a few others such as number of tables, file name, and page number. The B-Tree is a custom implementation, holding the various B-Tree pages, as represented in the file. The database items are filled with information via the file parser. Out of all the classes, the database items, are the most used, being sent to the view for displaying, and modified by the various other modules during creation. 
 
 \subsubsection{File watcher}
 \label{subsubsec:file_watcher_imp}
 
-In order to workout when the database was updated, to collect live data. I had two options, use SQLites API or watch the file. The API provided by SQLite is on a per connection base meaning that I would only revive signals when my own application sent of SQL commands, which are of no use to me, as  I already know when the commands a sent out. This left me with the latter option, watching the file. Since SQLite is a single file, every time the file / database was updated so would the last modified time. In addition to this as SQLite only allows one writer at a time, I would revive a signal every update consistently.  
+In order to workout when the database was updated. I had two options, use SQLites API or watch the file. The API provided by SQLite is on a per connection base meaning that I would only revive signals when my own application sent SQL commands, which are of no use to me, as  I already know when the commands a sent out. This left me with the latter option, watching the file. Since SQLite is a single file, every time the file / database was updated so would the last modified time. In addition to this as SQLite only allows one writer at a time, I would revive a signal every update consistently.  
 \\\\
-The original implementation utilised Java's WatchService api. However, when I used it, I found it to be hit or miss whether it would register the change. And at one point failed to detect any changes. So i ended up rolling my own solution, which is a simple while true loop, recorded the last modified time, then when the time differs we send out a single to the rest of the application. 
+The original implementation utilised Java's WatchService API. However, when I used it, I found it to be hit or miss whether it would register the change. At one point failed to detect any changes. In the end I ended up rolling my own solution, which is a simple while true loop, recording the last modified time, then when the time differs we send out a single to the rest of the application. 
 \\\\
-Due to the polling nature of this module, it runs inside its own thread, and communicates over an observer patten, that any another class can tune into, providing they implement the Observer interface. This meant that the thread could process the updated databases without stopping or slowing down the user interface and other interactions.
+Due to the polling nature of this module, it runs inside its own thread, and communicates over an observer patten, that any another class can tune into, providing they implement the Observer interface. The thread could then process the updated databases without stopping or slowing down the user interface and other interactions.
 
 \subsubsection{File parser}
 \label{subsubsec:file_parser_imp}
 
-The file parser does exactly what it says on the tin, it takes a database file, a database object, and converts the file into the object. Parsing the database, started off with the, checking the magic number, then the header, before moving onto the pages. The magic number and header information where all about reading the first 100 bytes, correctly. For the pages I relied heavily upon recursion.
+The file parser takes a database file, a database object, and converts the database file into the databse object. Parsing the database, starts with checking the magic number, then the header, before moving onto the pages. The magic number and header information is just reading the first 100 bytes, correctly. For the pages I relied heavily upon recursion.
 \\\\
-First I would parse the page header, then switch into the method, that dealt with that type of page, who would then call the original method, when it reached a page number.  Each page was represented as a different node. As the recursive method returned a node, representing that node, and all of its children, left a elegant and effective design, unless we run out of stack with a huge database. Below is the psudocode of the algorithm:
+First I would parse the page header, then switch into the method, that dealt with that type of page, who would then call the original method, when it reached a page number.  Each page was represented as a node, with with contents of the node repersented as a cell. The only main issue with this design is the size of the stack on a large database. Below is the psudocode of the algorithm:
 
 \begin{lstlisting}	
 public void parseBTree(stream, database) {
@@ -114,7 +114,7 @@ public cell parseTableBtreeLeafCell(InputStream, PageHeader, Node) {
 }
 \end{lstlisting}
 
-While that solves how to go about parsing the tree, one major problem was decoding the 'varints' mentioned in section~\ref{subsubsec:sqlite_data_encoding} especially as we needed to count the number of bytes for the record headers. Below shows the psudocode algorithm that I made in order to decrypt them: 
+During the process of parsing the tree we also need to decode the 'varints' mentioned in section~\ref{subsubsec:sqlite_data_encoding} especially as we needed to count the number of bytes for the record headers. Below shows the psudocode algorithm that I made in order to decrypt them: 
 
 \begin{lstlisting}	
 private long[] decodeVarint(stream) {
@@ -142,14 +142,14 @@ private long[] decodeVarint(stream) {
 }
 \end{lstlisting}
 
-The first value returned is the value of the varint, and the second its size. Now we have that all sorted decoding the record headers, and other section of the file is easy.
+The first value returned in the array is the value of the varint, and the second its size. 
 
 \subsubsection{The log}
 \label{subsubsec:log_imp}
 
-The log, as briefly mentioned in the design section, had a complete change compared to the original plan. The original plan was to have the log run on its own without having to relay on other modules, and would retrieve the original SQL commands that where sent to it. While looking at SQLite there were three ways I could have done it in addition to my final implementation.
+The log, though the project has under gone many design changes. The original plan was to have the log run on its own without having to relay on other modules, and would retrieve the original SQL commands that were sent to the database. However, as we wwe will see, this proved unattainable, and I had to only record the changes that occure when a comman is sent. While working on the log there were three ways I could have implemented it in addition to my final method.
 \\\\
-The first technique I looked at utilised SQLites triggers. Triggers execute SQL commands when, a Delete, insert or update is performed on a table, with a optional where clause. Using this \cite{sqlitetriggers} used three separate triggers to long the time, changes before and after, and type of action performed on the table. The last part is one of the reason why I went for another technique. Firstly, I would need to have three triggers per table in the database, so N*3 triggers where N is the number of tables. Secondly, in order to accomplish this, I needed my own table that it changes where the changes are stored to, hence the log file in my original design, where i would attach to the database and write to it. lastly, the triggers mean altering the database file, this is something I wanted to avoid as much as possible.  
+The first technique I looked at utilised SQLites triggers. Triggers execute SQL commands when, a Delete, insert or update is performed on a table, with a optional where clause. Using this \cite{sqlitetriggers} used three separate triggers to long the time, changes before and after, and type of action performed on the table. The last part is one of the reason why I went for another technique. Firstly, I would need to have three triggers per table in the database, so N*3 triggers where N is the number of tables. Secondly, in order to accomplish this, I needed my own table that the changes are stored to, hence the log file in my original design, where I would attach to the database and write to it. lastly, the triggers ment altering the database file, this is something I wanted to avoid as much as possible, as to not impead on the running of the database.  
 \\\\
 The second solution, was to try and hook into SQLite through its API more specifically the sqlite3\verb|_|trace function. You pass it a callback function, that is called with the SQL commands, at various stages as it passes through the system. Unfortunately for me at the current time the JBDC for SQLite did not support the function that I needed. So I ended up writing a couple C functions that I could then call from Java in order to access the functions. It worked for the most part, apart from that method only calls the callback function for SQL sent from the current application. Which is useless to me as I wanted to see all the changes. 
 \\\\

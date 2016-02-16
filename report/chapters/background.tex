@@ -6,12 +6,12 @@ To start our journey we will first look at two completely different programs tha
 \subsection{Similar programs}
 \label{subsec:similar_programs}
 
-While searching the vast web for other tools I only came across two different types. The graphical interface. They would provide a graphical user interface into SQLite, removing the need for using SQL and the command line directly. Or very technical tools, and no middle ground. This was particularly interesting as the number of user interface tools completely outnumbered the technical tools.
+While searching the vast web for tools I only came across two different types. The graphical interface. They would provide a graphical user interface into SQLite, removing the need for using SQL and the command line directly. Or very technical tools, and no middle ground. This was particularly interesting as the number of user interface tools completely outnumbered the technical tools. Where I could only find one.
 
 \subsubsection{SQLite browser}
 \label{subsubsec:sqlite_browser}
 
-The first tool I came across was the SQLite browser, made by \cite{sqlitebrowser}. It is based off of the Arca database browser. Out of all the user interface tools that I came across this was the most polished. It allowed users to open, view and manipulate the database. Without having to learn SQL, or the command line. With the main aim to be as simple as possible. Below figure~\ref{fig:db_browser_screen} shows a screen shot of the program.
+The first tool, SQLite browser, made by \cite{sqlitebrowser} based off of the Arca database browser. Out of all the user interface tools that I came across this was the most polished. It allowed users to open, view and manipulate the database. Without having to learn SQL, or the command line. With the main aim to be as simple as possible. Below figure~\ref{fig:db_browser_screen} shows a screen shot of the program.
 
 \begin{figure}[H]
 	\centering
@@ -43,7 +43,7 @@ Although it is very powerful, it does not support WAL mode, slow on larger datab
 \subsection{What is SQLite}
 \label{subsec:what_is_sqlite}
 
-D. Richard Hipp, the author of SQLite, Originally got the idea while working on a battleship. He was tasked with developing a program for the on board guided missiles. While working on the software he used the database system Informix. Which took hours to set up and get anywhere near useful. For the application that he was building, all he needed was a small self-contained, portable and easy to use database. Rather then the bloated mess that was Informix \citep{sqlitedefguide}.
+D. Richard Hipp, the author of SQLite, Originally got the idea while working on a battleship. He was tasked with developing a program for the on board guided missiles. While working on the software he used the database system Informix. Which took hours to set up and get anywhere near useful. For the application that he was building, all he needed was a small self-contained, portable and easy to use database. Rather then such a large, all powerfull system. \citep{sqlitedefguide}.
 \\\\
 Speaking to a colleague in January of 2000, Hipp, disused his idea for a self contained embedded database. When some free time opened up on the 29th of May 2000, SQLite was born. It was not until August 2000 that version 1.0 was released. Then in just over a year on the 28 November 2001 2.0 which introduced, B-Trees and many of the features seen in 3.0 today. During the next year he joined up with Joe Mistachkin followed by Dan Kennedy in 2002. To help work for the 3.0 release. Which came a lot later containing a full rewrite and improvements over 2.0, with the first public release on 18 June 2004. At the time of writing this paper we are currently sitting at version 3.10.4. After changes to the naming scheme, version 3 is currently supported to 2050. \citep{sqlite}.
 \\\\
@@ -152,12 +152,12 @@ This paper will not cover the lock byte and pointer map pages.
 \subsubsection{The Header}
 \label{subsubsec:sqlite_page_hader}
 
-The first step in parsing the SQLite file before we tackle the different pages is to read in the SQLite header. This is the first 100 bytes located in page one. The header stores all the necessary information to read the rest of the file. so reading it correctly is crucial. Immediately following the header is the root B-Tree which we will cover the the next section. Appendix Table~\ref{tbl:sqlite_header} shows the header layout.  All multibyte fields are stored in a big-endian format.
+The first step in parsing the SQLite file before we tackle the different pages is to read in the SQLite header. This is the first 100 bytes located in page one. The header stores all the necessary information to read the rest of the file. so reading it correctly is crucial. Immediately following the header is the root B-Tree which we will cover in the next section. Appendix Table~\ref{tbl:sqlite_header} shows the header layout.  All multibyte fields are stored in a big-endian format.
 
 \subsubsection{The Trees and Cells}
 \label{subsubsec:sqlite_trees_and_cells}
 
-As mentioned in section~\ref{subsubsec:sqlite_page_system} the file is split into pages and each page contains one of five types of pages. However each page is linked together in a B-Tree format, where each page represents a node in the tree. Below figure~\ref{fig:sqlite_btree_figure} shows an example file B-Tree.
+As mentioned in section~\ref{subsubsec:sqlite_page_system} the file is split into pages and each page contains one of five types of pages. However, each page is linked together in a B-Tree format, where each page represents a node in the tree. Below figure~\ref{fig:sqlite_btree_figure} shows an example file B-Tree.
 
 \begin{figure}[H]
 	\centering
@@ -181,7 +181,7 @@ When the cells are added to the page, they start at the end of the page and work
 \\\\
 As mentioned in section~\ref{subsubsec:sqlite_page_system} there are four types of B-Trees. These can be split into two main types, and two sub types. The main types are Table and Index, both of which uses a key-value system in order to organise them. The Table B-Trees use 64 bit integers also known as row-id or primary key, theses are often what the user has set inside the database, else SQLite will attach its own. The Index B-Trees uses database records as keys. 
 \\\\
-Those sub types of B-Trees are broken down into Leaf and Interior. The leafs are located at the end of the tree and contain no children. Whereas the interior will always have at least one single child. In addition to this all database records / values within the B-Trees are sorted using the following rules written by \cite{sqliteray}:
+The sub types of B-Trees are broken down into Leaf and Interior. The leafs are located at the end of the tree and contain no children. Whereas the interior will always have at least one single child. In addition to this all database records / values within the B-Trees are sorted using the following rules written by \cite{sqliteray}:
 
 \begin{enumerate} 
 	\item If both values are NULL, then they are considered equal.
@@ -220,7 +220,7 @@ In the case of index B-Trees, the interior trees contains N number of children a
 	\label{fig:sqlite_key_pair}
 \end{figure}
 
-The table B-Tree are completely different to the index trees. The interior type contains no data but only pointers to children B-Tree pages, as all the data is stored on the leaf type. The interior trees contain at least one pointer, and the leaf node contains at least one record. For each table that exists in the database, one corresponding Table B-Tree also exists, and that B-Tree contains one entry per row, appearing in the same order as the logical database. Figure~\ref{fig:sqlite_table_btree} show the physical layout of the Table B-Tree. 
+The table B-Trees are completely different to the index trees. The interior type contains no data but only pointers to children B-Tree pages, as all the data is stored on the leaf type. The interior trees contain at least one pointer, and the leaf node contains at least one record. For each table that exists in the database, one corresponding Table B-Tree also exists, and that B-Tree contains one entry per row, appearing in the same order as the logical database. Figure~\ref{fig:sqlite_table_btree} show the physical layout of the Table B-Tree. 
 
 \begin{figure}[H]
 	\centering
@@ -234,7 +234,7 @@ The table B-Tree are completely different to the index trees. The interior type 
 
 SQLite uses a variable length integer or 'varint' in order encode some of the values inside the database, since they use up less space for small positive values. A varint is a static Huffman encoding of a 64-bit two complements integer. Taking up between and 1 - 9 bytes in size. The maximum number a byte can hold is 127 as the most significant bit is needed as a flag unless we are in the ninth byte where all the bits are used. If the most significant bit is set then we need the next byte. So if it is set in byte 1 then we need byte 2 and so on until, either the bit is not set, or we reach the 9th byte.
 \\\\
-If we have the following value in hex 5B and convert this to binary we have 01011011 as we can see the the most significance bit is not set leaving us with the value 91. However, if we have the value in hex 84 and convert this to binary we have the value 10000100, the most significant bit is set this means we need the next byte which has a value in hex of 60, converting this to binary leaves us with  01100000 meaning that this varint is two byes long. In order to create the final value we need to concatenate them together leaving out the most significant bit. creating the value 00001001100000 giving us a total value of 608 in decimal \citep{sausagefactory}. Table~\ref{tbl:varints} show the all combinations of varints. 
+If we have the following value in hex 5B and convert this to binary we have 01011011 as we can see the the most significance bit is not set leaving us with the value 91. However, if we have the value in hex 84 and convert this to binary we have the value 10000100, the most significant bit is set this means we need the next byte which has a value in hex of 60, converting this to binary leaves us with  01100000 meaning that this varint is two byes long. In order to create the final value we need to concatenate them together leaving out the most significant bit. Creating the value 00001001100000 giving us a total value of 608 in decimal \citep{sausagefactory}. Table~\ref{tbl:varints} shows  all combinations of varints. 
 
 \begin{longtable}[h]{| c | c | p{10cm} |}
 		\hline
@@ -441,9 +441,9 @@ Throughout the previous sections the payload has been called byte array or datab
 	\label{fig:sqlite_record_format}
 \end{figure}
 
-The cell header is made up of N + 1 varints where N is the number of values in the record. The first varint is the number of bytes in the header. And the following N the record types.
+The cell header is made up of N + 1 varints where N is the number of values in the record. The first varint is the number of bytes in the header. And the following N, the record types.
 \\\\
-As varints can be between 1 - 9 bytes it is important to keep track of the varints size. In order to count the number of values in the record. For example if we have N values, and the number of bytes as 8. This could mean there are 8 small values, or 1 large value, or anywhere in between. The different value types can be seem below in Table~\ref{tbl:cell_header_record_types} 
+As varints can be between 1 - 9 bytes it is important to keep track of the varints size. To count the number of values in the record. For example if we have N values, and the number of bytes as 8. This could mean there are 8 small values, or 1 large value, or anywhere in between. The different value types can be seem below in Table~\ref{tbl:cell_header_record_types} 
 
 \begin{longtable}[h]{| c | c| p{5cm} |}
 		\hline
@@ -508,7 +508,7 @@ In some of my test databases, the root page was a Interior Table B-Tree, so goin
 	\label{tbl:schema_table}
 \end{longtable}
 
-In order to tell if we have come a across a table, we much link in the first column, then read the page number in the fourth column to find the content for that table. Much like the right child pointer mentioned in section~\ref{subsubsec:btree_header} this is the page number of the child not a pointer.
+In order to tell if we have come a across a table, we need to read in the first column looking of one of the four types. Then read the page number in the fourth column to find the content for that table. Much like the right child pointer mentioned in section~\ref{subsubsec:btree_header} this is the page number of the child not a pointer.
 
 \subsubsection{Parsing the file}
 \label{subsubsec:parsing the file}
