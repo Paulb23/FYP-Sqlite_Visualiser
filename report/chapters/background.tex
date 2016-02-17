@@ -43,7 +43,7 @@ Although it is very powerful, it does not support WAL mode, slow on larger datab
 \subsection{What is SQLite}
 \label{subsec:what_is_sqlite}
 
-D. Richard Hipp, the author of SQLite, Originally got the idea while working on a battleship. He was tasked with developing a program for the on board guided missiles. While working on the software he used the database system Informix. Which took hours to set up and get anywhere near useful. For the application that he was building, all he needed was a small self-contained, portable and easy to use database. Rather then such a large, all powerfull system. \citep{sqlitedefguide}.
+D. Richard Hipp, the author of SQLite, Originally got the idea while working on a battleship. He was tasked with developing a program for the on board guided missiles. While working on the software he used the database system Informix. Which took hours to set up and get anywhere near useful. For the application that he was building, all he needed was a small self-contained, portable and easy to use database. Rather then such a large, all powerful system. \citep{sqlitedefguide}.
 \\\\
 Speaking to a colleague in January of 2000, Hipp, disused his idea for a self contained embedded database. When some free time opened up on the 29th of May 2000, SQLite was born. It was not until August 2000 that version 1.0 was released. Then in just over a year on the 28 November 2001 2.0 which introduced, B-Trees and many of the features seen in 3.0 today. During the next year he joined up with Joe Mistachkin followed by Dan Kennedy in 2002. To help work for the 3.0 release. Which came a lot later containing a full rewrite and improvements over 2.0, with the first public release on 18 June 2004. At the time of writing this paper we are currently sitting at version 3.10.4. After changes to the naming scheme, version 3 is currently supported to 2050. \citep{sqlite}.
 \\\\
@@ -291,7 +291,7 @@ Immediately following the header is the array of cell pointers, the number of ce
 	cell = ((pageNumer - 1) * pageSize) + offset;
 \end{lstlisting}
 
-The right most pointer within interior B-Tree pages is the childs page number not offset therefore to calculate the page offset the following sum is used:
+The right most pointer within interior B-Tree pages is the child’s page number not offset therefore to calculate the page offset the following sum is used:
 
 \begin{lstlisting}	
 	pageOffset = ((pageNumer - 1) * pageSize);
@@ -365,7 +365,7 @@ The Table B-Trees as mentioned in section~\ref{subsubsec:sqlite_trees_and_cells}
 \end{longtable}
 
 The Leaf type is a little more complex, this can be seen the Table~\ref{tbl:table_btree_cell_leaf} below:
-
+\\\\
 \begin{longtable}[h]{| c | p{5cm} |}
 		\hline
 			\textbf{Data type} & \textbf{Description} \\ 

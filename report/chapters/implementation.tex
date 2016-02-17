@@ -16,9 +16,9 @@ For this particular application I went with Java and JavaFX for the user interfa
 
 As previously mentioned, the architecture is MVC. And we are using JavaFX. JavaFX comes with a whole host of tools for working with the view, and controllers. 
 \\\\
-Firstly, each view or section can be repersented using a fxml file. The fxml file is heavly based on HTML, including the support for CSS styling. Each file start with a root node, normaly one of the panes. Such as border, anchor, and grid. For this application I stuck with anchor panes, apart from the menu bar which used a border pane. Then folloing the root pane is the items to attached to it. Each item can be given a unique id that allows it to be controlled with via Java and CSS. In addition to this you can include your own Java classes for custon items.
+Firstly, each view or section can be represented using a fxml file. The fxml file is heavily based on HTML, including the support for CSS styling. Each file start with a root node, normally one of the panes. Such as border, anchor, and grid. For this application I stuck with anchor panes, apart from the menu bar which used a border pane. Then following the root pane is the items to attached to it. Each item can be given a unique id that allows it to be controlled with via Java and CSS. In addition to this you can include your own Java classes for custom items.
 \\\\
-Secondly, the controller is a normal Java class set as the controller for a particular fxml file. This can be done in two ways. The way is to inject the controller into the loading process. This allows you to call other code, such as initisiastion before the fxml file is loaded, and keep track of the controller. The second way is to specify the contrller inside the fxml file, and Java will load the controller in when the file is loaded. But you lose all acess to the controller object. Inside the colltroller the annotation @FXML, allows Java to inject the item from the cotrlller into the view, and vise versia. Giving you full controll over the fxml file and object utitlising the items unuqie id. Through my application I use the first method, to allow controlelr sharing, and manual controll over the controller. 
+Secondly, the controller is a normal Java class set as the controller for a particular fxml file. This can be done in two ways. The way is to inject the controller into the loading process. This allows you to call other code, such as initialisation before the fxml file is loaded, and keep track of the controller. The second way is to specify the controller inside the fxml file, and Java will load the controller in when the file is loaded. But you lose all access to the controller object. Inside the controller the annotation @FXML, allows Java to inject the item from the controller into the view, and vice versa. Giving you full control over the fxml file and object utilising the items unique id. Through my application I use the first method, to allow controller sharing, and manual control over the controller. 
 \\\\
 The view is made up of four sections, the menu bar, containing the file, edit and other drop downs, including the icons, and tabs. The other three section, represent the left, middle, and right sections of the central pane. This means that any one time I can display three different views. Each of the section have their own fxml file, depending on the situation they may also share a controller. This can be seen below in figure~\ref{fig:view_breakdown}.
 
@@ -38,7 +38,7 @@ The controllers for each section extend a abstract controller class. The control
 \subsubsection{Model interface}
 \label{subsubsec:imp_model_interface}
 
-The model interface is based on a repository design with all the sub modules attached to it. In order for the controller to communitacate with the sub modules they must also first go through the model interface. This design helps keep everything sepertaed and compaact. All of the sub modles attached to the model interface implement their corrosponding interface. Allowing the implementation to change while keeping the same external view. This enables the design to be adapted to other systems other then SQLite. Below figure~\ref{fig:model_interface_design} show the layout of the model interface.
+The model interface is based on a repository design with all the sub modules attached to it. In order for the controller to communicate with the sub modules they must also first go through the model interface. This design helps keep everything separated and compact. All of the sub modules attached to the model interface implement their corresponding interface. Allowing the implementation to change while keeping the same external view. This enables the design to be adapted to other systems other then SQLite. Below figure~\ref{fig:model_interface_design} show the layout of the model interface.
 
 \begin{figure}[H]
 	\centering
@@ -70,7 +70,7 @@ Due to the polling nature of this module, it runs inside its own thread, and com
 
 The file parser takes a database file, a database object, and converts the database file into the databse object. Parsing the database, starts with checking the magic number, then the header, before moving onto the pages. The magic number and header information is just reading the first 100 bytes, correctly. For the pages I relied heavily upon recursion.
 \\\\
-First I would parse the page header, then switch into the method, that dealt with that type of page, who would then call the original method, when it reached a page number.  Each page was represented as a node, with with contents of the node repersented as a cell. The only main issue with this design is the size of the stack on a large database. Below is the psudocode of the algorithm:
+First I would parse the page header, then switch into the method, that dealt with that type of page, who would then call the original method, when it reached a page number.  Each page was represented as a node, with with contents of the node represented as a cell. The only main issue with this design is the size of the stack on a large database. Below is the psudocode of the algorithm:
 
 \begin{lstlisting}	
 public void parseBTree(stream, database) {
@@ -147,17 +147,17 @@ The first value returned in the array is the value of the varint, and the second
 \subsubsection{The log}
 \label{subsubsec:log_imp}
 
-The log, though the project has under gone many design changes. The original plan was to have the log run on its own without having to relay on other modules, and would retrieve the original SQL commands that were sent to the database. However, as we wwe will see, this proved unattainable, and I had to only record the changes that occure when a comman is sent. While working on the log there were three ways I could have implemented it in addition to my final method.
+The log, though the project has under gone many design changes. The original plan was to have the log run on its own without having to relay on other modules, and would retrieve the original SQL commands that were sent to the database. However, as we we will see, this proved unattainable, and I had to only record the changes that occure when a command is sent. While working on the log there were three ways I could have implemented it in addition to my final method.
 \\\\
-The first technique I looked at utilised SQLites triggers. Triggers execute SQL commands when, a Delete, insert or update is performed on a table, with a optional where clause. Using this \cite{sqlitetriggers} used three separate triggers to long the time, changes before and after, and type of action performed on the table. The last part is one of the reason why I went for another technique. Firstly, I would need to have three triggers per table in the database, so N*3 triggers where N is the number of tables. Secondly, in order to accomplish this, I needed my own table that the changes are stored to, hence the log file in my original design, where I would attach to the database and write to it. lastly, the triggers ment altering the database file, this is something I wanted to avoid as much as possible, as to not impead on the running of the database.  
+The first technique I looked at utilised SQLites triggers. Triggers execute SQL commands when, a Delete, insert or update is performed on a table, with a optional where clause. Using this \cite{sqlitetriggers} used three separate triggers to long the time, changes before and after, and type of action performed on the table. The last part is one of the reason why I went for another technique. Firstly, I would need to have three triggers per table in the database, so N*3 triggers where N is the number of tables. Secondly, in order to accomplish this, I needed my own table that the changes are stored to, hence the log file in my original design, where I would attach to the database and write to it. lastly, the triggers meant altering the database file, this is something I wanted to avoid as much as possible, as to not imped on the running of the database.  
 \\\\
-The second solution, was to try and hook into SQLite through its API more specifically the sqlite3\verb|_|trace function. You pass it a callback function, that is called with the SQL commands, at various stages as it passes through the system. Unfortunately for me at the current time the JBDC for SQLite did not support the function that I needed. So I ended up writing a couple C functions that I could then call from Java in order to access the functions. It worked for the most part, apart from that method only calls the callback function for SQL sent from the current application. Which is useless to me as I wanted to see all the changes. 
+The second solution, was to try and hook into SQLite through its API more specifically the sqlite3\verb|_|trace function. You pass it a callback function, that is called with the SQL commands, at various stages as it passes through the system. Unfortunately for me at the current time the JBDC for SQLite did not support the function that I needed. So I ended up writing a couple C functions that I could then call from Java in order to access the API. It worked for the most part, apart from that method only calls the callback function for SQL sent from the current application. When I needed to collect all the changes, thus make this unusable. 
 \\\\
-So with two ways down the third way was to write my own extension to SQLite, or download the source code, and modify to suit my needs it. The seemed to be way to far from the original path, and if I used a custom version it means that it would be limited to only my version of SQLite. And as mentioned previously, I wanted to not modify the data if possible, so writing an extension, that would have to be loaded into SQLite and attached to the database, possibly conflicting with any other extensions they might have left me with my final option.
+The third way was to write my own extension to SQLite, or download the source code, and modify to suit my needs it. The seemed to be way to far from the original path, and if I used a custom version it meant that it would be limited to only my version of SQLite. And as mentioned previously, I wanted to not modify the data if possible, so writing an extension, that would have to be loaded into SQLite and attached to the database, possibly conflicting with any other extensions they might have.
 \\\\
-The final option, while less sophisticated then the others, works well, although I do not get the original requests. I do end up recording the time, and all changes that happened per command. Since the database storage contains all of the previous versions like a snapshot of the database. when a update comes in I simply compare the new updated database to the last database that passed through the application.
+The final option, while less sophisticated then the others, works well, although I do not get the original requests. I do end up recording the time, and all changes that happened per command. Since the database storage contains all of the previous versions like a snapshot of the database. when a update comes in I simply compare the new updated database to the last database object that passed through the application.
 \\\\
-In order to compare database though required looping through every data value in both trees and comparing them, not only the data vale, but also the added pages and removal of pages. This could not be detected through any of the other techniques. Clearly looping through every single item in a larger database would quickly become a bottleneck, and slow the application and parsing down. So in order to speed it up, I did two things, firstly hashed the data array, If the hashes matched then we do not have to loop through the data. the second this was to adjusted my B-trees into a modified version of the Merkle Tree patented by \cite{merkletree}. The basic idea behind the merkle tree is that each node in the tree has a hash of its childrens hash, all the way down to the leaf node, who hash is based on the contents. Below figure~\ref{fig:merkle_tree} shows a digram of the merkle tree.
+In order to compare database required looping through every data value in both trees and comparing them, not only the data values, but also the added and removed pages. This could not be detected through any of the other techniques. Clearly looping through every single item in a larger database would quickly become a bottleneck, and slow the application and parsing down. So in order to speed it up, I did two things, firstly hashed the data array, If the hashes matched then we do not have to loop through the data. The second this was to adjusted my B-trees into a modified version of the Merkle Tree by \cite{merkletree}. The basic idea behind the merkle tree is that each node in the tree has a hash of its children’s hash, all the way down to the leaf node, who’s hash is based on the contents. Below figure~\ref{fig:merkle_tree} shows a digram of the merkle tree.
 
 \begin{figure}[H]
 	\centering
@@ -166,37 +166,81 @@ In order to compare database though required looping through every data value in
 	\label{fig:merkle_tree}
 \end{figure}
 
-This means we can tell if there is any change in the current section tree just by comparing the nodes hashes without having to loop over them. meaning that we will only loop over the tree at all when a change is seen. otherwise we can skip it. Creating an unnoticeable change unless many nodes are changed at once. The hash for node is calculated off the hash of the data and number of children meaning we will also know if a page has been added or removed. 
+With this we can tell if there is any change in the current section of the tree just by comparing the nodes hashes without having to loop over them, allowing the program to only loop over the nodes when a change is detected. Otherwise we can skip it. Unless the entire database is modified, where we will have to revert to looping over everything. The hash for each node is calculated off the hash of the data inside it, and its children’s data. This will tell us if a page has been added, removed or modified. 
 \\\\
-In addition to this, when it detects an update to the data, it will mark that page as modified, a simple boolean value. and record the store the string value, from the old page and the new page. If instead it was a removal or addition, of data, it will simply store the value, and leave the removed or non-existent value. Something similar happens with added and removed pages. With the addition of pages, the newer page will be marked as changed. Often when this happens a pointer to the new page will also be placed somewhere, so this is also recorded. When a  page is removed, utilising the data from the old tree we can see exactly what was gone and record it, but there is nothing to marked as changed, apart from the pointers in other pages to that page. 
+When it detects an update to the data, it will mark that page as modified, a simple boolean value. Recording the string value, from the old page and new page, into a log object. If instead it was a removal or addition, of data, it will store the new / removed value. Something similar happens with added and removed pages. With the addition of pages, the added page will be marked as changed. Often when this happens a pointer to the new page will also be placed somewhere, so this is also recorded. When a  page is removed, utilising the data from the old tree we can see exactly what was page has been removed and can record it, but there is nothing to marked as changed, apart from the pointers in other pages to that page. 
 
 \subsubsection{Live Updater}
 \label{subsubsec:live_Updater_imp}
 
-The Live updater has undergone many changes from the start, although its position in the architecture has not changed, it gradually was morphed and shaped by the rest of the application. Originally it stared out as a relatively simple class that would control the parsing of the application. By contacting the database and telling it when to move along the time line, allowing the pausing of live updates. It would also receive the update signal from the file watcher, and parse the file, moving it into the database storage. Basically an extra more controlled, and tailored interface into the database interface linking it to the file parser.
+The Live updater has undergone many changes from the start, although its position in the architecture has not changed, it gradually was morphed and shaped by the rest of the application. Originally it stared out as a module that would control the parsing of the application. By contacting the database and telling it when to move along the time line, allowing the pausing of live updates. It would also receive the update signal from the file watcher, and parse the file, moving it into the database storage. Basically an extra more controlled, and tailored interface into the database interface linking it to the file parser.
 \\\\
-Then as time went on I wanted to have additional information into the metadata of the database, tat required running SQL onto the database, else i would have to loop through the entire tree again. So it needed access to the SQL execute, which we will cover in the next section. Then I ran into problems with the log feature, and it was all to easy to stick the log module inside this one. However, this class soon became bloated, as I added new features, since this was the only one that had access to all the needed resources.
+However, to collect metadata information about the database, I had to run SQL onto the database, else I would have to loop through the entire tree again. So it needed access to the SQL executer, which we will cover in the next section. Then I ran into problems with the log feature, and while working a way around the problem, it ended up iside this module. As a result of this the module soon became bloated, as I added new features, since this was the only module that had access to all the needed resources.
 \\\\
-Rather then stick with it I decided rather then fighting against my designs it would be better to dedicate this as a master module, that would orchestrate the process when an update signal is revived. This allowed me to move the bloat back into their correct modules. And now it does exactly what I said in the beginning, acts as a tailored interface into the database interface, contacts the file parser, SQL executor, and Log modules to control the parsing of the updated database.
+Rather fighting against my designs I decided it would be better to dedicate this as a master module, that would orchestrate the process when an update signal is revived. This allowed me to move the extra jobs it had taken on back into their correct modules, as a result of this it does exactly what I said in the beginning. Acting as a tailored interface into the database interface, contacting the file parser, SQL executor, and Log modules to control the parsing of the updated database.
+\\\\
+When an update signal is received, it requests a database object from the file parser, and add the extra metadata from the SQL command. It then requests the previous database object from the database interface, and send them to the log. Before storing the new database object inside the database interface. If we are not paused it will then increment along the time line. 
 
 \subsubsection{SQL executor}
 \label{subsubsec:sql_executor_imp}
 
-The SQL executor manages the JDBC connections to the database, making sure that it connects, closes and commits any changes that are needed onto the database. It interface provides four methods to the other modules, connect, close, perform select, perform update and get database meta-data. Unlike th rest of the modules this was one of the more straight forward and simple to implement.
+The SQL executor manages the JDBC connections to the database, making sure that it connects, closes and commits any changes that are needed onto the database. Its interface provides four methods to the other modules, connect, close, perform select, perform update and get database metadata. Unlike the rest of the modules this was one of the more straight forward and simple to implement, calling the corresponding functions on the JDBC.
 
 \subsection{User Interface}
 \label{subsec:user_interface_imp}
 
-I mentioned in the last section how the view is put together, but now we have looked at each of the modules in turn. I wanted to go through how each of the different tabs / features are put together. In order to better understand how each module is interacted with. For a rough idea of what the user inter face looks like see section~\ref{subsec:high_user_interface}. The next section~\ref{sec:system_operation} we will look at the design side of things. 
+I mentioned in the last section how the view is put together, but now we have looked at each of the modules in turn. I wanted to go through how each of the different tabs / features are put together. In order to better understand how each module is interacted with. The next section~\ref{sec:system_operation} we will look at the design side of things. 
 \\\\
-The entire user interface is made up of eight fxml files and one css file.  The first fxml file we will look at is the menu bar. The menu bar as previously mentioned acts like the master controller, controlling what is shown in the other sections of the application. At the very top it contains the file, edit and other drops downs, just below them we have have a selection of image buttons. They are short cuts to the selections with the drop downs. In addition to this using the JavaFX key code combination class, I proved keyboard shortcuts to the command such as 'control o' to open a database. The last item on the menu bar controller is the tabs that allow users to select what they want to view. This section of the view, contacts the model for the opening and closing of databases, and the live updater for controlling what happens and when.  
-\\\\
-The right section unlike the central and left is similar to the menu bar as in it does not change when a new tab is shown. This is also made up of a single fxml file. It holds the SQL executer. As previously mentioned the SQl executor module enables arbitrary SQL commands to be ran on o the database. And as such this section allows the user to type the SQL inside of text area, which are then sent to the SQL executor, if the action was a update the is then printed out in to the return text area. Or an error if one occurred. However, if it was a select the results are printed into a table, with a message into to return text area.
-\\\\
-The first tab is made up of one fxml file and no left pane. It shows all the meta data about the current database. It is made up of a flow pane, inside of a scroll pane and can adjust to any size, and any amount of information. The information, inside of the is attached to a grid pane, where the left side column, represent the values description or name and the right hand side the value. Each pane represents a section of the meta data. In order to collect the meta data, the controller needs to contact the database interface.
-\\\\
-The second tab, contains the table view. And is made up of two fxml files that share a controller. The left hand side contains a drop down that lists all the tables in the database and a text area that displays that tables schema. The central section, contains a table that lists all the content within that table. In order to accomplish this it contacts the SQL executor to collect the schema and data.  
-\\\\
-The third tab again is made up of two fxml files, how more complex. *TODO*
-\\\\
-The fourth tab contains the log, and is made up of one fxml file. Similar to the meta data tab, in contains a single scroll pane, with a VBox inside. allowing it to contain infinite items. Each item is made up of a Titled pane. where the title is the time and data of the update, and the content the changes that where performed in the update. As it is a titled pane the content can be collapsed hiding needed information from view. To collect the data, it contacts the Log module.
+The entire user interface is made up of eight fxml files and one css file.  The first fxml file we will look at is the menu bar. The menu bar as previously mentioned acts like the master controller, controlling what is shown in the other sections of the application. At the very top it contains the file, edit and other drops downs, just below them we have have a selection of image buttons. In addition to this using the JavaFX key code combination class, I proved keyboard short-cuts to the commands such as 'control o' to open a database. The last item on the menu bar controller is the tabs that allow users to select what they want to view. This section of the view, contacts the model for the opening and closing of databases, and the live updater for controlling what happens and when. This can be seen below in figure~\ref{fig:ui_screen}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.32]{images/ui_screen.png}
+	\caption{Menu bar.}
+	\label{fig:ui_screen}
+\end{figure}
+
+The right section similarly to the menu bar does not change when a new tab is shown. It is also made up of a single fxml file, containing the SQL executer. As previously mentioned the SQl executor module enables arbitrary SQL commands to be ran on the database. As such this section allows the user to type the SQL inside of text area, which are then sent to the SQL executor, if the action was a update a message is then printed out in to the return text area. Or an error if one occurred. However, if it was a select the results are printed into a table, with a message into the return text area. This can be seen below in figure~\ref{fig:ui_imp_sqlexe}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.7]{images/ui_sqlexe_design_final.png}
+	\caption{SQL executor UI.}
+	\label{fig:ui_imp_sqlexe}
+\end{figure}
+
+The first tab is made up of one fxml file and no left pane. It shows all the meta data about the current database. It is made up of a flow pane, inside of a scroll pane and can adjust to any size, and any amount of information. The information, inside of the panes are attached to a grid pane, where the left side column, represent the values description or name and the right hand side the value. Each pane represents a section of the meta data. In order to collect the meta data, the controller needs to contact the database interface. This can be seen below in figure~\ref{fig:ui_imp_metdata}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.32]{images/ui_meatadata_final.png}
+	\caption{Metadata UI.}
+	\label{fig:ui_imp_metdata}
+\end{figure}
+
+The second tab, contains the table view. Its made up of two fxml files that share a controller. The left hand side contains a drop down that lists all the tables in the database and a text area that displays the table schema. The central section, contains a table that lists all the content within that table. In order to accomplish this it contacts the SQL executor, and runs a select all query to collect the schema and data. This can be seen below in figure~\ref{fig:imp_ui_table}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.32]{images/ui_table_final.png}
+	\caption{Table view UI.}
+	\label{fig:imp_ui_table}
+\end{figure}
+
+The third tab is made up of two fxml files, how more complex much wow. *TODO* This can be seen below in figure~\ref{fig:imp_ui_vis}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.32]{images/ui_visuliser_final.png}
+	\caption{Visualiser interface design.}
+	\label{fig:imp_ui_vis}
+\end{figure}
+
+The fourth tab contains the log, and is made up of one fxml file. Similar to the meta data tab, it contains a single scroll pane, with a VBox inside. allowing it to contain infinite items. Each item is made up of a Titled pane. Where the title is the time and data of the update, and the content the changes that where performed in the update. To collect the data, it contacts the Log module. This can be seen below in figure~\ref{fig:imp_ui_log}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.32]{images/ui_log_final.png}
+	\caption{Log UI.}
+	\label{fig:imp_ui_log}
+\end{figure}

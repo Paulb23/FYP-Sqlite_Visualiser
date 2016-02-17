@@ -38,7 +38,7 @@ With this in mind the bulk of the work is performed inside the model. However, l
 	\label{fig:design_old}
 \end{figure}
 
-The Model was going to run in its own thread so it could control, manage and prepare the data as it came in. This meant the view could request it when it wanted. The model was also made up of five modules. With the logging  stored into an external file, for the view to read when it wanted. In adddition to this the contollers follow a hierarchical structure, with a master controller, controlling access to the model. However, this design proved unusable and thus changed into the following seen in figure~\ref{fig:design_new}. 
+The Model was going to run in its own thread so it could control, manage and prepare the data as it came in. This meant the view could request it when it wanted. The model was also made up of five modules. With the logging  stored into an external file, for the view to read when it wanted. In addition to this the controllers follow a hierarchical structure, with a master controller, controlling access to the model. However, this design proved unusable and thus changed into the following seen in figure~\ref{fig:design_new}. 
 
 \begin{figure}[H]
 	\centering

@@ -1,19 +1,19 @@
 \section{Testing}
 \label{sec:testing}
 
-Testing is an important part of making all application, and as such will go over the ways that I went about testing my application.
+ I mentioned at the start of this paper I wanted to make sure that my tool could be relied on. In order to accomplish this I used a varity of testing methods and tool that we will go over in this section.
 
 \subsection{Test data}
 \label{subsec:test_data}
 
-In order to assure that my program ran correctly under a variety of circumstances, I used a variety of databases including different sizes, and headers. 
+In order to assure that my program ran correctly under a variety of circumstances, I used a variety of databases including different sizes, and headers. The smallest made up of one table and page, and the largest twelve tables and 1066 pages. 
 
 \subsection{Unit tests}
 \label{subsec:unit_tests}
 
-Throughout the implementation stage I kept close to test driven development, and as such have written a lot of unit tests utilising the JGroups framework. In total I have around TODO:X unit tests. All passing. The unit tests are written to use mocks where dependences are needed allowing me to make sure its correctly testing.
+Throughout the implementation stage I kept close to test driven development, and as such have written a lot of unit tests utilising the JGroups framework. In total I have around 150 unit tests. All passing. The unit tests are writen to use mocks where dependences are needed allowing me to make sure its correctly testing.
 \\\\
-In order to test the user interface I found a test framework that works alongside called testFx that is specifically designed to test JavaFX. You pass it the root node of your scene, and pass it commands, such as click, with either the id, or name of the item. It will then automatically control the mouse, interacting with the user interface.
+In order to test the user interface I found a test framework that works alongside called TestFX \citep{test_fx} that is specifically designed to test JavaFX. You pass it the root node of your scene, and pass it commands, such as click, with either the id, or name of the item. It will then automatically control the mouse, interacting with the user interface.
 
 \subsection{Integration tests}
 \label{subsec:integration_tests}
@@ -23,4 +23,4 @@ In addition to unit testing, I performed integration tests that would test the i
 \subsection{Manual testing}
 \label{subsec:mamual_tests}
 
-Where such tests needed a a human eye, such as the design and drawing of items, and other small interactions that could not be automated. I manually over saw theses test. However, the majority of manual testing, were small things that would not affect the application to any great affect.
+Where such tests needed a human eye, such as the design and drawing of items, and other small interactions that could not be automated. I manually over saw theses test. However, the majority of manual testing, were small things that would not affect the application to any great effect.
