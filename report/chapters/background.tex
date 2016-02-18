@@ -152,8 +152,8 @@ This paper will not cover the lock byte and pointer map pages.
 \subsubsection{The Header}
 \label{subsubsec:sqlite_page_hader}
 
-The first step in parsing the SQLite file before we tackle the different pages is to read in the SQLite header. This is the first 100 bytes located in page one. The header stores all the necessary information to read the rest of the file. so reading it correctly is crucial. Immediately following the header is the root B-Tree which we will cover in the next section. Appendix Table~\ref{tbl:sqlite_header} shows the header layout.  All multibyte fields are stored in a big-endian format.
-
+The first step in parsing the SQLite file before we tackle the different pages is to read in the SQLite header. This is the first 100 bytes located in page one. The header stores all the necessary information to read the rest of the file. so reading it correctly is crucial. Immediately following the header is the root B-Tree which we will cover in the next section. Appendix A shows the full header layout.
+\\
 \subsubsection{The Trees and Cells}
 \label{subsubsec:sqlite_trees_and_cells}
 

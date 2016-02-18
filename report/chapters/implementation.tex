@@ -189,9 +189,11 @@ The SQL executor manages the JDBC connections to the database, making sure that 
 \subsection{User Interface}
 \label{subsec:user_interface_imp}
 
-I mentioned in the last section how the view is put together, but now we have looked at each of the modules in turn. I wanted to go through how each of the different tabs / features are put together. In order to better understand how each module is interacted with. The next section~\ref{sec:system_operation} we will look at the design side of things. 
+I mentioned in the last section how the view is put together, but now we have looked at each of the modules in turn. I wanted to go through how each of the different tabs / features are put together. In order to better understand how each module is interacted with.
 \\\\
-The entire user interface is made up of eight fxml files and one css file.  The first fxml file we will look at is the menu bar. The menu bar as previously mentioned acts like the master controller, controlling what is shown in the other sections of the application. At the very top it contains the file, edit and other drops downs, just below them we have have a selection of image buttons. In addition to this using the JavaFX key code combination class, I proved keyboard short-cuts to the commands such as 'control o' to open a database. The last item on the menu bar controller is the tabs that allow users to select what they want to view. This section of the view, contacts the model for the opening and closing of databases, and the live updater for controlling what happens and when. This can be seen below in figure~\ref{fig:ui_screen}.
+The entire user interface is made up of eight fxml files and one CSS file, for styling. As mentioned previously, the fxml files contain the layout for each of the sections. I opted for a dark colour scheme used through out the application, due to personal preference, however this could easily be swapped out for a lighter version. 
+\\\\
+The menu bar is made up of one fxml file. In addition to the visual elements using the JavaFX key code combination class, I proved keyboard short-cuts such as 'control o' to open a database, and 'control-q' to quit. The controller for this fxml file  contacts the model interface for the opening and closing the database, and the live updater for controlling the time line.  This can be seen below in figure~\ref{fig:ui_screen}.
 
 \begin{figure}[H]
 	\centering
@@ -200,7 +202,7 @@ The entire user interface is made up of eight fxml files and one css file.  The 
 	\label{fig:ui_screen}
 \end{figure}
 
-The right section similarly to the menu bar does not change when a new tab is shown. It is also made up of a single fxml file, containing the SQL executer. As previously mentioned the SQl executor module enables arbitrary SQL commands to be ran on the database. As such this section allows the user to type the SQL inside of text area, which are then sent to the SQL executor, if the action was a update a message is then printed out in to the return text area. Or an error if one occurred. However, if it was a select the results are printed into a table, with a message into the return text area. This can be seen below in figure~\ref{fig:ui_imp_sqlexe}.
+The right section is made up of a single fxml file, containing the SQL executer. As previously mentioned the SQl executor module enables arbitrary SQL commands to be ran on the database. As such this section contacts the SQL executor in order connect, run commands, and close the connection. This final interface can be seen below in figure~\ref{fig:ui_imp_sqlexe}.
 
 \begin{figure}[H]
 	\centering
@@ -209,7 +211,7 @@ The right section similarly to the menu bar does not change when a new tab is sh
 	\label{fig:ui_imp_sqlexe}
 \end{figure}
 
-The first tab is made up of one fxml file and no left pane. It shows all the meta data about the current database. It is made up of a flow pane, inside of a scroll pane and can adjust to any size, and any amount of information. The information, inside of the panes are attached to a grid pane, where the left side column, represent the values description or name and the right hand side the value. Each pane represents a section of the meta data. In order to collect the meta data, the controller needs to contact the database interface. This can be seen below in figure~\ref{fig:ui_imp_metdata}.
+The meta data tab is made up of single fxml file. The outer layer is a scroll pane, with a flow plane content. The flow pane provides a dynamic layout to adjust to different resolutions alongside the scroll pane. The panels, inside of the flow pane are pane with grid pane content. The grid pane is has two columns. The left or first column, representing the description or name and the right or second column the value. In order to collect the meta data, the controller needs to contact the database interface, to collect the current database object. The user interface can be seen below in figure~\ref{fig:ui_imp_metdata}.
 
 \begin{figure}[H]
 	\centering
@@ -218,7 +220,7 @@ The first tab is made up of one fxml file and no left pane. It shows all the met
 	\label{fig:ui_imp_metdata}
 \end{figure}
 
-The second tab, contains the table view. Its made up of two fxml files that share a controller. The left hand side contains a drop down that lists all the tables in the database and a text area that displays the table schema. The central section, contains a table that lists all the content within that table. In order to accomplish this it contacts the SQL executor, and runs a select all query to collect the schema and data. This can be seen below in figure~\ref{fig:imp_ui_table}.
+The table view is made up of two fxml files that share a controller. The table view allows user to select a  table and view the schema and all the data within it. In order to accomplish this it contacts the SQL executor, and runs a select all query to collect the data, and a select from 'sqlite\verb|_|master' to retrieve all tables and schemas. This interface can be seen below in figure~\ref{fig:imp_ui_table}.
 
 \begin{figure}[H]
 	\centering
@@ -227,7 +229,7 @@ The second tab, contains the table view. Its made up of two fxml files that shar
 	\label{fig:imp_ui_table}
 \end{figure}
 
-The third tab is made up of two fxml files, how more complex much wow. *TODO* This can be seen below in figure~\ref{fig:imp_ui_vis}.
+The visualiser is made up of two fxml files, sharing a single controller. The center section containing the visualisation of the database, uses a custom scroll pane node to enable, zooming in addition to scrolling. Each node is represented as a pane, with a CSS class for the colouring. The node, contains the corresponding B-Tree node, from the database object. This is then used to display the data within the left side pane. In order to draw the structure I first sort out the horizontal position going top down. This is also used to load the nodes, via recursion. After all the nodes are loaded I then caclutate the horizontal positions on a second pass through bottom up. This interface can be seen below in figure~\ref{fig:improvised}.
 
 \begin{figure}[H]
 	\centering
@@ -236,7 +238,7 @@ The third tab is made up of two fxml files, how more complex much wow. *TODO* Th
 	\label{fig:imp_ui_vis}
 \end{figure}
 
-The fourth tab contains the log, and is made up of one fxml file. Similar to the meta data tab, it contains a single scroll pane, with a VBox inside. allowing it to contain infinite items. Each item is made up of a Titled pane. Where the title is the time and data of the update, and the content the changes that where performed in the update. To collect the data, it contacts the Log module. This can be seen below in figure~\ref{fig:imp_ui_log}.
+The log, is made up of one fxml file. Similar to the meta data tab, it contains a single scroll pane, with a VBox inside. allowing it to contain infinite items. Each item is made up of a Titled pane. Where the title is the time and data of the update, and the content, the changes that where performed in the update. To collect the data, it contacts the Log module, and receives a list of log items. This can be seen below in figure~\ref{fig:imp_ui_log}.
 
 \begin{figure}[H]
 	\centering
