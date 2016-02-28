@@ -106,4 +106,42 @@ public class DefaultSqlExecutorTest {
         defaultSqlExecutor.connect();
         defaultSqlExecutor.executeSql("Select * From sqlite_master");
     }
+
+    @Test(expected = SQLException.class)
+    public void TestUpdateOnSelectThrowsError() throws FileNotFoundException,SQLException, ClassNotFoundException{
+        DefaultSqlExecutor defaultSqlExecutor = new DefaultSqlExecutor();
+
+        try {
+            defaultSqlExecutor.setDatabaseFile("LiveTestDatabase");
+            defaultSqlExecutor.connect();
+            defaultSqlExecutor.executeSql("Update 'Customer' set name = 'John Smith' where customer_id = '1'");
+        } catch (SQLException e) {
+            defaultSqlExecutor.disconnect();
+            throw e;
+        }
+    }
+
+    @Test
+    public void TestSelectOnUpdateDoesNotThrowError() throws FileNotFoundException,SQLException, ClassNotFoundException {
+        DefaultSqlExecutor defaultSqlExecutor = new DefaultSqlExecutor();
+        defaultSqlExecutor.setDatabaseFile("LiveTestDatabase");
+        defaultSqlExecutor.connect();
+        defaultSqlExecutor.performUpdate("Select * From sqlite_master");
+        defaultSqlExecutor.disconnect();
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void TestGetDatabaseMetadataThrowsErrorWhenDisconnected() throws FileNotFoundException,SQLException, ClassNotFoundException {
+        DefaultSqlExecutor defaultSqlExecutor = new DefaultSqlExecutor();
+        defaultSqlExecutor.getDatabaseMetaData();
+    }
+
+    @Test
+    public void TestGetDatabaseMetadata() throws FileNotFoundException,SQLException, ClassNotFoundException {
+        DefaultSqlExecutor defaultSqlExecutor = new DefaultSqlExecutor();
+        defaultSqlExecutor.setDatabaseFile("LiveTestDatabase");
+        defaultSqlExecutor.connect();
+        defaultSqlExecutor.getDatabaseMetaData();
+    }
+
 }
