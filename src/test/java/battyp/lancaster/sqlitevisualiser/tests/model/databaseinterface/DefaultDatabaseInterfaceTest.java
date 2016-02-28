@@ -80,6 +80,25 @@ public class DefaultDatabaseInterfaceTest {
     }
 
     @Test
+    public void TestGetCountReturnsZeroOnCreation() {
+        DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
+        Assert.assertEquals(0, databaseInterface.getCount());
+    }
+
+    @Test
+    public void TestGetCurrentPosReturnsZeroOnCreation() {
+        DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
+        Assert.assertEquals(0, databaseInterface.getCurrentPos());
+    }
+
+    @Test
+    public void TestSetCurrentDoesNotChangeOnEmptySet() {
+        DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
+         databaseInterface.setCurrent(1);
+         Assert.assertEquals(0, databaseInterface.getCurrentPos());
+    }
+
+    @Test
     public void TestAddAndGetCurrentReturnsCorrectDatabase() {
         DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
         Database database = new Database(new BTree(), new Metadata());
@@ -159,6 +178,82 @@ public class DefaultDatabaseInterfaceTest {
         databaseInterface.addDatabase(new Database(new BTree(), new Metadata()));
         databaseInterface.nextStep();
         Assert.assertEquals(database, databaseInterface.getPrevious());
+    }
+
+    @Test
+    public void TestGetCountReturnsCorrectSize() {
+        DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
+        databaseInterface.addDatabase(new Database(new BTree(), new Metadata()));
+        Assert.assertEquals(1, databaseInterface.getCount());
+    }
+
+    @Test
+    public void TestGetCurrentPosReturnsCorrectPosWhenAdding() {
+        DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
+        databaseInterface.addDatabase(new Database(new BTree(), new Metadata()));
+        Assert.assertEquals(0, databaseInterface.getCurrentPos());
+    }
+
+    @Test
+    public void TestGetCurrentPosReturnsZeroOnNextStepWithNoAddedDatabaces() {
+        DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
+        databaseInterface.nextStep();
+        Assert.assertEquals(0, databaseInterface.getCurrentPos());
+    }
+
+    @Test
+    public void TestGetCurrentPosReturnsCorrectWhenNextStep() {
+        DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
+        databaseInterface.addDatabase(new Database(new BTree(), new Metadata()));
+        databaseInterface.addDatabase(new Database(new BTree(), new Metadata()));
+        databaseInterface.nextStep();
+        Assert.assertEquals(1, databaseInterface.getCurrentPos());
+    }
+
+    @Test
+    public void TestGetCurrentPosReturnsCorrectWhenPreviousStep() {
+        DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
+        databaseInterface.addDatabase(new Database(new BTree(), new Metadata()));
+        databaseInterface.addDatabase(new Database(new BTree(), new Metadata()));
+        databaseInterface.nextStep();
+        databaseInterface.previousStep();
+        Assert.assertEquals(0, databaseInterface.getCurrentPos());
+    }
+
+    @Test
+    public void TestGetCurrentPosResetsOnClear() {
+        DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
+        databaseInterface.addDatabase(new Database(new BTree(), new Metadata()));
+        databaseInterface.addDatabase(new Database(new BTree(), new Metadata()));
+        databaseInterface.nextStep();
+        databaseInterface.clear();
+        Assert.assertEquals(0, databaseInterface.getCurrentPos());
+    }
+
+    @Test
+    public void TestSetCurrentDoesNoAcceptNegitive() {
+        DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
+        databaseInterface.addDatabase(new Database(new BTree(), new Metadata()));
+        databaseInterface.addDatabase(new Database(new BTree(), new Metadata()));
+        databaseInterface.setCurrent(-1);
+        Assert.assertEquals(0, databaseInterface.getCurrentPos());
+    }
+
+    @Test
+    public void TestSetCurrentDoesChange() {
+        DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
+        databaseInterface.addDatabase(new Database(new BTree(), new Metadata()));
+        databaseInterface.addDatabase(new Database(new BTree(), new Metadata()));
+        databaseInterface.setCurrent(1);
+        Assert.assertEquals(1, databaseInterface.getCurrentPos());
+    }
+
+    @Test
+    public void TestSetCurrentDoesNotGoAboveLargestChange() {
+        DefaultDatabaseInterface databaseInterface = new DefaultDatabaseInterface();
+        databaseInterface.addDatabase(new Database(new BTree(), new Metadata()));
+        databaseInterface.setCurrent(1);
+        Assert.assertEquals(0, databaseInterface.getCurrentPos());
     }
 
     @Test

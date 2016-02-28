@@ -98,7 +98,7 @@ public class DefaultDatabaseInterface implements DatabaseInterface {
      */
     @Override
     public int getCurrentPos() {
-        return  this.getCurrentPos();
+        return  this.current;
     }
 
     /**

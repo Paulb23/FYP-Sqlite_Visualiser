@@ -40,6 +40,24 @@ import org.junit.Test;
 public class DefaultDatabaseTest {
 
     @Test
+    public void TestCreationWithNull() {
+        Database database = new Database(null, null);
+    }
+
+    @Test
+    public void TestGetBTreeWithNull() {
+        Database database = new Database(null, null);
+        Assert.assertEquals(null, database.getBTree());
+    }
+
+
+    @Test
+    public void TestGetMetadataWithNull() {
+        Database database = new Database(null, null);
+        Assert.assertEquals(null, database.getMetadata());
+    }
+
+    @Test
     public void TestGetBtree() {
         BTree<String> tree = new BTree<>();
         Database database = new Database(tree, new Metadata());
