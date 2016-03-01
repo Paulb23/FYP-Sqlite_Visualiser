@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014 Paul Batty
+ * Copyright (c) 2016 Paul Batty
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -98,7 +98,7 @@ public class HeaderController extends Controller {
         HeaderInformationPane panel = new HeaderInformationPane("Type");
         panel.addItem("Schema Cookie", String.valueOf(metadata.schemaCookie));
         panel.addItem("Schema Format", String.valueOf(metadata.schemaFormat));
-		
+
 		if (metadata.textEncoding == 1) {
 			        panel.addItem("Text Encoding", String.valueOf(metadata.textEncoding) + " (UTF-8)");
 		} else if (metadata.textEncoding == 2) {
@@ -112,13 +112,13 @@ public class HeaderController extends Controller {
     private HeaderInformationPane createVersionPanel(Metadata metadata) {
         HeaderInformationPane panel = new HeaderInformationPane("Version");
         panel.addItem("User Version", String.valueOf(metadata.userVersion));
-		
+
 		if (metadata.writeVersion == 1) {
 			panel.addItem("Write Version", String.valueOf(metadata.writeVersion) + " (Legacy)");
 		} else {
 			panel.addItem("Write Version", String.valueOf(metadata.writeVersion) + " (WAL)");
 		}
-		
+
 		if (metadata.readVersion == 1) {
 			panel.addItem("Read Version", String.valueOf(metadata.readVersion) + " (Legacy)");
 		} else {
