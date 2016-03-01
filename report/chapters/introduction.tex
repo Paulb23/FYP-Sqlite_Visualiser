@@ -1,14 +1,16 @@
 \section*{Introduction}
 \label{sec:introduction}
 
-Having studied Databases in my previous year, including SQLite. I remember that it could do so much without the need to configure, manipulate, or go through a long winded install process. It was so simple and flexible, anyone could use it. In fact SQLite takes pride that it is probably one of the most widely deployed database engines. And one of the top five most deployed software modules. Alongside zlib, libpng and libjpg. It finds itself inside all of the top browsers (Firefox, Google chrome and possibly Edge), Operating systems (Windows 10, IOS and embed OS's) and in the most unexpected places such as aircraft.
+SQLite is a small lightweight database engine that can perform many operations without the need to configure, manipulate, or go through a long winded install process. It is simple flexible, and widely distributed. In fact SQLite takes pride that it is probably one of the most widely deployed database engines. And one of the top five most deployed software modules. Alongside zlib, libpng and libjpg. It finds itself inside all of the top browsers (Firefox, Google Chrome and possibly Edge), Operating systems (Windows 10, IOS and embedded OS's) and in the most unexpected places such as aircraft.
 \\\\
-After doing some reading and looking at the SQLite's claim to fame. I began to take a closer look at its systems. What makes it so flexible, fast and simple to use. My main focus however was on the file format that it uses to store the entire database. How it was put together. How to traverse it. And why it is the way it is. I also looked at the available tools that are currently available for SQLite. This is covered in the first section of this paper.
+SQLite's systems and infrastructure, enable it to be flexible, fast and simple. The main focus of this paper however, was on the file format that it uses to store the entire database. How it was put together. How to traverse it. And why it is the way it is. In addition to this, the available tools for SQLite. This is covered in the first section of this paper.
 \\\\
-Understanding the file format was just the first stepping stone, as I then undertook a journey to build a tool that could traverse and read the file. While recording every operation that was and ever will be performed to it. This is covered in the second and third chapters.
+Understanding the file format was just the first stepping stone. This paper then undertakes a journey to build a tool that could traverse and read the file. While recording every operation that was and ever will be performed onto the database. This is covered in the second and third chapters.
 \\\\
-While building by tool. I kept two things in mind. How it operated from a users perspective and the best ways to break it. This was to ensure that the tool was open to everyone, and would not fall down and crumble. This is covered in sections four. 
+While building the tool. It was important to see how it operated from a users perspective and the best ways to break it. This was to ensure that the tool was open to everyone, and would not fall down and crumble. This is covered in sections four. 
 \\\\
-Once the tool became well developed. I started looking towards the future of the tool. What could be added to make it ever more useful for developers, researchers and anyone else using SQLite systems. This is covered in the final sections, five and six.
+Once the tool became well developed, the paper looks towards the future of the tool. What could be added to make it ever more useful for developers, researchers and anyone else using SQLite systems. This is covered in the final sections, five and six.
 \\\\
-The main aim of this paper is to help you understand the SQLite file format and systems. While providing a useful tool that can help debug, manipulate and record your own SQLite databases, without the need for a hex editor.
+As this paper covers similar programs, there is a distinct shortage of tools that enable users to debug their database, while there is an abundance of user interfaces. Excluding the hex editor. Alongside this they often do not provide any inside into how SQLite is updating the database. Lastly, there is currently no way of logging commands that are executed onto the database, outside of your own connections.
+\\\\
+To combat this the main aim of this paper is to help you understand the SQLite file format and systems. While providing a useful tool that can help debug, manipulate and record your own SQLite databases.
