@@ -201,11 +201,11 @@ At the start of each B-Tree page there is the B-Tree / page header. Following th
 	\label{fig:sqlite_file_format}
 \end{figure}
 
-When the cells are added to the page, they start at the end of the page and work backwards towards the top. The main difference between each type of B-tree pages are found inside the cells as they carry the payload for the node. 
+When the cells are added to the page, they start at the end of the page and work backwards towards the top. The main difference between each type of B-tree page can be seen inside the cells as they carry the payload for the node. 
 \\\\
-As mentioned in section~\ref{subsubsec:sqlite_page_system} there are four types of B-Trees. These can be split into two main types, and two sub types. The main types are Table and Index, both of which uses a key-value system in order to organise them. The Table B-Trees use 64 bit integers also known as row-id or primary key, theses are often what the user has set inside the database, else SQLite will attach its own. The Index B-Trees uses database records as keys. 
+As mentioned in section~\ref{subsubsec:sqlite_page_system} there are four types of B-Trees. These can be split into two main types, and two sub types. The main types are Table and Index, both of which uses a key-value system in order to organise them. The Table B-Trees use 64 bit integers also known as row-id or primary key, theses are often what the user has set inside the database, else SQLite will attach its own. The Index B-Trees use database records as keys. 
 \\\\
-The sub types of B-Trees are broken down into Leaf and Interior. The leafs are located at the end of the tree and contain no children. Whereas the interior will always have at least one single child. In addition to this all database records / values within the B-Trees are sorted using the following rules written by \cite{sqliteray}:
+The sub types of B-Trees are broken down into Leaf and Interior. The leaves are located at the end of the tree and contain no children. Whereas the interior will always have at least one single child. In addition to this all database records / values within the B-Trees are sorted using the following rules written by \cite{sqliteray}:
 
 \begin{enumerate} 
 	\item If both values are NULL, then they are considered equal.
@@ -217,7 +217,7 @@ The sub types of B-Trees are broken down into Leaf and Interior. The leafs are l
 	\item If both values are blobs, memcmp() is used to determine the results of the comparison function. If one blob is a prefix of the other, the shorter blob is considered lesser. 
 \end{enumerate}
   
-Overall the four type of B-Trees found inside SQLite are:
+Overall the four types of B-Trees found inside SQLite are:
 
 \begin{itemize} 
 	\item Index B-Tree Interior
@@ -226,7 +226,7 @@ Overall the four type of B-Trees found inside SQLite are:
 	\item Table B-Tree leaf 
 \end{itemize} 
 
-In the case of index B-Trees, the interior trees contains N number of children and N-1 number of database records where N is two or greater. Whereas a leaf will always contain M database records where M is a one or greater. The database records stored inside a Index B-Tree are of the same quantity as the associated database table, with the same fields and columns. between the tables and rows. As can be seen in figure~\ref{fig:sqlite_key_pair}. Index trees are used by SQLite to keep track the the foreign keys and row relationships.
+In the case of index B-Trees, the interior trees contain \textit{N} children and \textit{N-1} database records where \textit{N} is two or greater. Whereas a leaf will always contain \textit{M} database records where \textit{M} is a one or greater. The database records stored inside an Index B-Tree are of the same quantity as the associated database table, with the same fields and columns, between the tables and rows. This can be seen in figure~\ref{fig:sqlite_key_pair}. Index trees are used by SQLite to keep track the foreign keys and row relationships.
 
 \begin{lstlisting}
  CREATE TABLE t1(a INTEGER PRIMARY KEY, b, c, d);
@@ -244,7 +244,7 @@ In the case of index B-Trees, the interior trees contains N number of children a
 	\label{fig:sqlite_key_pair}
 \end{figure}
 
-The table B-Trees are completely different to the index trees. The interior type contains no data but only pointers to children B-Tree pages, as all the data is stored on the leaf type. The interior trees contain at least one pointer, and the leaf node contains at least one record. For each table that exists in the database, one corresponding Table B-Tree also exists, and that B-Tree contains one entry per row, appearing in the same order as the logical database. Figure~\ref{fig:sqlite_table_btree} show the physical layout of the Table B-Tree. 
+The table B-Trees are completely different to the index trees. The interior type contains no data but only pointers to child B-Tree pages, as all the data is stored on the leaf type. The interior trees contain at least one pointer, and the leaf node contains at least one record. For each table that exists in the database, one corresponding Table B-Tree also exists, and that B-Tree contains one entry per row, appearing in the same order as the logical database. Figure~\ref{fig:sqlite_table_btree} shows the physical layout of the Table B-Tree. 
 
 \begin{figure}[H]
 	\centering
@@ -256,9 +256,9 @@ The table B-Trees are completely different to the index trees. The interior type
 \subsubsection{Encoding of the data}
 \label{subsubsec:sqlite_data_encoding}
 
-SQLite uses a variable length integer or 'varint' in order encode some of the values inside the database, since they use up less space for small positive values. A varint is a static Huffman encoding of a 64-bit two complements integer. Taking up between and 1 - 9 bytes in size. The maximum number a byte can hold is 127 as the most significant bit is needed as a flag unless we are in the ninth byte where all the bits are used. If the most significant bit is set then we need the next byte. So if it is set in byte 1 then we need byte 2 and so on until, either the bit is not set, or we reach the 9th byte.
+SQLite uses a variable length integer or 'varint' in order to encode some of the values inside the database, since they use up less space for small positive values. A varint is a static Huffman encoding of a 64-bit two complements integer. Taking up between and 1 - 9 bytes in size. The maximum number a byte can hold is 127 as the most significant bit is needed as a flag unless we are in the ninth byte where all the bits are used. If the most significant bit is set then the next byte is needed. So if it is set in byte 1 then byte 2 is needed and so on until, either the bit is not set, or we reach the 9th byte.
 \\\\
-If we have the following value in hex 5B and convert this to binary we have 01011011 as we can see the the most significance bit is not set leaving us with the value 91. However, if we have the value in hex 84 and convert this to binary we have the value 10000100, the most significant bit is set this means we need the next byte which has a value in hex of 60, converting this to binary leaves us with  01100000 meaning that this varint is two byes long. In order to create the final value we need to concatenate them together leaving out the most significant bit. Creating the value 00001001100000 giving us a total value of 608 in decimal \citep{sausagefactory}. Table~\ref{tbl:varints} shows  all combinations of varints. 
+For example, taking the following value in hex 5B and converting this to binary, creates the value 01011011, in this case the most significant bit is not set leaving the final value at 91. However, if the value in hex is 84 and converting this to binary creates the value 10000100, the most significant bit is set, therefore the next byte is needed. In this case the value of the next byte in hex is 60, converting this to binary creates  01100000 meaning that this varint is two byes long. In order to create the final value, the bytes need to be concatenated together leaving out the most significant bit. Creating the value 00001001100000 giving a final value of 608 in decimal \citep{sausagefactory}. Table~\ref{tbl:varints} shows  all combinations of varints. 
 
 \begin{longtable}[h]{| c | c | p{10cm} |}
 		\hline
@@ -278,7 +278,7 @@ If we have the following value in hex 5B and convert this to binary we have 0101
 	\caption{Varint combinations \cite{sqliteray}}
 	\label{tbl:varints}
 \end{longtable}
-
+\newpage
 \subsubsection{B-Tree header}
 \label{subsubsec:btree_header}
 
@@ -289,7 +289,7 @@ As mentioned in section~\ref{subsubsec:sqlite_trees_and_cells} each page begins 
 			\textbf{Byte Offset} & \textbf{Byte Size} & \textbf{Description} \\ 
 		\hline
 		\endhead
-			0 & 1 & The type of of B-Tree. \newline
+			0 & 1 & The type of B-Tree. \newline
 			Value of 2 is a interior index B-tree. \newline
 			Value of 5 is a interior table B-tree. \newline
 			Value of 10 is a Leaf index B-tree. \newline
@@ -309,13 +309,13 @@ As mentioned in section~\ref{subsubsec:sqlite_trees_and_cells} each page begins 
 	\label{tbl:btree_header}
 \end{longtable}
 
-Immediately following the header is the array of cell pointers, the number of cells is read at offset 3. Each cell pointer is 2 bytes in size. It is worth noting at this point that the pointer and offsets start at the page offset rather then the start of the file, keeping each page self contained. Therefore in order to follow the cell pointers or the other offsets the following sum is needed to calculate its position in the file: 
+Immediately following the header is the array of cell pointers, the number of cells is read at offset 3. Each cell pointer is 2 bytes in size. It is worth noting at this point that the pointer and offsets start at the page offset rather than the start of the file, keeping each page self contained. Therefore, in order to follow the cell pointers or the other offsets the following sum is needed to calculate its position in the file: 
 
 \begin{lstlisting}	
 	cell = ((pageNumer - 1) * pageSize) + offset;
 \end{lstlisting}
 
-The right most pointer within interior B-Tree pages is the child’s page number not offset therefore to calculate the page offset the following sum is used:
+The right most pointer within interior B-Tree pages is the child’s page number not its offset, therefore to calculate the page offset the following sum is used:
 
 \begin{lstlisting}	
 	pageOffset = ((pageNumer - 1) * pageSize);
@@ -324,7 +324,7 @@ The right most pointer within interior B-Tree pages is the child’s page number
 \subsubsection{Index B-Tree cell}
 \label{subsubsec:index_btree_cell}
 
-As mentioned in section~\ref{subsubsec:sqlite_trees_and_cells} Index B-Tree use the database records as keys. their content also reflects this. Table~\ref{tbl:index_btree_cell} show the layout of the cell:
+As mentioned in section~\ref{subsubsec:sqlite_trees_and_cells} index B-Trees use the database records as keys, their content also reflects this. Table~\ref{tbl:index_btree_cell} shows the layout of the cell:
 
 \begin{longtable}[h]{| c | p{5cm} |}
 		\hline
@@ -345,18 +345,18 @@ As mentioned in section~\ref{subsubsec:sqlite_trees_and_cells} Index B-Tree use 
 	\label{tbl:index_btree_cell}
 \end{longtable}
 
-In order to determine if there is a overflow page the following calculation is used:
+In order to determine if there is an overflow page the following calculation is used:
 
 \begin{lstlisting}	
 usable-size = page-size - bytes-of-unused-space;
 max-local = (usable-size - 12) * max-embedded-fraction / 255 - 23;
 
 if (payload-size > max-local) {
-	we have a overflow page.
+	there is an overflow page.
 }
 \end{lstlisting}
 
-Where bytes-of-unused-space is read in the Sqlite header at offset 20 and \newline max-embedded-fraction at offset 12. Once we know there is an overflow we can use the following calculation to work out the size of the record in this part of the cell before jumping over to the overflow page:  
+Where bytes-of-unused-space is read in the Sqlite header at offset 20 and \newline max-embedded-fraction at offset 12. If there is an overflow the following calculation can be used to work out the size of the record in this part of the cell before jumping to the overflow page:  
 
 \begin{lstlisting}	
 usable-size = page-size - bytes-of-unused-space;
@@ -402,13 +402,13 @@ The Leaf type is a little more complex, this can be seen the Table~\ref{tbl:tabl
 			byte array & Payload. \\
 		\hline
 			4 byte integer & Page number of overflow \newline
-							  Only if payload is to large.\\
+							  Only if payload is too large.\\
 		\hline
 	\caption{Page B-Tree leaf cell}
 	\label{tbl:table_btree_cell_leaf}
 \end{longtable}
 
-In order to determine if there is a overflow page the following calculation is used:
+In order to determine if there is an overflow page the following calculation is used:
 
 \begin{lstlisting}	
 usable-size = page-size - bytes-of-unused-space;
@@ -438,7 +438,7 @@ if( record-size > max-local );
 \subsubsection{Overflow Page}
 \label{subsubsec:overflow_page}
 
-Overflow pages as mentioned in section~\ref{subsubsec:sqlite_page_system} are used to store the payload when it is to large to fit in a single cell. overflow pages form a linked list with the first four bytes pointing to the next page number in the chain or zero if it's the last. Following the four bytes through to the last bytes is the payload content. Table~\ref{tbl:overflow_page} shows the layout of an overflow page.
+Overflow pages as mentioned in section~\ref{subsubsec:sqlite_page_system} are used to store the payload when it is too large to fit in a single cell. Overflow pages form a linked list with the first four bytes pointing to the next page number in the chain or zero if it is the last. Following the four bytes through to the last bytes is the payload content. Table~\ref{tbl:overflow_page} shows the layout of an overflow page.
 
 \begin{longtable}[h]{| c | p{5cm} |}
 		\hline
@@ -465,9 +465,9 @@ Throughout the previous sections the payload has been called byte array or datab
 	\label{fig:sqlite_record_format}
 \end{figure}
 
-The cell header is made up of N + 1 varints where N is the number of values in the record. The first varint is the number of bytes in the header. And the following N, the record types.
+The cell header is made up of \textit{N + 1} varints where \textit{N} is the number of values in the record. The first varint is the number of bytes in the header, and the following \textit{N}, the record types.
 \\\\
-As varints can be between 1 - 9 bytes it is important to keep track of the varints size. To count the number of values in the record. For example if we have N values, and the number of bytes as 8. This could mean there are 8 small values, or 1 large value, or anywhere in between. The different value types can be seem below in Table~\ref{tbl:cell_header_record_types} 
+As varints can be between 1 - 9 bytes it is important to keep track of the varints size. To count the number of values in the record. For example, if we have \textit{N} values, and the number of bytes as 8. This could mean there are 8 small values, or 1 large value, or anywhere in between. The different value types can be seem below in Table~\ref{tbl:cell_header_record_types} 
 
 \begin{longtable}[h]{| c | c| p{5cm} |}
 		\hline
@@ -496,9 +496,9 @@ As varints can be between 1 - 9 bytes it is important to keep track of the varin
 		\hline
 			10,11 & 0 & Reserved for expansion \\
 		\hline
-			$\geq$ 12 and even & (N-12)/2 & BLOB of size (N-12/2) long \\
+			$\geq$ 12 and even & \textit{(N-12)/2} & BLOB of size textit{(N-12/2)} long \\
 		\hline
-			$\geq$ 13 and odd & (N-13)/2 & String of size (N-13/2) long \\
+			$\geq$ 13 and odd & \textit{(N-13)/2} & String of size \textit{(N-13/2)} long \\
 		\hline
 	\caption{Database record cell types}
 	\label{tbl:cell_header_record_types}
@@ -509,9 +509,9 @@ The cell content as shown in figure~\ref{fig:sqlite_record_format} follows the s
 \subsubsection{Root B-Tree and Schema Table}
 \label{subsubsec:schema_table}
 
-As mentioned in section~\ref{subsubsec:sqlite_page_hader} following the SQLite header is root B-Tree. The root B-Tree is one of the Table B-Trees with a defined payload format ( section~\ref{subsubsec:record_format}). This B-Tree payload contains pointer / page numbers to all the other pages in the file. It is referred to as the "sqlite\verb|_|master" table. Without parsing it properly you will only be able to access the "sqlite\verb|_|master" table.
+As mentioned in section~\ref{subsubsec:sqlite_page_hader} following the SQLite header is the root B-Tree. The root B-Tree is one of the Table B-Trees with a defined payload format ( section~\ref{subsubsec:record_format}). This B-Tree payload contains pointer / page numbers to all the other pages in the file. It is referred to as the "sqlite\verb|_|master" table. Without parsing it properly you will only be able to access the "sqlite\verb|_|master" table.
 \\\\
-In some of my test databases, the root page was a Interior Table B-Tree, so going by page numbers in order to find the schema table is a bad idea. The Table~\ref{tbl:schema_table} below shows the payload / record layout of the "sqlite\verb|_|master" table.
+In some of the test databases, the root page was an Interior Table B-Tree, so going by page numbers in order to find the schema table is a bad idea. The Table~\ref{tbl:schema_table} below shows the payload / record layout of the "sqlite\verb|_|master" table.
 
 \begin{longtable}[h]{| c | c| p{10cm} |}
 		\hline
@@ -532,9 +532,9 @@ In some of my test databases, the root page was a Interior Table B-Tree, so goin
 	\label{tbl:schema_table}
 \end{longtable}
 
-In order to tell if we have come a across a table, we need to read in the first column looking of one of the four types. Then read the page number in the fourth column to find the content for that table. Much like the right child pointer mentioned in section~\ref{subsubsec:btree_header} this is the page number of the child not a pointer.
+In order to tell if we have come a across a table, we need to read in the first column looking for one of the four types. Then read the page number in the fourth column to find the content for that table. Much like the right child pointer mentioned in section~\ref{subsubsec:btree_header} this is the page number of the child not a pointer.
 
 \subsubsection{Parsing the file}
 \label{subsubsec:parsing the file}
 
-In order to parse the database file. The first thing would be to read in the header (section~\ref{subsubsec:sqlite_page_hader} ) then read in the root page(s) ( section~\ref{subsubsec:schema_table} ), and follow the page numbers to all the other table root pages, then start parsing them until all paths have been followed. This format learns towards recursion rather than iteration although both are possible.
+In order to parse the database file. The first thing would be to read in the header (section~\ref{subsubsec:sqlite_page_hader} ) then read in the root page(s) ( section~\ref{subsubsec:schema_table} ), and follow the page numbers to all the other table root pages, then start parsing them until all paths have been followed. This format leans towards recursion rather than iteration although both are possible.
