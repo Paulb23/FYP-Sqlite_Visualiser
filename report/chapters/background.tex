@@ -25,17 +25,17 @@
 \section{Background}
 \label{sec:sqlite_intro}
 
-To start our journey we will first look at two completely different programs that operate on SQLite. Then turn our attention to SQLites beginnings, and where it is used. Starting back in spring of 2000. Finishing off with a look at the SQLite file format. Before moving onto the other sections.
+The following chapter will cover two completely different programs that operate on SQLite. Then look towards SQLite's beginnings, and where it is used. Starting back in spring of 2000. Finishing off with a look at the SQLite file format. Before moving onto the other sections.
 
 \subsection{Similar programs}
 \label{subsec:similar_programs}
 
-While searching the vast web for tools I only came across two different types. The graphical interface. They would provide a graphical user interface into SQLite, removing the need for using SQL and the command line directly. Or very technical tools, and no middle ground. This was particularly interesting as the number of user interface tools completely outnumbered the technical tools. Where I could only find one.
+While searching the web for tools only two different types appeared. The graphical interface. They would provide a graphical user interface into SQLite, removing the need for using SQL and the command line directly. Or very technical tools, and no middle ground. This was particularly interesting as the number of user interface tools completely outnumbered the technical tools, where only one could be found.
 
 \subsubsection{SQLite browser}
 \label{subsubsec:sqlite_browser}
 
-The first tool, SQLite browser, made by \cite{sqlitebrowser} based off of the Arca database browser. Out of all the user interface tools that I came across this was the most polished. It allowed users to open, view and manipulate the database. Without having to learn SQL, or the command line. With the main aim to be as simple as possible. Below figure~\ref{fig:db_browser_screen} shows a screen shot of the program.
+The first tool, SQLite browser, made by \cite{sqlitebrowser} based off of the Arca database browser. Out of all the user interface tools out there this was the most polished. It allowed users to open, view and manipulate the database. Without having to learn SQL or the command line. With the main aim to be as simple as possible. Below figure~\ref{fig:db_browser_screen} shows a screen shot of the program.
 
 \begin{figure}[H]
 	\centering
@@ -44,14 +44,14 @@ The first tool, SQLite browser, made by \cite{sqlitebrowser} based off of the Ar
 	\label{fig:db_browser_screen}
 \end{figure}
 
-Apart from the usual features, such as viewing tables, schemas, and modifying them. The more unique features allowed exporting the tables to CSV, producing SQL dumps, and acting as a sandbox. The sandbox allowed users to execute commands, see the changes but, nothing was actually performed until the user committed the changes onto the database. In addition  to this it provided a fully fledged SQL editor with auto-complete, syntax highlighting and loading and saving of commands in external files.
+Apart from the usual features, such as viewing tables, schemas, and modifying them. The more unique features allowed exporting the tables to CSV (comma separated values), producing SQL dumps and acting as a sandbox. The sandbox allowed users to execute commands, see the changes, but nothing was actually performed until the user committed the changes onto the database. In addition  to this it provided a fully fledged SQL editor with auto-complete, syntax highlighting and loading and saving of commands in external files.
 \\\\
-The tool itself was made in C/C++ and QT, with support for SQLite databases up to version 3.8.2. It is available for all major platforms. While I was using this tool, I found it simple and intuitive to navigate. It was very powerful and did exactly what it said on the tin. However, it did not allow an insight into SQLite nor the logging of commands, produced by external programs.
+The tool itself was made in C/C++ and QT, with support for SQLite databases up to version 3.8.2. It is available for all major platforms. The user interface and features built into the tool where simple and intuitive to navigate. It was very powerful and can be very usefully to anyone working with SQLite that does not want to use the command line. However, it did not allow an insight into SQLite nor the logging of commands, produced by external programs.
 
 \subsubsection{SQLite fragmentation}
 \label{subsubsec:sqlite_fragmentation}
 
-The second tool, is very unique. It showed a fragmented view of the database. Made by \cite{sqlitefrag}. Written in python and published to Github. It only did one thing but did it well. As we will find out later on, the file format is made up of pages. This tool would scan the file, and produce a visualisation of the fragmentation status of each page. Much like that old Windows 98 de-fragmentation tool. See figure~\ref{fig:db_visualizer} for a screen shot.
+The second tool is unique. It showed a fragmented view of the database. Made by \cite{sqlitefrag}. Written in python and published to Github. It only did one thing but did it well. As we will find out later on, the file format is made up of pages. This tool would scan the file, and produce a visualisation of the fragmentation status of each page. Much like that old Windows 98 de-fragmentation tool. See figure~\ref{fig:db_visualizer} for a screen shot.
 
 \begin{figure}[H]
 	\centering
@@ -60,30 +60,30 @@ The second tool, is very unique. It showed a fragmented view of the database. Ma
 	\label{fig:db_visualizer}
 \end{figure}
 
-The tool runs though the command line, and produces a JSon file with the analysis, before sending it to the visualiser that produces a SVG image output. This allows any type of output to be added in. Some of the more advanced features, is filtering certain pages out or in, and de-fragmentation. 
+The tool runs though the command line, and produces a JSon file with the analysis, before sending it to the visualiser that produces a SVG image output. This allows any type of output to be added in. Some of the more advanced features allow filtering certain pages out or in, and de-fragmentation. 
 \\\\
-Although it is very powerful, it does not support WAL mode, slow on larger databases and can only cope with UTF-8 text support. But it provides a very useful insight into SQLite. On top of this, it clearly shows the page format of the file. Which is very similar to where my tool is going.
+Although it is very powerful, it does not support WAL mode, slow on larger databases and can only cope with UTF-8 text support. WAL mode, or write ahead logging, is an alternative to a rollback journal, where the changes are written to the log. This log is then inserted into the database file at each checkpoint during the transaction. The rollback journal takes the opposite approach and changes the database with the journal holding the backup. Overall, this tool provides a very useful insight into SQLite. On top of this, it clearly shows the page format of the file, which is very similar to where my tool is going.
 
 \subsection{What is SQLite}
 \label{subsec:what_is_sqlite}
 
-D. Richard Hipp, the author of SQLite, Originally got the idea while working on a battleship. He was tasked with developing a program for the on board guided missiles. While working on the software he used the database system Informix. Which took hours to set up and get anywhere near useful. For the application that he was building, all he needed was a small self-contained, portable and easy to use database. Rather then such a large, all powerful system. \citep{sqlitedefguide}.
+D. Richard Hipp, the author of SQLite, Originally got the idea while working on a battleship. He was tasked with developing a program for the on board guided missiles. While working on the software he used the database system Informix. Which took hours to set up and get anywhere near useful. For the application that he was building, all he needed was a small self-contained, portable and easy to use database. Rather than such a large, all powerful system. \citep{sqlitedefguide}.
 \\\\
-Speaking to a colleague in January of 2000, Hipp, disused his idea for a self contained embedded database. When some free time opened up on the 29th of May 2000, SQLite was born. It was not until August 2000 that version 1.0 was released. Then in just over a year on the 28 November 2001 2.0 which introduced, B-Trees and many of the features seen in 3.0 today. During the next year he joined up with Joe Mistachkin followed by Dan Kennedy in 2002. To help work for the 3.0 release. Which came a lot later containing a full rewrite and improvements over 2.0, with the first public release on 18 June 2004. At the time of writing this paper we are currently sitting at version 3.10.4. After changes to the naming scheme, version 3 is currently supported to 2050. \citep{sqlite}.
+Speaking to a colleague in January of 2000, Hipp, disused his idea for a self contained embedded database. When some free time opened up on the 29th of May 2000, SQLite was born. It was not until August 2000 that version 1.0 was released. Then in just over a year on the 28 November 2001, 2.0 which introduced, B-Trees and many of the features seen in 3.0 today. During the next year he joined up with Joe Mistachkin followed by Dan Kennedy in 2002. To help work for the 3.0 release, which came a lot later containing a full rewrite and improvements over 2.0, with the first public release on 18 June 2004. At the time of writing this paper we are currently sitting at version 3.10.4. After changes to the naming scheme, version 3 is currently supported to 2050. \citep{sqlite}.
 \\\\
-Today, SQLite is open source within the public domain making it accessible to everyone. The entire library size is around 350Kib, with some optional features omitted it could be reduced to around 300Kib making it incredibly small compared to what it does. In addition to this the runtime usage is minimal with 4Kib stack space and 100Kib heap, allowing it to run on almost anything. SQLite's main strength is that the entire database in encoded into a single portable file, that can be read, on any system whether 32 or 64 bit, big or small endian. It is often seen as a replacement for storage files rather then a database system. In fact Hipp (2000) stated, "Think of SQLite not as a replacement for Oracle but as a replacement for fopen()".
+Today, SQLite is open source within the public domain making it accessible to everyone. The entire library size is around 350Kib, with some optional features omitted it could be reduced to around 300Kib making it incredibly small compared to what it does. In addition to this the runtime usage is minimal with 4Kib stack space and 100Kib heap, allowing it to run on almost anything. SQLite's main strength is that the entire database in encoded into a single portable file, that can be read, on any system whether 32 or 64 bit, big or small endian. It is often seen as a replacement for storage files rather than a database system. In fact Hipp (2000) stated, "Think of SQLite not as a replacement for Oracle but as a replacement for fopen()".
 
 \subsection{Where is SQLite used}
 \label{subsec:where_is_sqlite}
 
-SQLite being a relational database engine. As well as a replacement for fopen() \citep{sqlite}. Allows it to be truly used for anything. Hipp has stated numerous times that SQLite might be the single most deployed software currently. Alongside zlib, libpng and libjpg. With the number in the billions and billions \citep{sqlite}.
+SQLite being a relational database engine, as well as a replacement for fopen() \citep{sqlite}. Allows it to be truly used for anything. Hipp has stated numerous times that SQLite might be the single most deployed software currently. Alongside zlib, libpng and libjpg. With the numbers in the billions and billions \citep{sqlite}.
 \\\\
-Due it its widely used nature SQLite can be found anywhere. Microsoft even approached Hipp, and asked for a special version to be made for use in Windows 10 \citep{sqlitetalk}. In addition to Microsoft. Apple, Google and Facebook all use SQLite, somewhere within their systems. On top of all the big names. You can find it, within any another consumer device, such as Phones, Cameras and Televisions. This wide usage was picked up by Google and Hipp was awarded “Best Integrator” at O’Reilly’s 2005 Open Source Convention \citep{sqlitedefguide}. 
+This large distribution means SQLite can be found anywhere. Microsoft even approached Hipp, and asked for a special version to be made for use in Windows 10 \citep{sqlitetalk}. In addition to Microsoft. Apple, Google and Facebook all use SQLite, somewhere within their systems. On top of all the big names. You can find it, within any another consumer device, such as Phones, Cameras and Televisions. This wide usage was picked up by Google and Hipp was awarded “Best Integrator” at O’Reilly’s 2005 Open Source Convention \citep{sqlitedefguide}. 
 
 \subsection{How SQLite works}
 \label{subsec:how_sqlite_works}
 
-SQLite has a simple and very modular design. Consisting of eleven modules, and four subsystems. The backend, The core, The SQL compiler, and Accessories. Figure~\ref{fig:sqlite_arch} shows the architectural digram of SQLite.
+SQLite has a simple and very modular design. Consisting of eleven modules, and four subsystems. The backend, The core, The SQL compiler, and Accessories. Figure~\ref{fig:sqlite_arch} shows the architectural diagram of SQLite.
 
 \begin{figure}[H]
 	\centering
@@ -97,7 +97,7 @@ SQLite has a simple and very modular design. Consisting of eleven modules, and f
 
 The SQL compiler takes SQL strings and converts them into the core's virtual machine assembly language. The process starts with the tokenizer and parser. They both work closely together. Taking the SQL string and validating the syntax. Before converting it into a hierarchical structure for use by the code generator. Both systems are custom made for SQLite. With the parser going under the name of Lemon \citep{sqlitedefguide}. Lemon is designed to optimise performance and guard against memory leaks. Once they have successfully converted the SQL string into a Parse Tree, the parser passes it onto the code generator.
 \\\\
-The code generator takes the parse tree from the parser, and translates it into a assembly language program. The program is written in a assembly language that is specifically designed for SQLite. It is ran by the virtual machine inside the core module. Once the assembly program is constructed it is sent to the virtual machine for execution.
+The code generator takes the parse tree from the parser, and translates it into an assembly language program. The program is written in a assembly language that is specifically designed for SQLite. It is run by the virtual machine inside the core module. Once the assembly program is constructed it is sent to the virtual machine for execution.
 
 \subsubsection{The Core}
 \label{subsec:how_sqlite_core}
@@ -128,22 +128,22 @@ The Core itself is actually one single virtual machine implementing a specifical
 
 The interface module defines the interface between the virtual machine and the SQL library. All libraries and external application use this to communicate with SQLite.
 \\\\
-Knowing this we can see that the virtual machine takes the SQL input from the Interface, passes it onto the SQL Compiler. Collecting the resulting program from the code generator. And executing this program to perform the original request that was sent in. Making the the heart or core of SQLites operations.
+Knowing this we can see that the virtual machine takes the SQL input from the Interface, passes it onto the SQL Compiler. Then collecting the resulting program from the code generator, and executing this program to perform the original request that was sent in. Making it the heart or core of SQLite's operations.
 
 \subsubsection{The Backend}
 \label{subsec:how_sqlite_backend}
 
-The final main module we will look at is the backend. It deals with the file interactions, such as writing, reading and ordering of the file. The B-Tree and pager work closely together to organise the pages, both of which do not care for the content. The B-Tree module is like a factory that maintains and sorts the relationships between each of the different pages within the file. Forming them into a tree structure that makes it easy to find what you are after. 
+The final main module we will look at is the backend. It deals with the file interactions, such as writing, reading and ordering of the file. The B-Tree and pager work closely together to organise the pages, both of which do not care what the page contains. The B-Tree module is like a factory that maintains and sorts the relationships between each of the different pages within the file. Forming them into a tree structure that makes it easy to find what you are after. 
 \\\\
 The OS Interface is a warehouse, providing a constant interface to the disk. It handles the locking, reading and writing of files across all types of operating systems. So the pager does not have to worry about how it is implemented, it can just tell it what it wants.
 \\\\
-Lastly, the Pager is the transport truck, going between between the B-Tree (factory) and the OS interface (storage) to deliver pages at the B-tree requests. It also keeps the most commonly used pages in its cache, so it does not have to keep going through the OS interface in order to collect the pages, since it already has them.
+Lastly, the Pager is the transport truck, going between the B-Tree (factory) and the OS interface (storage) to deliver pages at the B-tree requests. It also keeps the most commonly used pages in its cache, so it does not have to keep going through the OS interface in order to collect the pages, since it already has them.
 
 \subsubsection{The Accessories}
 \label{subsec:how_sqlite_accessories}
 
-The last module, accessories is made up of two parts. Utility and tests. The utility module contains functions that are used all across SQLite, such as memory allocation, string comparison, random number generator and symbol tables. This basically acts as a shared system for all parts of SQLite. The test section contains all the test scripts and only exists for testing purposes, of which contains over 811 times more code then the actual project, and million of test cases. As it covers every possible code path through SQLite. This is partly why SQLite is considered to be so reliable. 
-
+The last module, accessories is made up of two parts, utility and tests. The utility module contains functions that are used all across SQLite, such as memory allocation, string comparison, random number generator and symbol tables. This basically acts as a shared system for all parts of SQLite. The test section contains all the test scripts and only exists for testing purposes, of which contains over 811 times more code then the actual project and millions of test cases. As it covers every possible code path through SQLite. This is partly why SQLite is considered to be so reliable. 
+\\\\
 \subsection{The SQLite file format}
 \label{subsec:sqlite_file_format}
 
@@ -151,7 +151,7 @@ The last module, accessories is made up of two parts. Utility and tests. The uti
 \label{subsubsec:sqlite_page_system}
 
 As I mentioned in section~\ref{subsec:how_sqlite_backend} the B-Tree module looks after the pages including the organisation and relationships between them. Packing them into a tree structure. This is the same structure that gets written to disk. The B-Tree implementation is designed to support fast querying. The various B-Tree structures can be found in \cite{btreepaper} The ubiquitous B-Tree paper. SQLite also takes some improvements seen in \cite{btreeimprpaper} Sorting and searching book \citep{sqliteray}.
-\\\\\\\\
+\\\\
 The basic idea is that the file is made up of pages, each page is the same fixed size. The size of the pages are a power of two between 512 - 65536 bytes. Pages are numbered starting with 1 instead of 0. The maximum number of pages that Sqlite can hold is 2,147,483,646 with a page size of 512 bytes or around 140 terabytes. The minimum number of pages within a database is 1. There are five types of pages:
 
 \begin{itemize} 
@@ -159,16 +159,16 @@ The basic idea is that the file is made up of pages, each page is the same fixed
 		The lock byte page appears between bytes, 1073741824 - 1073742335, if a database is smaller or equal to 1073742335 bytes it will not contain a lock byte page. It is used by the operating system not SQLite.
 	
 	\item Freelist Page \hfill \\
-		The freelist page is a unused page, often left behind when information is deleted from the database. The other type is a freelist trunk page containing page numbers of the other freelist pages.
+		The freelist page is an unused page, often left behind when information is deleted from the database. The other type is a freelist trunk page containing page numbers of the other freelist pages.
 	
 	\item B-Tree Page \hfill \\
-		The B-Tree page, contains one of the four types of B-Trees, more in section~\ref{subsubsec:sqlite_trees_and_cells}.
+		The B-Tree page contains one of the four types of B-Trees, more in section~\ref{subsubsec:sqlite_trees_and_cells}.
 	
 	\item Payload overflow page \hfill \\
-		The payload overflow page is created to hold the remaining payload from a B-Tree cell when the payload is to large.
+		The payload overflow page is created to hold the remaining payload from a B-Tree cell when the payload is too large.
 	
 	\item Pointer map page \hfill \\
-		Pointer map pages are inserted to make the vacuum modes faster. And are the reverse B-Tree going child to parent rather then parent to child. They exist in databases that have a non-zero value largest root B-Tree within the header. The first instance of these pages are at page 2. 
+		Pointer map pages are inserted to make the vacuum modes faster. And is the reverse B-Tree going child to parent rather than parent to child. They exist in databases that have a non-zero value largest root B-Tree within the header. The first instance of these pages are at page 2. 
 \end{itemize} 
 
 This paper will not cover the lock byte and pointer map pages. 
@@ -176,7 +176,7 @@ This paper will not cover the lock byte and pointer map pages.
 \subsubsection{The Header}
 \label{subsubsec:sqlite_page_hader}
 
-The first step in parsing the SQLite file before we tackle the different pages is to read in the SQLite header. This is the first 100 bytes located in page one. The header stores all the necessary information to read the rest of the file. so reading it correctly is crucial. Immediately following the header is the root B-Tree which we will cover in the next section. Appendix A shows the full header layout.
+The first step in parsing the SQLite file before the different pages is to read in the SQLite header. This is the first 100 bytes located in page one. The header stores all the necessary information to read the rest of the file. So reading it correctly is crucial. Immediately following the header is the root B-Tree which we will cover in the next section. Appendix A shows the full header layout.
 \\
 \subsubsection{The Trees and Cells}
 \label{subsubsec:sqlite_trees_and_cells}
