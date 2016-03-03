@@ -345,31 +345,6 @@ As mentioned in section~\ref{subsubsec:sqlite_trees_and_cells} index B-Trees use
 	\label{tbl:index_btree_cell}
 \end{longtable}
 
-In order to determine if there is an overflow page the following calculation is used:
-
-\begin{lstlisting}	
-usable-size = page-size - bytes-of-unused-space;
-max-local = (usable-size - 12) * max-embedded-fraction / 255 - 23;
-
-if (payload-size > max-local) {
-	there is an overflow page.
-}
-\end{lstlisting}
-
-Where bytes-of-unused-space is read in the Sqlite header at offset 20 and \newline max-embedded-fraction at offset 12. If there is an overflow the following calculation can be used to work out the size of the record in this part of the cell before jumping to the overflow page:  
-
-\begin{lstlisting}	
-usable-size = page-size - bytes-of-unused-space;
-
-min-local = (usable-size - 12) * min-embedded-fraction / 255 - 23;
-record-size = min-local + (record-size - min-local) % 
-			  (usable-size - 4);
-
-if(record-size > max-local) {
-	record-size = min-local;
-}
-\end{lstlisting}
-
 \subsubsection{Table B-Tree cell}
 \label{subsubsec:table_btree_cell}
 
@@ -408,32 +383,49 @@ The Leaf type is a little more complex, this can be seen the Table~\ref{tbl:tabl
 	\label{tbl:table_btree_cell_leaf}
 \end{longtable}
 
-In order to determine if there is an overflow page the following calculation is used:
+
+\subsubsection{Detecting an Overflow Page}
+\label{subsubsec:dec_overflow_page}
+
+In order to detect an overflow page, both types follow a very similar algorithm. 
+The following algorithm is used in Index B-Tree cells for detecting an overflow page:
 
 \begin{lstlisting}	
 usable-size = page-size - bytes-of-unused-space;
-max-local := usable-size - 35;
+max-local = (usable-size - 12) * max-embedded-fraction / 255 - 23;
 
 if (payload-size > max-local) {
-	we have a overflow page.
+	there is an overflow page.
 }
 \end{lstlisting}
 
-Where bytes-of-unused-space is read in the Sqlite header at offset 20 and \newline max-embedded-fraction at offset 12. Once we know there is an offset we can use the following calculation to work out the size of the record in this part of the cell before jumping over to the overflow page:  
+Where bytes-of-unused-space is read in the Sqlite header at offset 20 and \newline max-embedded-fraction at offset 12. The only difference in the Table B-Tree cell is the calculation of the max-local, using the following sum:
+
+\begin{lstlisting}	
+max-local := usable-size - 35;
+\end{lstlisting}
+
+If there is an overflow the following calculation can be used to work out the size of the record in this part of the Index B-Tree cell before jumping to the overflow page:  
 
 \begin{lstlisting}	
 usable-size = page-size - bytes-of-unused-space;
 
 min-local = (usable-size - 12) * min-embedded-fraction / 255 - 23;
-max-local = usable-size - 35;
+max-local = (usable-size - 12) * max-embedded-fraction / 255 - 23;
 
-local-size = min-local + (record-size - min-local) %
+local-size = min-local + (record-size - min-local) % 
 			  (usable-size - 4);
 
-if( record-size > max-local );
-	record-size = min-local
+if(local-size > max-local) {
+	local-size = min-local;
+}
 \end{lstlisting}
 
+Similarity for the Table B-Tree the only difference is in the calculation of the max local where the following sum is used instead:
+
+\begin{lstlisting}	
+max-local := usable-size - 35
+\end{lstlisting}
 
 \subsubsection{Overflow Page}
 \label{subsubsec:overflow_page}
