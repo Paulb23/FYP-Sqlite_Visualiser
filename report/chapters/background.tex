@@ -78,7 +78,7 @@ Today, SQLite is open source within the public domain making it accessible to ev
 
 SQLite being a relational database engine, as well as a replacement for fopen() \citep{sqlite}. Allows it to be truly used for anything. Hipp has stated numerous times that SQLite might be the single most deployed software currently. Alongside zlib, libpng and libjpg. With the numbers in the billions and billions \citep{sqlite}.
 \\\\
-This large distribution means SQLite can be found anywhere. Microsoft even approached Hipp, and asked for a special version to be made for use in Windows 10 \citep{sqlitetalk}. In addition to Microsoft. Apple, Google and Facebook all use SQLite, somewhere within their systems. On top of all the big names. You can find it, within any another consumer device, such as Phones, Cameras and Televisions. This wide usage was picked up by Google and Hipp was awarded “Best Integrator” at O’Reilly’s 2005 Open Source Convention \citep{sqlitedefguide}. 
+This large distribution means SQLite can be found anywhere. Microsoft even approached Hipp, and asked for a special version to be made for use in Windows 10 \citep{sqlitetalk}. In addition to Microsoft. Apple, Google and Facebook all use SQLite, somewhere within their systems. On top of all the big names. SQLite can be found within any another consumer device, such as Phones, Cameras and Televisions. This wide usage was picked up by Google and Hipp was awarded “Best Integrator” at O’Reilly’s 2005 Open Source Convention \citep{sqlitedefguide}. 
 
 \subsection{How SQLite works}
 \label{subsec:how_sqlite_works}
@@ -133,7 +133,7 @@ With this in mind the virtual machine takes the SQL input from the Interface, pa
 \subsubsection{The Backend}
 \label{subsec:how_sqlite_backend}
 
-The final main module is the backend. It deals with the file interactions, such as writing, reading and ordering of the file. The B-Tree and pager work closely together to organise the pages, both of which do not care what the page contains. The B-Tree module is like a factory that maintains and sorts the relationships between each of the different pages within the file. Forming them into a tree structure that makes it easy to find what you are after. 
+The final main module is the backend. It deals with the file interactions, such as writing, reading and ordering of the file. The B-Tree and pager work closely together to organise the pages, both of which do not care what the page contains. The B-Tree module is like a factory that maintains and sorts the relationships between each of the different pages within the file. Forming them into a tree structure that makes it easy to find the needed information. 
 \\\\
 The OS Interface is a warehouse, providing a constant interface to the disk. It handles the locking, reading and writing of files across all types of operating systems. So the pager does not have to worry about how it is implemented, it can just tell it what it wants.
 \\\\
@@ -181,18 +181,31 @@ The first step in parsing the SQLite file before the different pages is to read 
 \subsubsection{The Trees and Cells}
 \label{subsubsec:sqlite_trees_and_cells}
 
-As mentioned in section~\ref{subsubsec:sqlite_page_system} the file is split into pages and each page contains one of five types of pages. However, each page is linked together in a B-Tree format, where each page represents a node in the tree. Below figure~\ref{fig:sqlite_btree_figure} shows an example file B-Tree.
+As mentioned in section~\ref{subsubsec:sqlite_page_system} the file is split into pages and each page contains one of five types of pages. However, each page is linked together in a B-Tree format, where each page represents a node in the tree. 
+\\\\
+SQLite uses a both B+-Trees and B-Trees, throughout its systems. The B-Tree is a data structure built for systems that read and write large amounts of data blocks, such as file systems. In this case however, the pages representing are representing the data blocks.
+\\\\
+B-Trees are made up of internal nodes, and leaves. Internal nodes make up the structure of the tree, connecting each part of the tree down to the leaves, like branches. The leaves are located at the end of the structure. The B-Tree stores data in both the internal nodes and the leaves, whereas the B+-Tree only stores data in the leaves. An example B-Tree can be seen below in figure~\ref{fig:b-tree}.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.5]{images/sqlite_btree_format.png}
+	\includegraphics[scale=0.5]{images/b-tree.png}
+	\caption{B-Tree structure.}
+	\label{fig:b-tree}
+\end{figure}
+
+If the above figure, is  a B-Tree all of the items would be a valid value, and represent a key. However, in a B+-Tree, only the items in the leaves are valid values, and the rest act as keys, to guide the path through the tree to the correct value. Below figure~\ref{fig:sqlite_btree_figure} shows an example B-Tree that could be found within SQLite.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.48]{images/sqlite_btree_format.png}
 	\caption{B-Tree page structure.}
 	\label{fig:sqlite_btree_figure}
 \end{figure}
 
 One thing to note is how the file is made up of mainly B-Tree pages. This is briefly mentioned in the last section, where pointer maps, lock byte and overflow pages only appear when the requirements are met. And Freelist page when enough data has been deleted. Leaving only the B-Tree pages.
 \\\\
-At the start of each B-Tree page there is the B-Tree / page header. Following the header is an array of pointers to their cells. One thing to note is that the first page also has the database header. This mean you will have to skip it before reaching the page header. Figure~\ref{fig:sqlite_file_format} shows the full layout of the SQLite file.
+At the start of each B-Tree page there is the B-Tree / page header. Following the header is an array of pointers to their cells. One thing to note is that the first page also has the database header. That will have to be skipped before reaching the page header. Figure~\ref{fig:sqlite_file_format} shows the full layout of the SQLite file.
 
 \begin{figure}[H]
 	\centering
@@ -248,7 +261,7 @@ The table B-Trees are completely different to the index trees. The interior type
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.5]{images/sqlite_table_btree.png}
+	\includegraphics[scale=0.357]{images/sqlite_table_btree.png}
 	\caption{Physical layout of table B-Trees \citep{chibd}}
 	\label{fig:sqlite_table_btree}
 \end{figure}
@@ -278,7 +291,7 @@ For example, taking the following value in hex 5B and converting this to binary,
 	\caption{Varint combinations \cite{sqliteray}}
 	\label{tbl:varints}
 \end{longtable}
-\newpage
+
 \subsubsection{B-Tree header}
 \label{subsubsec:btree_header}
 
@@ -460,7 +473,7 @@ Throughout the previous sections the payload has been called byte array or datab
 The cell header is made up of \textit{N + 1} varints where \textit{N} is the number of values in the record. The first varint is the number of bytes in the header, and the following \textit{N}, the record types.
 \\\\
 As varints can be between 1 - 9 bytes it is important to keep track of the varints size. To count the number of values in the record. For example, if there are \textit{N} values, and the number of bytes as 8. This could mean there are 8 small values, or 1 large value, or anywhere in between. The different value types can be seem below in Table~\ref{tbl:cell_header_record_types} 
-
+\\\\\\\\
 \begin{longtable}[h]{| c | c| p{5cm} |}
 		\hline
 			\textbf{Header Value} & \textbf{Byte Size} & \textbf{Description} \\ 
@@ -501,7 +514,7 @@ The cell content as shown in figure~\ref{fig:sqlite_record_format} follows the s
 \subsubsection{Root B-Tree and Schema Table}
 \label{subsubsec:schema_table}
 
-As mentioned in section~\ref{subsubsec:sqlite_page_hader} following the SQLite header is the root B-Tree. The root B-Tree is one of the Table B-Trees with a defined payload format ( section~\ref{subsubsec:record_format}). This B-Tree payload contains pointer / page numbers to all the other pages in the file. It is referred to as the "sqlite\verb|_|master" table. Without parsing it properly you will only be able to access the "sqlite\verb|_|master" table.
+As mentioned in section~\ref{subsubsec:sqlite_page_hader} following the SQLite header is the root B-Tree. The root B-Tree is one of the Table B-Trees with a defined payload format ( section~\ref{subsubsec:record_format}). This B-Tree payload contains pointer / page numbers to all the other pages in the file. It is referred to as the "sqlite\verb|_|master" table. Without parsing it properly only the "sqlite\verb|_|master" table will be accessed.
 \\\\
 In some of the test databases, the root page was an Interior Table B-Tree, so going by page numbers in order to find the schema table is a bad idea. The Table~\ref{tbl:schema_table} below shows the payload / record layout of the "sqlite\verb|_|master" table.
 
