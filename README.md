@@ -1,6 +1,6 @@
 FYP - Sqlite Visualiser
 ==
-Final year project developed for Lancaster University. A tool to visualize the inner workings of a sqlite database system.  
+This final year project, implements and designs an application to visualise the file system found within SQlite. It also logs all the changes that have occurred to to the file. It presents the visualisation of the file in a B-Tree format, that allows users to navigate and see how the SQLite file is put together. Alongside this when ever a change is made from any program the visualisation is updated in real time to reflect this. The changes themselves are then recorded inside a log, that the user can browse. Lastly, it allows the user to navigate through the time-line of changes that have occurred since the program started monitoring the database.     
 
 Aim
 ==
