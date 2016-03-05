@@ -25,21 +25,39 @@
 \section{Design}
 \label{sec:design}
 
-Before looking at how the tool is implemented we will first look at the features, high level overview of the architectural design. Then going into more depth looking at each module that makes up the application. Finishing off looking at the user interface design.
+Having looked at SQLite and the current tools. This chapter will cover the requirements set out for the tool, the features and a high level overview of the architectural design.  Then going into more depth looking at each module that makes up the application. Finishing off looking at how the user interface could look.
+
+\subsection{Requirements}
+\label{subsec:requirements}
+
+In the previous chapter this paper showed that there is a lack of tools available that allow an insight into SQLite and how it works. The exception to this was the SQLite fragmentation tool, that did show the file format though not the over arching structure. It also had some severe limitations as as to the types of databases that it would work with. 
+\\\\
+In addition to this SQLite currently provides no way to log changes performed to the database outside of the currently running program. This is implemented by SQLite itself, to get around this triggers and other such convoluted systems have to be used.
+\\\\
+It also showed that the file system is put together, constructing a large B-Tree structure. As just mentioned there is no way to view this structure without using a hex editor, and manually following the links.
+\\\\
+Lastly, most of the SQLite tools are font end user interfaces for SQLite databases. While this is useful for working with SQLite database they provide no way to debug or see what is going on. 
+\\\\
+In order to address the issues listed above, throughout the remaining sections this paper will design, implement and test a front end user interface tool, that can solve the current situation.
+\\\\
+The tool itself must be reliable and support the majority of features in the current version of SQLite at the time of writing this paper. It must also not modify the database file in any way to preserve the database, and the data it contains, excluding parts of the application that are specifically designed to. Lastly, the tool must be cross platform and intractable through a user interface. 
 
 \subsection{Features}
 \label{subsec:Features}
-As mentioned the previously. The application comes with five main features, all building upon one base feature.
+
+As just mentioned, there are a lot of issues surrounding the current situation with SQLite tools. The tool this paper will design and implement contains five main features, on top of a single base feature.
 \\\\
-The central feature is the visualiser. The visualiser allows you to see the broken down page structure and hierarchy of the SQLite database file. Viewing the file broken into pages, and how they connect to each other in the B-Tree structure. On top of this you can click a node in order to see more information about. Such as data, page number and pointers.
+The central feature is the visualiser. The visualiser allows the visualisation of the broken down page structure and hierarchy of the SQLite database file. Viewing the file broken into pages, and how they connect to each other in the B-Tree structure. On top of this clicking or otherwise interacting with a node to see more information about. Such as data, page number and pointers.
 \\\\
-In addition to the visualiser, there is also a metadata tab, that will allow you to view, the header information in the database. Alongside other statistics that come from parsing the database. Such as number of tables, primary keys and versions.
+In addition to the visualiser, there is will be a metadata tab that will present the header information in the database. Alongside other statistics that come from parsing the database. Such as number of tables, primary keys and version numbers.
 \\\\
-The base feature allows real time updating of this data when any command from any system modifies the database in some way shape or form. The live updating allows you to step through the time line of updates that have occurred while the application is running. You can also pause it if you want to inspect a certain state. 
+The base feature allows real time updating of this data when any command from any system modifies the database in some way shape or form. The live updating will allow stepping through the time line of updates that have occurred while the application is running. Lastly, it can be paused to inspect a certain state / place in time. 
 \\\\
-Whenever a update occurs, all changes that happened are recorded inside a log, and a "snapshot" of the database is taken. This snapshot is then presented to user, through the visualiser, metadata and log tabs. Creating the time line that you can then browse. 
+Whenever a update occurs, all changes that happened are recorded inside a log, and a "snapshot" of the database is taken. This snapshot is then presented to the user, through the visualiser, metadata and log tabs. Creating the time line that can then be browsed. 
 \\\\
-Apart from just showing you data, you can also execute SQL onto the database, through the SQL executor. And view the schema and tables currently inside the database. 
+Apart from just showing you data, you can also execute SQL commands onto the database, through the SQL executor. And view the schema and tables currently inside the database. 
+\\\\
+Finally, the tool will come with a friendly user interface, through which the user can interact with each of the features. Each feature above aim to address the issues mentioned at the start of this chapter.
 
 \subsection{High level Overview}
 \label{subsec:high_level_overview}
