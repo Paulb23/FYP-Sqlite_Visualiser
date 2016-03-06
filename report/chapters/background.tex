@@ -194,7 +194,13 @@ B-Trees are made up of internal nodes, and leaves. Internal nodes make up the st
 	\label{fig:b-tree}
 \end{figure}
 
-If the above figure, is  a B-Tree all of the items would be a valid value, and represent a key. However, in a B+-Tree, only the items in the leaves are valid values, and the rest act as keys, to guide the path through the tree to the correct value. Below figure~\ref{fig:sqlite_btree_figure} shows an example B-Tree that could be found within SQLite.
+If the above figure, is a B-Tree all of the items would be a valid value, and represent a key. However, in a B+-Tree, only the items in the leaves are valid values, and the rest act as keys, to guide a path to the correct value. 
+
+When searching the tree for a  value of \textit{N}, the value of the current node is taken. If the value \textit{N} is smaller than the value of the current node, then the path to the left node is taken. If it is larger then the path to the right. Inside a B+-Tree, since values are in leafs only this is extended to be greater than or equal to. 
+\\\\
+Insertion and deletion follows the same pattern, upholding the ordering of the values.  SQLite uses page type and relationships to determine to order of which the B-Trees nodes are connected, for example an overflow page can only be connected to a B-Tree cell, and the data for a specific table can be found attached to a common parent. 
+\\\\
+Below figure~\ref{fig:sqlite_btree_figure} shows an example B-Tree that could be found within SQLite.
 
 \begin{figure}[H]
 	\centering
@@ -362,7 +368,7 @@ As mentioned in section~\ref{subsubsec:sqlite_trees_and_cells} index B-Trees use
 \label{subsubsec:table_btree_cell}
 
 The Table B-Trees as mentioned in section~\ref{subsubsec:sqlite_trees_and_cells} hold most of the data, they also use row id's or primary keys as the keys to the records. Firstly the interior type only has two fields and no need for overflow. They follow the following format in Table~\ref{tbl:table_btree_cell_interior}: 
-
+\\\\\\
 \begin{longtable}[h]{| c | p{5cm} |}
 		\hline
 			\textbf{Data type} & \textbf{Description} \\ 
@@ -377,7 +383,7 @@ The Table B-Trees as mentioned in section~\ref{subsubsec:sqlite_trees_and_cells}
 \end{longtable}
 
 The Leaf type is a little more complex, this can be seen the Table~\ref{tbl:table_btree_cell_leaf} below:
-\\\\
+
 \begin{longtable}[h]{| c | p{5cm} |}
 		\hline
 			\textbf{Data type} & \textbf{Description} \\ 
@@ -472,8 +478,8 @@ Throughout the previous sections the payload has been called byte array or datab
 
 The cell header is made up of \textit{N + 1} varints where \textit{N} is the number of values in the record. The first varint is the number of bytes in the header, and the following \textit{N}, the record types.
 \\\\
-As varints can be between 1 - 9 bytes it is important to keep track of the varints size. To count the number of values in the record. For example, if there are \textit{N} values, and the number of bytes as 8. This could mean there are 8 small values, or 1 large value, or anywhere in between. The different value types can be seem below in Table~\ref{tbl:cell_header_record_types} 
-\\\\\\\\
+As varints can be between 1 - 9 bytes it is important to keep track of the varints size. To count the number of values in the record. For example, if there are \textit{N} values, and the number of bytes as 8. This could mean there are 8 small values, or 1 large value, or anywhere in between. The different value types can be seen below in Table~\ref{tbl:cell_header_record_types} 
+
 \begin{longtable}[h]{| c | c| p{5cm} |}
 		\hline
 			\textbf{Header Value} & \textbf{Byte Size} & \textbf{Description} \\ 

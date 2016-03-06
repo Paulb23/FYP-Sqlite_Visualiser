@@ -62,7 +62,7 @@ Finally, the tool will come with a friendly user interface, through which the us
 \subsection{High level Overview}
 \label{subsec:high_level_overview}
 
-From the start I wanted to build a system, that was modular, self-contained and adaptable. In order to accomplish this I decide to use a MVC (Model-View-Controller) architecture in order to separate the interface from the data. This means the view will make requests to the controller, who will then in turn contact the model for information, then sending the information backwards to be presented by the view. The idea being that the view could be switched or adjusted at any time without breaking the application. an example of MVC can be seen below in figure~\ref{fig:mvc}.
+To begin with the main aim is to have a system that was modular, self-contained and adaptable. In order to accomplish this the application is built using a MVC (Model-View-Controller) architecture in order to separate the interface from the data. This means the view will make requests to the controller, who will then, in turn contact the model for information, then sending the information backwards to be presented by the view. The idea being that the view could be switched or adjusted at any time without breaking the application. an example of MVC can be seen below in figure~\ref{fig:mvc}.
 
 \begin{figure}[H]
 	\centering
@@ -71,8 +71,8 @@ From the start I wanted to build a system, that was modular, self-contained and 
 	\label{fig:mvc}
 \end{figure}
 
-With this in mind the bulk of the work is performed inside the model. However, like any project, along the way I ran into some problems and so had to adjust my design. Figure~\ref{fig:design_old} shows the original design.
-
+With this in mind the bulk of the work is performed inside the model. However, like any project, along the way some problems occured while building the application, and so the original design had to be adjusted. Figure~\ref{fig:design_old} shows the original design.
+\\\\
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.2]{images/system_diagram_old.png}
@@ -80,7 +80,7 @@ With this in mind the bulk of the work is performed inside the model. However, l
 	\label{fig:design_old}
 \end{figure}
 
-The Model was going to run in its own thread so it could control, manage and prepare the data as it came in. This meant the view could request it when it wanted. The model was also made up of five modules. With the logging  stored into an external file, for the view to read when it wanted. In addition to this the controllers follow a hierarchical structure, with a master controller, controlling access to the model. However, this design proved unusable and thus changed into the following seen in figure~\ref{fig:design_new}. 
+The Model was going to run in its own thread so it could control, manage and prepare the data as it came in. This would allow the view could request it when it wanted. The model was also made up of five modules. With the logging stored into an external file, for the view to read when it wanted. In addition to this the controllers follow a hierarchical structure, with a master controller, controlling access to the model. However, this design proved unusable and thus changed into the following seen in figure~\ref{fig:design_new}. 
 
 \begin{figure}[H]
 	\centering
@@ -89,7 +89,7 @@ The Model was going to run in its own thread so it could control, manage and pre
 	\label{fig:design_new}
 \end{figure}
 
-Most of the changes are seen within the Model, with the addition of two new modules. And rather then running the whole thing inside a new thread only the file watcher is. On top of this the command logging is no longer written out to file. The final change is the reduction in the amount of controllers. I will go over each of the modules in the next part.
+Most of the changes are seen within the Model, with the addition of two new modules, and rather than running the whole thing inside a new thread, only the file watcher is. On top of this the command logging is no longer written out to file. The final change is the reduction in the amount of controllers. The next section will go over each of the modules in depth.
 
 \subsection{Module Overview}
 \label{subsec:module_overview}
@@ -97,26 +97,26 @@ Most of the changes are seen within the Model, with the addition of two new modu
 \subsubsection{The Main}
 \label{subsubsec:main}
 
-The main module represents the staring point of the application, it serves no other purpose other then to correctly initialise the view, model and controllers.
+The main module represents the starting point of the application, it serves no other purpose other than to correctly initialise the view, model and controllers.
 
 \subsubsection{The View}
 \label{subsubsec:the_view}
 
-The view, consists of three parts, the top, middle and right side. The middle section can also be split in half when needed to view two different panes at the same time. In addition to this the top and right sides do not change through the running of the application. The middle section however, changes depending on what is being viewed.
+The view consists of three parts, the top, middle and right side. This is the most flexible of the modules and can be adjusted depending on the user interface design. The view, is designed to hold the layout of the each section and provide interaction to the model, as mentioned previously. However, in this case, the view is made up of three parts, the top representing the top / menu bar section of the interface. The middle and right side section to show the user what they are viewing.
 
 \subsubsection{The Controller}
 \label{subsubsec:the_controller}
 
-The controller is made up of two parts, the master controller, and the pane controller. The pane controller is changed depending on what is being viewed. Respectively to the views middle pane. The master controller however stays through the running of the program and coordinates what is being shown. Both of them communicate to the model to collect updates, and interact with the data.
+The controller is made up of two parts, the master controller, and the pane controller. The pane controller is changed depending on what is being viewed, respectively to the views middle pane. The master controller however stays through the running of the program and coordinates what is being shown. Both of them communicate to the model to collect updates, and interact with the data. The master controller allows the view to have some state and as such allows the different parts of the view to interact with each other.
 
 \subsubsection{The Model}
 \label{subsubsec:the_model}
 
-The model is the most complicated section and is made up of seven modules. The model itself acts as a repository design with all the modules connecting and interacting though a shared object the model interface.
+The model is the most complicated section and is made up of seven modules. One for each of the main tasks to keep each one self contained. The model itself acts as a repository design with all the modules connecting and interacting though a shared object the model interface.
 \\\\
-The first module, marked as 'model' represents the model interface. In which all communication, with sub modules, from the controllers will go through. It is also the only class to have direct access to all sub modules, as i tried to keep them as modular and independent as possible. In addition to this, it provides a small amount of functionality for setting up, closing and opening the database. Since every module will require something from this action.
+The first module, marked as `model' represents the model interface. In which all communication with sub modules, from the controllers will go through. It is also the only class to have direct access to all sub modules, in order to keep each module as modular and independent as possible. In addition to this, it will provides a small amount of functionality for setting up, closing and opening the database. Since every module will require something from this action.
 \\\\
-The Database, is the in program mapping of the SQLite database file. The database is made up of two parts, the data objects, and the interface into the data objects. The data objects are the mapping of the SQLite database. Containing the B-Tree system, and the data. The interface provides access control to the data objects, allowing the program move along the database time line.
+The Database is the in program mapping of the SQLite database file. The database is made up of two parts, the data objects, and the interface into the data objects. The data objects are the mapping of the SQLite database. Containing the B-Tree system, and the data. The interface provides access control to the data objects, allowing the program move along the database time line.
 \\\\
 The file watcher, runs in a continuous loop, inside its own thread, utilising the observer pattern. The observer patten allows any class to register to it, and will revive a signal when an event occurs. In this case it would be the updating of the database file. When a change is detected, a signal will be sent out over the observers, alerting them to the change. Although, if they did not tune in to the observer, The program would not receive  database updates.
 \\\\
