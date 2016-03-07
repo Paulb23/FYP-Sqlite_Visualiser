@@ -102,29 +102,29 @@ The main module represents the starting point of the application, it serves no o
 \subsubsection{The View}
 \label{subsubsec:the_view}
 
-The view consists of three parts, the top, middle and right side. This is the most flexible of the modules and can be adjusted depending on the user interface design. The view, is designed to hold the layout of the each section and provide interaction to the model, as mentioned previously. However, in this case, the view is made up of three parts, the top representing the top / menu bar section of the interface. The middle and right side section to show the user what they are viewing.
+The view consists of three parts, the top, middle and right side. This is the most flexible of the modules and can be adjusted depending on the user interface design. The view, is designed to hold the layout of the each section and provide interaction to the model, as mentioned previously. However, in this case, the view is made up of three parts, the top representing the top / menu bar section of the interface. The middle and right side sections to show the user what they are viewing.
 
 \subsubsection{The Controller}
 \label{subsubsec:the_controller}
 
-The controller is made up of two parts, the master controller, and the pane controller. The pane controller is changed depending on what is being viewed, respectively to the views middle pane. The master controller however stays through the running of the program and coordinates what is being shown. Both of them communicate to the model to collect updates, and interact with the data. The master controller allows the view to have some state and as such allows the different parts of the view to interact with each other.
+The controller is made up of two parts, the master controller, and the pane controller. The pane controller is changed depending on what is being viewed, respectively to the views middle and right pane. The master controller however stays through the running of the program and coordinates what is being shown. Both of them communicate to the model to collect updates, and interact with the data. The master controller allows the view to have some state and as such allows the different parts of the view to interact with each other.
 
 \subsubsection{The Model}
 \label{subsubsec:the_model}
 
 The model is the most complicated section and is made up of seven modules. One for each of the main tasks to keep each one self contained. The model itself acts as a repository design with all the modules connecting and interacting though a shared object the model interface.
 \\\\
-The first module, marked as `model' represents the model interface. In which all communication with sub modules, from the controllers will go through. It is also the only class to have direct access to all sub modules, in order to keep each module as modular and independent as possible. In addition to this, it will provides a small amount of functionality for setting up, closing and opening the database. Since every module will require something from this action.
+The first module, marked as `model' represents the model interface. In which all communication with sub modules, from the controllers will go through. It is also the only class to have direct access to all sub modules, in order to keep each module as modular and independent as possible. In addition to this, it will provides a small amount of functionality such as setting up, closing and opening the database. Since every module will require something from this action.
 \\\\
-The Database is the in program mapping of the SQLite database file. The database is made up of two parts, the data objects, and the interface into the data objects. The data objects are the mapping of the SQLite database. Containing the B-Tree system, and the data. The interface provides access control to the data objects, allowing the program move along the database time line.
+The Database is the in program mapping of the SQLite database file. The database is made up of two parts, the data objects, and the interface into the data objects. The data objects are the mapping of the SQLite database. Containing the B-Tree system and the data. The interface provides access control to the data objects, allowing the program to move along the database time line.
 \\\\
-The file watcher, runs in a continuous loop, inside its own thread, utilising the observer pattern. The observer patten allows any class to register to it, and will revive a signal when an event occurs. In this case it would be the updating of the database file. When a change is detected, a signal will be sent out over the observers, alerting them to the change. Although, if they did not tune in to the observer, The program would not receive  database updates.
+The file watcher, runs inside its own thread, utilising the observer pattern. The observer patten allows any class to register to it, and will revive a signal when an event occurs. In this case it would be the updating of the database file. When a change is detected, a signal will be sent out over the observers, alerting them to the change. Although, if they did not tune in to the observer, The program would not receive database updates.
 \\\\
 The File parser, parses any given valid database file. Converting it into the database object.
 \\\\
 The log, takes any two database objects and records the changes between them.
 \\\\
-The live updater, acts like a master controller for the modules, apart from the SQL executor, file watcher and model interface. It controls the program flow when a change is detected, and as such is registered to the file watchers observer. When a change is detected, the first thing it does is contact the file parser for the updated database object, then sends it off to the log, to record changes, before storing it in the database module and incrementing the current position on the time line.
+The live updater, acts like a master controller for the modules, apart from the SQL executor, file watcher and model interface. It controls the program flow when a change is detected, and as such is registered to the file watchers observer. When an update signal is sent, the first thing it does is contact the file parser for the updated database object, then sends it off to the log, to record changes, before storing it in the database module and incrementing the current position on the time line.
 \\\\
 The SQL executor, controls the SQL connections, and executes SQL commands onto the database.
 
