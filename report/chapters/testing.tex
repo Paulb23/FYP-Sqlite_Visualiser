@@ -25,26 +25,34 @@
 \section{Testing}
 \label{sec:testing}
 
- I mentioned at the start of this paper I wanted to make sure that my tool could be relied on. In order to accomplish this I used a variety of testing methods and tool that we will go over in this section.
+As mentioned at the start of this paper, and during the design section. One of the aims is to make sure that the tool could be relied on. In order to accomplish this, a variety of testing methods and tools were used, this section will go over theses.
 
 \subsection{Test data}
 \label{subsec:test_data}
 
-In order to assure that my program ran correctly under a variety of circumstances, I used a variety of different sized databases. The smallest made up of one table and page, and the largest twelve tables and 1066 pages. 
-
+In order to assure that the program ran correctly under a variety of circumstances, a variety of different sized databases were used to test. The smallest made up of one table and page, and the largest twelve tables and 1066 pages. The smaller and medium sized  databases were custom made for this project, while the larger one was taken from \cite{largedatabase} using real word data.
+\\\\
+As stated at the start of this paper SQLite is intended to be used as a file format rather than a complete database system. Therefore testing the application on a multi-gigabyte file would be unnecessary. This can be assumed as any databases of that size would be better off in a different system \citep{sqlite}. Although where this is out of the developers control or there are no alternatives to their situation would be classed as an edge case.
+ 
 \subsection{Unit tests}
 \label{subsec:unit_tests}
 
-Throughout the implementation stage I kept close to test driven development, and as such have written a lot of unit tests utilising the JUnit framework by \cite{junit} . In total I have around 120 unit tests. All passing. The unit tests are written to use mocks where dependences are needed allowing me to make sure it is working as intended..
+Throughout the implementation stage the process kept close to test driven development, and as such a  lot of unit tests have been written utilising the JUnit framework by \cite{junit} . In total there are around 139 unit tests. All passing. The unit tests are written to use mocks where dependences are needed allowing the tests to make sure the application is working as intended.
 \\\\
-In order to test the user interface I found a test framework that works alongside JUnit called TestFX \citep{test_fx} it is specifically designed to test JavaFX. You pass it the root node of your scene, then in these tests use commands, such as click, with either the id, or name of the item. It will then automatically control the mouse, interacting with the user interface.
+The unit tests themselves, attempt to test all the possible action that could be performed to each exposed method in an attempt to make sure that each part of the program is operating as expected. Apart from the very few edge cases. However, some parts of the application are better tested then others due to the complex nature of some modules.
+\\\\
+In order to test the user interface a test framework that works alongside JUnit called TestFX \citep{test_fx} was used, it is specifically designed to test JavaFX. It takes the root node of the scene to test. Then in the tests command methods are used such as click, move to and hover with either the identifier, or name of the item. It will then automatically control the mouse, interacting with the user interface.
+\\\\
+TestFx works very well for testing the navigation methods around the user interface and making sure that the user can get from one part of the application to another. With that said for more complex and fine grained interaction such as the scroll pane within the visualiser, and the opening of titled panes in the log, were hard to test effectively, in such cases manual testing had to be used.
 
 \subsection{Integration tests}
 \label{subsec:integration_tests}
 
-In addition to unit testing, I performed integration tests that would test the interactions between the various modules in order to check that they are working correctly. Such as the live updater and its corresponding calls to the other modules. This also included testing that the user interface would correctly interact with the model and its various modules correctly.
+In addition to unit testing, integration tests were used to test the interactions between the various modules in order to check that they are working correctly. Such as the live updater and its corresponding calls to the other modules. This also included testing that the user interface would correctly interact with the model and its various modules correctly.
+\\\\
+Integration tests where combined with the unit tests, For example when the TestFX tests clicks on the various buttons in the menu bar the signals are still sent to the model. This  was used to effectively to make sure that the various elements with the program where working as expected.
 
 \subsection{Manual testing}
 \label{subsec:mamual_tests}
 
-Where such tests needed a human eye, such as the design and drawing of items, and other small interactions that could not be automated. I manually over saw theses test. However, the majority of manual testing, were small things that would not greatly effect the application.
+Where such tests needed a human eye, such as the design and drawing of items, and other small interactions that could not be automated. Manually overseeing theses items and how they interacted had to be used. In addition to the testing of visual elements, other manual tests include how easy the interaction with the application, for example opening a file. This was used as in general the automated tests do not take into account how the application is displayed and interactive by an actual user.
