@@ -25,29 +25,29 @@
 \section{Evaluation}
 \label{sec:evaluation}
 
-In this section we will reflect on the final results from this project, and whether we have met our overall aims. And the design principles used through the undertaking of the project.
+Now that the paper is coming to and end, this section will reflect on the final results from this project, and whether the final results have met our overall aims. Including the design principles used through the undertaking of the project.
 
 \subsection{Design principles}
 \label{subsec:design_principles}
 
-Through out the project I tried to keep as close to good OOP paradigms and designs as possible. As stated in the introduction the main aim was to build tool that anyone could use to debug their own databases, with the five main features visualisation, command logging, live updating, executing SQL and browsing data. Wrapped up within a user interface. 
+While to project was going the overall design and structure keep as close to good OOP paradigms and designs as possible. As stated in the introduction the main aim was to build tool that anyone could use to debug their own databases, with the five main features visualisation, command logging, live updating, executing SQL and browsing data. Wrapped up within a user interface. 
 \\\\
-With support for other database system when needed, just by extending the interfaces and providing an implementation. In addition to sticking to good OPP design, I used TDD ( Test driven development ) in order to make sure that the final application, would work under a variety of circumstances. In the end I can safely say that theses aims where achieved. With the exception, of the lock byte and pointer map pages, as stated towards the start of the paper. 
+With support for other database system when needed, just by extending the interfaces and providing an implementation. In addition to sticking to good OPP design, TDD (Test driven development) was used in order to make sure that the final application, would work under a variety of circumstances. In the end theses aims where achieved. With the exception, of the lock byte and pointer map pages, as stated towards the start of the paper. 
 
 \subsection{The System}
 \label{subsec:system_eval}
 
-The system architecture, works efficiently and follows a modular pattern making it adaptable to other systems, should the need rise. The modularisation, however, has caused some issues during development, as mentioned during the implementation section with the live updater. Having to move around, and adapt the modules to become disconnected from one and another. Doing so made it harder to implement some of the features. But, in the long run will end up creating a better and more robust application.
+The system architecture, works efficiently and follows a modular pattern making it adaptable to other systems, should the need arise. The modularisation, however, has caused some issues during development, as mentioned during the implementation section with the live updater. Having to move around, and adapt the modules to become disconnected from one and another. Doing so made it harder to implement some of the features. But, in the long run will end up creating a better and more robust application.
 \\\\
-Although the application is built in Java it does not suffer any performance consequences on smaller databases as a result of this. Passing the larger database, using Java's nanosecond timer, takes on average  154.1 milliseconds to parse. While this may not seen like a long time if we scale it up to a few megabytes the parsing could potentially be a issue. 
+Although the application is built in Java it does not suffer any performance consequences on smaller databases as a result of this. Passing the larger database, using Java's nanosecond timer, takes on average  154.1 milliseconds to parse. While this may not seen like a long time if it is scaled it up to a few megabytes the parsing could potentially be an issue. 
 \\\\
-In addition to the performance scaling, there were a few feature that did not get added to the final application that would have enhanced it. Including the table exporter, to CSV, XML and JSon, a log exporter, and the ability to modify the database without having to use SQL, just by editing the values shown in the interface. In addition to this I would have also liked to enhance the SQL editor, by providing  auto complete and syntax highlighting. Lastly, I would have liked to enabled the table view, to collect the data from the snapshot rather then the database file. This would have enabled users to browser the data at a specific time slot easier, rather then having to inspect the nodes within the visualiser.  Most of theses features were left out due to time constraints. 
+In addition to the performance scaling, there were a few feature that did not get added to the final application that would have enhanced it. Including the table exporter, to CSV, XML and JSon, a log exporter, and the ability to modify the database without having to use SQL, just by editing the values shown in the interface. In addition to this enhancing the SQL editor, by providing  auto complete and syntax highlighting, to further improve the user experience. Lastly, the table view should be able to collect the data from the snapshot rather then the database file. This would have enabled users to browser the data at a specific time slot easier, rather then having to inspect the nodes within the visualiser.  Most of theses features were left out due to time constraints. 
 
 \subsection{User interface}
 \label{subsec:user_interface_eval}
 
 The overall user interface, looks clean and follows the standard layout seen in many other application. With the menu bar located at the top and the content underneath. This makes it intuitive and easy to pick up. With that said, support for a more customisable experience would enhance the experience, such as themes, text size and font type.
 \\\\
-In addition to allowing the user to customise the interface, I would have also liked to improve the visualisation, to allow collapsible nodes, and have the nodes better represent what it contains, either as a minimised preview, or icons, rather then using colour coding.
+In addition to allowing the user to customise the interface, the application would also benefit by improving the visualisation, to allow collapsible nodes, and have the nodes better represent what it contains, either as a minimised preview, or icons, rather then using colour coding.
 \\\\
 Along side the visualiser, other aspects of the user interface could be polished up to make the overall experience enjoyable. Such as disabling the time line control buttons when they cannot move along the time line in that direction. Zooming to the mouse pointer position on the visualiser rather then always to the top left. Lastly, allowing the section to be popped out of the main window frame, allowing them to be dragged around separately. Although theses do not affect the application drastically, they are complementary to the entire experience.
