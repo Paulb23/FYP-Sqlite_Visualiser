@@ -35,7 +35,7 @@ Table~\ref{tbl:sqlite_header} show the header layout.  All multibyte fields are 
 			\textbf{Byte Offset} & \textbf{Byte Size} & \textbf{Description} \\ 
 		\hline
 		\endhead
-			0 & 16 & A UTF-8 Header String followed by null terminator read as: "SQLite format 3" or in hex: "53 51 4c 69 74 65 20 66 6f 72 6d 61 74 20 33 00". \\
+			0 & 16 & A UTF-8 Header String followed by null terminator read as: ``SQLite format 3" or in hex: "53 51 4c 69 74 65 20 66 6f 72 6d 61 74 20 33 00". \\
 		\hline
 			16 & 2 & Page Size 	in bytes, power of two between 512 - 65536 bytes. if using version 3.7.0.1 and earlier between 512 - 32768, or 1 for 65536. \\
 		\hline

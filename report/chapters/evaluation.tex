@@ -30,9 +30,11 @@ Now that the paper is coming to and end, this section will reflect on the final 
 \subsection{Design principles}
 \label{subsec:design_principles}
 
-While to project was going the overall design and structure keep as close to good OOP paradigms and designs as possible. As stated in the introduction the main aim was to build tool that anyone could use to debug their own databases, with the five main features visualisation, command logging, live updating, executing SQL and browsing data. Wrapped up within a user interface. 
+During the project the overall design and structure keep as close to good OOP (Object orientated programming) paradigms and designs as possible. As stated in the introduction the main aim was to build tool that anyone could use to debug their own databases, with the five main features visualisation, command logging, live updating, executing SQL and browsing data. Wrapped up within a user interface. 
 \\\\
-With support for other database system when needed, just by extending the interfaces and providing an implementation. In addition to sticking to good OPP design, TDD (Test driven development) was used in order to make sure that the final application, would work under a variety of circumstances. In the end theses aims where achieved. With the exception, of the lock byte and pointer map pages, as stated towards the start of the paper. 
+With support for other database system when needed, just by extending the interfaces and providing an implementation. In addition to sticking to good OOP design, TDD (Test driven development) was used in order to make sure that the final application, would work under a variety of circumstances. In the end theses aims where achieved. With the exception, of the lock byte and pointer map pages, as stated towards the start of the paper. 
+\\\\
+Firstly, with the exception of the Log, all of the implemented features worked as planned. The log however, originally was going to report the SQL commands sent to the database, but as seen in the last chapter due to the nature of SQLite this became very hard to do. in order to get around this the final system could only report the changes that have occurred.
 
 \subsection{The System}
 \label{subsec:system_eval}
