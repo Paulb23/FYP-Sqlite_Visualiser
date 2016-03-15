@@ -17,7 +17,9 @@ Cd into the directory:
 Build the program:  
 > ./gradlew build  
 
-Build can then be found under /build  
+Build can then be found under /build/libs  
+Run with:  
+> java -jar ./sqlite-visualiser-1.0.jar  
 
 Licence
 ==
