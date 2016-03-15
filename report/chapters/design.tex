@@ -55,7 +55,7 @@ The base feature allows real time updating of this data when any command from an
 \\\\
 Whenever a update occurs, all changes that happened are recorded inside a log, and a "snapshot" of the database is taken. This snapshot is then presented to the user, through the visualiser, metadata and log tabs. Creating the time line that can then be browsed. 
 \\\\
-Apart from just showing you data, you can also execute SQL commands onto the database, through the SQL executor. And view the schema and tables currently inside the database. 
+Apart from just showing the data, the application should allow executing of SQL commands onto the database, through the SQL executor. And view the schema and tables currently inside the database. 
 \\\\
 Finally, the tool will come with a friendly user interface, through which the user can interact with each of the features. Each feature above aim to address the issues mentioned at the start of this chapter.
 
@@ -131,27 +131,31 @@ The SQL executor, controls the SQL connections, and executes SQL commands onto t
 \subsection{The User interface}
 \label{subsec:high_user_interface}
 
-The user interface is designed to be simplistic and easy to use and familiar to new users. The basic format is a menu bar at the top,  with icons underneath. Just below them is a selection of tabs corresponding to the different views, that the application can take. Down the right hand side, however will be another static section representing the SQl executer. This can be seen below in figure~\ref{fig:design_user_iterface}.
+The user interface shown in this section is just one way to create it, and as such can be changed without any problems. The design in this section is designed to be simplistic and easy to use and familiar to new users. The basic format is a menu bar at the top,  with icons underneath. Just below them is a selection of tabs corresponding to the different views, that the application can take. Down the right hand side, however will be another static section representing the SQl executer. This can be seen below in figure~\ref{fig:design_user_iterface}.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.7]{images/ui_design.png}
+	\includegraphics[scale=0.55]{images/ui_design.png}
 	\caption{User interface design.}
 	\label{fig:design_user_iterface}
 \end{figure}
 
-Originally the SQl executor was going to have its own tab. But it worked out better along side the content as you can then view what the commands are doing to the database, when they are ran. Or have the information as a reference when typing up commands, Below figure~\ref{fig:db_browser_screen} shows the SQL executer User interface design.
+The main concept behind this design was to keep the interface close to other programs in use, this open up the application up to a wide range of users, as stated towards the start the application had to be easy to use by a variety of users. 
+\\\\
+Originally the SQL executor was going to have its own tab. But it worked out better along side the content as the user can then view what the commands are doing to the database, when they are ran or have the information as a reference when typing up commands. Below figure~\ref{fig:des_sql_exe} shows the SQL executer User interface design.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.7]{images/ui_sqlexe_design.png}
 	\caption{SQL executor design.}
-	\label{fig:design_user_iterface}
+	\label{fig:des_sql_exe}
 \end{figure}
 
 The user will type commands into the top text box, and then press the button to run the command. After the command is ran a message will be displayed in the return text box. And any returned data will be presented in the results table.
 \\\\
-The base live updater is controlled via the icons and drop down menus with the four other features having their own tab. The metadata tab, is designed to have different panes, split up in to data relevance, each showcasing the different values. For example one pane will show the size, another the version numbers and so on. This can be seen below in figure~\ref{fig:des_ui_meta}. 
+The base live updater is controlled via the icons and drop down menus with the four other features having their own tab.  Since the live update is hidden in the background there is no need for it to have a dedicated section. The controlls can be seen above in figure~\ref{fig:design_user_iterface}
+\\\\
+The metadata tab, is designed to have different panes, split up in to data relevance, each showcasing the different values. For example one pane will show the size, another the version numbers and so on. This will let the user quickly see the needed and relevant information in one place. This can be seen below in figure~\ref{fig:des_ui_meta}. 
 
 \begin{figure}[H]
 	\centering
@@ -169,7 +173,9 @@ The other feature that is closely tied to this information is the visualiser. Th
 	\label{fig:des_ui_vis}
 \end{figure}
 
-In the above figure, the glowing node tells the user that this node was updated in the last update. Along side this a log entry is created. The log tab much like the metadata tab will be made up off small panes, titled with the date, and the collapsible content. The content will store what changed in that update this can be seen in figure~\ref{fig:des_ui_log}
+In the above figure, the glowing node tells the user that this node was updated in the last update. This is used to make it easier to see what pages where updated, else the user would have to find the pages and manually check each one for a change. The glowing node makes it easier to stop, however this could be represented in a variety of ways. Along side this a log entry is created. 
+\\\\
+The log tab much like the metadata tab will be made up off small panes, titled with the date, and the collapsible content. The content will store what changed in that update this can be seen in figure~\ref{fig:des_ui_log}
 
 \begin{figure}[H]
 	\centering
@@ -178,7 +184,9 @@ In the above figure, the glowing node tells the user that this node was updated 
 	\label{fig:des_ui_log}
 \end{figure}
 
-The idea behind the folding panels,  is to allow users to hide information that they do not need. As such if there is a large change it would not be filling the screen. The last feature and tab is the table and schema view. This, much like the visualiser uses two sections. The left, to display the list of tables and the schema. With the centre displaying the table data. This can be seen in figure~\ref{fig:des_ui_table}. 
+The idea behind the folding panels,  is to allow users to hide information that they do not need. As such if there is a large change it would not be filling the screen. 
+\\\\
+The last feature and tab is the table and schema view. This, much like the visualiser uses two sections. The left, to display the list of tables and the schema. With the centre displaying the table data. This can be seen in figure~\ref{fig:des_ui_table}. 
 
 \begin{figure}[H]
 	\centering
