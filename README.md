@@ -21,6 +21,8 @@ Build can then be found under /build/libs
 Run with:  
 > java -jar ./sqlite-visualiser-1.0.jar  
 
+Report pdf or tex documents can be found under /report  
+
 Licence
 ==
 MIT
