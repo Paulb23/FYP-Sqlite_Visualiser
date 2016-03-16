@@ -210,7 +210,7 @@ public class BTreeNode<T> {
     /**
      * Gets the data stored inside the node.
      *
-     * @return Data stored in the node.
+     * @return TABLE_LEAF stored in the node.
      */
     public T getData() {
         return this.data;

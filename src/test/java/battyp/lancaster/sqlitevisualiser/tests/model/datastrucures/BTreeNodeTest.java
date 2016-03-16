@@ -75,8 +75,8 @@ public class BTreeNodeTest {
     public void TestSetAndGetData() {
         BTreeNode<String> node = new BTreeNode<>(null);
         Assert.assertEquals(node.getData(), null);
-        node.setData("Test Data");
-        Assert.assertEquals(node.getData(), "Test Data");
+        node.setData("Test TABLE_LEAF");
+        Assert.assertEquals(node.getData(), "Test TABLE_LEAF");
     }
 
     @Test
@@ -261,7 +261,7 @@ public class BTreeNodeTest {
     @Test
     public void TestEqualsToDifferentInvalidNode() {
         BTreeNode<String> node = new BTreeNode<>();
-        Assert.assertEquals(false, node.equals(new BTreeNode<>("Data")));
+        Assert.assertEquals(false, node.equals(new BTreeNode<>("TABLE_LEAF")));
     }
 
     @Test

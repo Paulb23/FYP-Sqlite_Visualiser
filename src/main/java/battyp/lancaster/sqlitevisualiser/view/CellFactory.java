@@ -26,8 +26,6 @@ package battyp.lancaster.sqlitevisualiser.view;
 
 import battyp.lancaster.sqlitevisualiser.model.datastructures.BTreeCell;
 import battyp.lancaster.sqlitevisualiser.view.cells.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 
 /**
  * <h1> Cell factory </h1>
@@ -62,7 +60,7 @@ public class CellFactory {
                 cellReturn = new TableCell(cell);
                 break;
             }
-            case Data: {
+            case TABLE_LEAF: {
                 cellReturn = new DataCell(cell);
                 break;
             }

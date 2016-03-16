@@ -36,7 +36,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
 /**
- * <h1> Data Cell </h1>
+ * <h1> TABLE_LEAF Cell </h1>
  *
  * <p>
  * Cell type to represent the data cell, within the Sqlite

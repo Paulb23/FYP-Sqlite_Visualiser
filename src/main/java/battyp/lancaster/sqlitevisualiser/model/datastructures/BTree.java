@@ -72,7 +72,7 @@ public class BTree<T> {
      * Finds the node with the corresponding data, using depth first
      * search.
      *
-     * @param data Data to search for
+     * @param data TABLE_LEAF to search for
      *
      * @return The Node with the corresponding data.
      */
@@ -105,7 +105,7 @@ public class BTree<T> {
      * Finds the node with the corresponding data, using depth first
      * search, returns true if found else false.
      *
-     * @param data Data to search for.
+     * @param data TABLE_LEAF to search for.
      *
      * @return true if a node is found else false.
      */

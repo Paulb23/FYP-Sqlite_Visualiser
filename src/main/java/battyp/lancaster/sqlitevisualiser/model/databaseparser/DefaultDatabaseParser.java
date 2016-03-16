@@ -149,7 +149,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
         final int starting_page_number = 1;
 
         int pageSize = database.getMetadata().pageSize;
-        database.getBTree().setRoot(parseBtree(in, starting_page_number, pageSize));
+        database.getBTree().setRoot(parseBtree(in, starting_page_number, pageSize, database.getMetadata()));
     }
 
     /**
@@ -162,12 +162,13 @@ public class DefaultDatabaseParser implements DatabaseParser {
      * @param pageNumber The page number we are on.
      * @param pageSize The page size.
      *
+     * @param metadata
      * @return  BtreeNode with the cell data.
      *
      * @throws IOException If there is a problem reading the file.
      * @throws InvalidFileException If there is an unusual format.
      */
-    public BTreeNode<BTreeCell> parseBtree(RandomAccessFile in, long pageNumber, long pageSize) throws IOException, InvalidFileException {
+    public BTreeNode<BTreeCell> parseBtree(RandomAccessFile in, long pageNumber, long pageSize, Metadata metadata) throws IOException, InvalidFileException {
         BTreeNode<BTreeCell> node = new BTreeNode<>();
         PageHeader pageHeader = new PageHeader(in, pageNumber, pageSize);
 
@@ -175,19 +176,19 @@ public class DefaultDatabaseParser implements DatabaseParser {
         BTreeCell cell;
         switch (cellType) {
             case SqliteConstants.TABLE_BTREE_LEAF_CELL: {
-                cell = parseTableBtreeLeafCell(in, pageHeader, node);
+                cell = parseTableBtreeLeafCell(in, pageHeader, node, metadata);
             }
             break;
             case SqliteConstants.TABLE_BTREE_INTERIOR_CELL: {
-                cell = parseTableBtreeInteriorCell(in, pageHeader, node);
+                cell = parseTableBtreeInteriorCell(in, pageHeader, node, metadata);
             }
             break;
             case SqliteConstants.INDEX_BTREE_LEAF_CELL: {
-                cell = parseIndexBtreeLeafCell(in, pageHeader, node);
+                cell = parseIndexBtreeLeafCell(in, pageHeader, node, metadata);
             }
             break;
             case SqliteConstants.INDEX_BTREE_INTERIOR_CELL: {
-                cell = parseIndexBtreeInteriorCell(in, pageHeader, node);
+                cell = parseIndexBtreeInteriorCell(in, pageHeader, node, metadata);
             }
             break;
             default: {
@@ -198,7 +199,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
 
         if (cellType == SqliteConstants.INDEX_BTREE_INTERIOR_CELL || cellType == SqliteConstants.TABLE_BTREE_INTERIOR_CELL) {
             if (pageHeader.getRightMostPointer() != 0) {
-                node.addChild(parseBtree(in, pageHeader.getRightMostPointer(), pageSize));
+                node.addChild(parseBtree(in, pageHeader.getRightMostPointer(), pageSize, metadata));
             }
         }
         cell.rightChildPointer = pageHeader.getRightMostPointer();
@@ -213,27 +214,28 @@ public class DefaultDatabaseParser implements DatabaseParser {
      * @param pageHeader PageHeader of the page with the cells.
      * @param node Btree node to attach children cell to if found.
      *
+     * @param metadata
      * @return BTreeCell containing the cell data.
      *
      * @throws IOException If there is a problem reading the file.
      * @throws InvalidFileException If there is an unusual format.
      */
-    private BTreeCell parseTableBtreeLeafCell(RandomAccessFile in, PageHeader pageHeader, BTreeNode<BTreeCell> node) throws IOException, InvalidFileException {
+    private BTreeCell parseTableBtreeLeafCell(RandomAccessFile in, PageHeader pageHeader, BTreeNode<BTreeCell> node, Metadata metadata) throws IOException, InvalidFileException {
         final int numberOfCells = pageHeader.getNumberOfCells();
         final int cellType = pageHeader.getPageType();
         final long[] cellPointers = pageHeader.getCellPointers();
 
         BTreeCell cell = new BTreeCell(cellType, numberOfCells, pageHeader.getPageNumber());
-        cell.type = CellType.Data;
+        cell.type = CellType.TABLE_LEAF;
 
         for (int i = 0; i < numberOfCells; i++) {
             in.seek(cellPointers[i]);
 
             cell.payLoadSize[i] = decodeVarint(in)[0];
             cell.rowId[i] = decodeVarint(in)[0];
-            parseRecordPayload(in, cell, i);
+            parseRecordPayload(in, cell, i, metadata);
             if (cell.isTable[i]) {
-                node.addChild(parseBtree(in, cell.childrenPageNumbers[i], pageHeader.getPageSize()));
+                node.addChild(parseBtree(in, cell.childrenPageNumbers[i], pageHeader.getPageSize(), metadata));
             }
             // read overflow
             // cell.overflowPageNumbers[i] = in.readInt();
@@ -248,12 +250,13 @@ public class DefaultDatabaseParser implements DatabaseParser {
      * @param pageHeader PageHeader of the page with the cells.
      * @param node Btree node to attach children cell to if found.
      *
+     * @param metadata
      * @return BTreeCell containing the cell data.
      *
      * @throws IOException If there is a problem reading the file.
      * @throws InvalidFileException If there is an unusual format.
      */
-    private BTreeCell parseTableBtreeInteriorCell(RandomAccessFile in, PageHeader pageHeader, BTreeNode<BTreeCell> node) throws IOException, InvalidFileException {
+    private BTreeCell parseTableBtreeInteriorCell(RandomAccessFile in, PageHeader pageHeader, BTreeNode<BTreeCell> node, Metadata metadata) throws IOException, InvalidFileException {
         final int numberOfCells = pageHeader.getNumberOfCells();
         final int cellType = pageHeader.getPageType();
         final long[] cellPointers = pageHeader.getCellPointers();
@@ -266,7 +269,7 @@ public class DefaultDatabaseParser implements DatabaseParser {
 
             cell.leftChildPointers[i] = in.readInt();
             cell.rowId[i] = decodeVarint(in)[0];
-            node.addChild(parseBtree(in, cell.leftChildPointers[i], pageHeader.getPageSize()));
+            node.addChild(parseBtree(in, cell.leftChildPointers[i], pageHeader.getPageSize(), metadata));
         }
         return cell;
     }
@@ -277,12 +280,13 @@ public class DefaultDatabaseParser implements DatabaseParser {
      * @param in RandomAccessFile input stream
      * @param pageHeader PageHeader of the page with the cells.
      *
+     * @param metadata
      * @return BTreeCell containing the cell data.
      *
      * @throws IOException If there is a problem reading the file.
      * @throws InvalidFileException If there is an unusual format.
      */
-    private BTreeCell parseIndexBtreeLeafCell(RandomAccessFile in, PageHeader pageHeader, BTreeNode<BTreeCell> node) throws IOException, InvalidFileException {
+    private BTreeCell parseIndexBtreeLeafCell(RandomAccessFile in, PageHeader pageHeader, BTreeNode<BTreeCell> node, Metadata metadata) throws IOException, InvalidFileException {
         final int numberOfCells = pageHeader.getNumberOfCells();
         final int cellType = pageHeader.getPageType();
         final long[] cellPointers = pageHeader.getCellPointers();
@@ -294,9 +298,9 @@ public class DefaultDatabaseParser implements DatabaseParser {
             in.seek(cellPointers[i]);
 
             cell.payLoadSize[i] = decodeVarint(in)[0];
-            parseRecordPayload(in, cell, i);
+            parseRecordPayload(in, cell, i, metadata);
             if (cell.isTable[i]) {
-                node.addChild(parseBtree(in, cell.childrenPageNumbers[i], pageHeader.getPageSize()));
+                node.addChild(parseBtree(in, cell.childrenPageNumbers[i], pageHeader.getPageSize(), metadata));
             }
             //  cell.overflowPageNumbers[i] = in.readInt();
         }
@@ -309,12 +313,13 @@ public class DefaultDatabaseParser implements DatabaseParser {
      * @param in RandomAccessFile input stream
      * @param pageHeader PageHeader of the page with the cells.
      *
+     * @param metadata
      * @return BTreeCell containing the cell data.
      *
      * @throws IOException If there is a problem reading the file.
      * @throws InvalidFileException If there is an unusual format.
      */
-    private BTreeCell parseIndexBtreeInteriorCell(RandomAccessFile in, PageHeader pageHeader, BTreeNode<BTreeCell> node) throws IOException, InvalidFileException {
+    private BTreeCell parseIndexBtreeInteriorCell(RandomAccessFile in, PageHeader pageHeader, BTreeNode<BTreeCell> node, Metadata metadata) throws IOException, InvalidFileException {
         final int numberOfCells = pageHeader.getNumberOfCells();
         final int cellType = pageHeader.getPageType();
         final long[] cellPointers = pageHeader.getCellPointers();
@@ -327,9 +332,9 @@ public class DefaultDatabaseParser implements DatabaseParser {
 
             cell.leftChildPointers[i] = in.readInt();
             cell.payLoadSize[i] = decodeVarint(in)[0];
-            parseRecordPayload(in, cell, i);
+            parseRecordPayload(in, cell, i, metadata);
             if (cell.isTable[i]) {
-                node.addChild(parseBtree(in, cell.childrenPageNumbers[i], pageHeader.getPageSize()));
+                node.addChild(parseBtree(in, cell.childrenPageNumbers[i], pageHeader.getPageSize(), metadata));
             }
             //cell.overflowPageNumbers[i] = in.readInt();
         }
@@ -345,7 +350,30 @@ public class DefaultDatabaseParser implements DatabaseParser {
      *
      * @throws IOException
      */
-    private void parseRecordPayload(RandomAccessFile in, BTreeCell cell, int cellNumber) throws IOException {
+    private void parseRecordPayload(RandomAccessFile in, BTreeCell cell, int cellNumber,  Metadata metadata) throws IOException {
+
+        // check for overflow page
+        int usableSize = metadata.pageSize + metadata.unusedSpaceAtEndOfEachPage;
+        int maxLocal;
+        int minLocal;
+        long localSize;
+        boolean hasOverflowPage = false;
+        if (cell.type == CellType.TABLE_LEAF) {
+            maxLocal = usableSize - 35;
+        } else {
+            maxLocal = (usableSize - 12) * metadata.maxEmbeddedPayload / 255 - 23;
+        }
+        if (cell.payLoadSize[cellNumber] > maxLocal) {
+            hasOverflowPage = true;
+
+            minLocal = (usableSize - 12) * metadata.minEmbeddedPayload / 255 - 23;
+            localSize = minLocal + (cell.payLoadSize[cellNumber] - minLocal) % (usableSize - 4);
+
+            if (localSize > maxLocal) {
+                localSize = maxLocal;
+            }
+        }
+
         long bytesInHeader = decodeVarint(in)[0] - 1;
         int[] types = new int[(int) bytesInHeader];
         int bytesCounted = 0;
@@ -359,7 +387,31 @@ public class DefaultDatabaseParser implements DatabaseParser {
 
         boolean isTable = false;
         int tablePageNumber = 0;
+        int bytesRead = 0;
+        int nextOverflowPage = 0;
+        boolean inOverflow = false;
         for (int j = 0; j < numberOfItems; j++) {
+
+            // overflow page
+            if (hasOverflowPage) {
+                if (bytesRead > maxLocal - 4) {
+                    int overflowPageNumber = in.readInt();
+                    in.seek(((overflowPageNumber -1) * metadata.pageSize));
+                    inOverflow = true;
+                    bytesRead = 0;
+                    nextOverflowPage = 0;
+                } else if (bytesRead > metadata.pageSize) {
+                    in.seek(((nextOverflowPage -1) * metadata.pageSize));
+                    inOverflow = true;
+                    bytesRead = 0;
+                    nextOverflowPage = 0;
+                }
+
+                if (inOverflow && nextOverflowPage == 0) {
+                    nextOverflowPage = in.readInt();
+                }
+            }
+
             switch (types[j]) {
                 case VALUE_NULL: {
                     cell.data[cellNumber] += "";
@@ -371,30 +423,37 @@ public class DefaultDatabaseParser implements DatabaseParser {
                         tablePageNumber = bytes;
                     }
                     cell.data[cellNumber] += " " + bytes + " ";
+                    bytesRead += 1;
                     break;
                 }
                 case VALUE_TWO_BYTE_INT: {
                     cell.data[cellNumber] += " " + in.readShort() + " ";
+                    bytesRead += 2;
                     break;
                 }
                 case VALUE_THREE_BYTE_INT: {
                     cell.data[cellNumber] += " " + readBytesAsLong(in, 3) + " ";
+                    bytesRead += 3;
                     break;
                 }
                 case VALUE_FOUR_BYTE_INT: {
                     cell.data[cellNumber] += " " + in.readInt() + " ";
+                    bytesRead += 4;
                     break;
                 }
                 case VALUE_SIX_BYTE_INT: {
                     cell.data[cellNumber] += " " + readBytesAsLong(in, 6) + " ";
+                    bytesRead += 6;
                     break;
                 }
                 case VALUE_EIGHT_BYTE_INT: {
                     cell.data[cellNumber] += " " + in.readLong() + " ";
+                    bytesRead += 8;
                     break;
                 }
                 case VALUE_EIGHT_BYTE_FLOAT: {
                     cell.data[cellNumber] += " " + in.readDouble() + " ";
+                    bytesRead += 8;
                     break;
                 }
                 case VALUE_ZERO: {
@@ -408,9 +467,11 @@ public class DefaultDatabaseParser implements DatabaseParser {
                 default: {
                     if (types[j] >= VALUE_BLOB && types[j] % 2 == 0) {
                         cell.data[cellNumber] += " " + readBytesAsString(in, (types[j] - 12) / 2) + " ";
+                        bytesRead += (types[j] - 12) / 2;
                     } else if (types[j] >= VALUE_STRING && types[j] % 2 != 0) {
                         String str = readBytesAsString(in, (types[j] - 13) / 2);
                         cell.data[cellNumber] += " " + str + " ";
+                        bytesRead += (types[j] - 13) / 2;
                         if (str.equals("table") || str.equals("index")) {
                             isTable = true;
                         }
