@@ -97,7 +97,7 @@ The final implementation, effectively detected all changes performed to the data
 The file parser takes a database file, a database object, and converts the database file into the database object. Parsing the database, starts with checking the magic number, then the header, before moving onto the pages. The magic number and header information is correctly reading the first 100 bytes of the file, See Appendix A for the header layout. To parse the pages the application heavily relied upon recursion.
 \\\\
 First it would parse the page header, then switch into the method, that dealt with that type of page, who would then call the original method, when it reached a page number.  Each page was represented as a node, with contents of the node represented as a cell. The only main issue with this design is the size of the stack on a large database. Below is the psudocode of the algorithm:
-
+\newpage
 \begin{lstlisting}	
 public void parseBTree(stream, database) {
 	database.getBTree().setRoot(parsePage(stream, 1, 
